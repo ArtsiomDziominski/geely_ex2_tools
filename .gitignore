@@ -44,3 +44,10 @@ build/
 
 # OS
 Thumbs.db
+
+# Kotlin compiler cache
+.kotlin/
+
+# Temporary GeeKit reference clones (used during feature porting)
+temp_geekit/
+temp_geekit*/
