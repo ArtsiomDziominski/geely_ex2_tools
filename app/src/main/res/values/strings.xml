@@ -4,6 +4,12 @@
     <string name="welcome_subtitle">Утилиты для настройки Geely EX2</string>
 
     <string name="home_tools_title">Инструменты</string>
+    <string name="home_about_content_description">О приложении</string>
+    <string name="home_about_title">О приложении</string>
+    <string name="home_about_version">Версия %1$s</string>
+    <string name="home_about_developer">Разработчик</string>
+    <string name="home_about_telegram">\@i_am_artsiom</string>
+    <string name="home_about_close">Закрыть</string>
     <string name="tool_wifi_title">Wi-Fi</string>
     <string name="tool_wifi_description">Включение Wi-Fi и иконка в шторке Flyme</string>
     <string name="tool_temperature_title">Температура</string>
@@ -13,7 +19,9 @@
     <string name="tool_battery_title">Заряд батареи</string>
     <string name="tool_battery_description">SOC из VHAL (Flyme OEM / EV_BATTERY_LEVEL) в шторке Flyme</string>
     <string name="tool_driving_title">Вождение</string>
-    <string name="tool_driving_description">Режим вождения из VHAL (DM_FUNC_DRIVE_MODE_SELECT)</string>
+    <string name="tool_driving_description">Эко, Комфорт, Спорт — с запоминанием после пробуждения ГУ</string>
+    <string name="tool_ambient_title">Атмосферная подсветка</string>
+    <string name="tool_ambient_description">Вкл/выкл подсветки салона (BCM_FUNC_LIGHT_ATMOSPHERE_LAMPS)</string>
 
     <string name="wifi_screen_title">Wi-Fi</string>
     <string name="wifi_section_control">Управление</string>
@@ -140,7 +148,7 @@
     <string name="driving_section_mode">Режим вождения</string>
     <string name="driving_section_status">Статус</string>
     <string name="driving_mode_switch_title">Режим</string>
-    <string name="driving_mode_switch_summary">Как в настройках Flyme → Вождение</string>
+    <string name="driving_mode_switch_summary">Эко, Комфорт, Спорт</string>
     <string name="driving_current_title">Сейчас</string>
     <string name="driving_status_title">Состояние</string>
     <string name="driving_raw_title">Значение VHAL</string>
@@ -148,6 +156,7 @@
     <string name="driving_current_unavailable">Режим недоступен</string>
     <string name="driving_current_unknown">Неизвестный режим (%1$s)</string>
     <string name="driving_status_ok">Чтение успешно (%1$s)</string>
+    <string name="driving_status_ok_persist">Чтение успешно, режим сохраняется (%1$s)</string>
     <string name="driving_status_error">Ошибка чтения (%1$s)</string>
     <string name="driving_status_write_error">Ошибка записи: %1$s</string>
     <string name="driving_write_error_unknown">неизвестная ошибка</string>
@@ -158,10 +167,37 @@
     <string name="driving_mode_pure">Электро</string>
     <string name="driving_mode_adaptive">Умный</string>
     <string name="driving_mode_dynamic">Спорт</string>
+    <string name="driving_persist_title">Запоминать режим</string>
+    <string name="driving_saved_title">Сохранённый режим</string>
+    <string name="driving_restore_channel">Режим вождения</string>
+    <string name="driving_restore_notification_title">Режим вождения</string>
+    <string name="driving_restore_notification_text">Восстановление сохранённого режима</string>
     <string name="driving_mode_eco">Эко</string>
     <string name="driving_mode_xc">XC</string>
     <string name="driving_mode_hybrid">Гибрид</string>
     <string name="driving_mode_snow">Снег</string>
+
+    <string name="ambient_screen_title">Атмосферная подсветка</string>
+    <string name="ambient_section_control">Управление</string>
+    <string name="ambient_section_status">Статус</string>
+    <string name="ambient_toggle_title">Атмосферная подсветка</string>
+    <string name="ambient_toggle_summary_on">Подсветка включена</string>
+    <string name="ambient_toggle_summary_off">Подсветка выключена</string>
+    <string name="ambient_current_title">Сейчас</string>
+    <string name="ambient_status_title">Состояние</string>
+    <string name="ambient_raw_title">Значение VHAL</string>
+    <string name="ambient_source_title">Источник данных</string>
+    <string name="ambient_state_on">Включена</string>
+    <string name="ambient_state_off">Выключена</string>
+    <string name="ambient_current_unavailable">Состояние недоступно</string>
+    <string name="ambient_current_unknown">Неизвестное значение (%1$s)</string>
+    <string name="ambient_status_ok">Чтение успешно (%1$s)</string>
+    <string name="ambient_status_error">Ошибка чтения (%1$s)</string>
+    <string name="ambient_status_write_error">Ошибка записи: %1$s</string>
+    <string name="ambient_write_error_unknown">неизвестная ошибка</string>
+    <string name="ambient_raw_unavailable">Нет данных</string>
+    <string name="ambient_source_unavailable">Данные недоступны</string>
+    <string name="ambient_source_empty">Нет отладочной информации</string>
 
     <string name="nav_back">Назад</string>
 </resources>

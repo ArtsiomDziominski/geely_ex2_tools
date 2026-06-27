@@ -70,6 +70,7 @@ fun FlymeSettingsSwitchItem(
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     summary: String? = null,
+    enabled: Boolean = true,
     showDivider: Boolean = true,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -101,6 +102,7 @@ fun FlymeSettingsSwitchItem(
             Switch(
                 checked = checked,
                 onCheckedChange = onCheckedChange,
+                enabled = enabled,
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = MaterialTheme.colorScheme.surface,
                     checkedTrackColor = FlymeAccent,

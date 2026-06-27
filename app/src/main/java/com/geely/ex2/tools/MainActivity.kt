@@ -13,11 +13,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.geely.ex2.tools.data.battery.BatteryAppStarter
+import com.geely.ex2.tools.data.driving.DrivingAppStarter
 import com.geely.ex2.tools.data.speed.SpeedAppStarter
 import com.geely.ex2.tools.data.temperature.TemperatureAppStarter
 import com.geely.ex2.tools.data.wifi.WifiAppStarter
 import com.geely.ex2.tools.data.wifi.WifiStatusIconHelper
 import com.geely.ex2.tools.feature.home.ui.HomeScreen
+import com.geely.ex2.tools.feature.ambient.ui.AmbientLightScreen
 import com.geely.ex2.tools.feature.battery.ui.BatteryScreen
 import com.geely.ex2.tools.feature.driving.ui.DrivingScreen
 import com.geely.ex2.tools.feature.speed.ui.SpeedScreen
@@ -38,6 +40,7 @@ class MainActivity : ComponentActivity() {
         SpeedAppStarter.notifyStatusIconIfEnabled(this, "MainActivity")
         BatteryAppStarter.startServiceIfEnabled(this, "MainActivity")
         BatteryAppStarter.notifyStatusIconIfEnabled(this, "MainActivity")
+        DrivingAppStarter.startRestoreService(this, "MainActivity")
 
         enableEdgeToEdge()
         setContent {
@@ -86,6 +89,11 @@ class MainActivity : ComponentActivity() {
                                     onBack = { navController.popBackStack() },
                                 )
                             }
+                            composable(AppRoutes.AMBIENT) {
+                                AmbientLightScreen(
+                                    onBack = { navController.popBackStack() },
+                                )
+                            }
                         }
                     }
                 }
@@ -103,5 +111,6 @@ class MainActivity : ComponentActivity() {
         SpeedAppStarter.notifyStatusIconIfEnabled(this, "MainActivity resume")
         BatteryAppStarter.startServiceIfEnabled(this, "MainActivity resume")
         BatteryAppStarter.notifyStatusIconIfEnabled(this, "MainActivity resume")
+        DrivingAppStarter.startRestoreService(this, "MainActivity resume")
     }
 }

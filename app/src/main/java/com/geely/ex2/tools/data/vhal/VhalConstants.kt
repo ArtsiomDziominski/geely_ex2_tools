@@ -31,6 +31,13 @@ object VhalConstants {
     const val DRIVE_MODE_SNOW = 0x22010109
     const val DRIVE_MODE_ADAPTIVE = 0x22010116
 
+    /** Flyme OEM: BCM_FUNC_LIGHT_ATMOSPHERE_LAMPS (氛围灯开关) */
+    const val PROP_BCM_FUNC_LIGHT_ATMOSPHERE_LAMPS = 0x21051000
+
+    /** ICarFunction.COMMON_VALUE_ON / COMMON_VALUE_OFF */
+    const val COMMON_VALUE_ON = 1
+    const val COMMON_VALUE_OFF = 0
+
     const val CAR_MANAGER_PROPERTY = "property"
 
     const val POLL_INTERVAL_MS = 1_000L
