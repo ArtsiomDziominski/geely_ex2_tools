@@ -66,6 +66,11 @@ private val tools = listOf(
         descriptionRes = R.string.tool_driving_description,
     ),
     ToolItem(
+        route = AppRoutes.REGENERATION,
+        titleRes = R.string.tool_regen_title,
+        descriptionRes = R.string.tool_regen_description,
+    ),
+    ToolItem(
         route = AppRoutes.AMBIENT,
         titleRes = R.string.tool_ambient_title,
         descriptionRes = R.string.tool_ambient_description,

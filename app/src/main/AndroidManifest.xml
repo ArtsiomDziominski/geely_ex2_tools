@@ -125,6 +125,19 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".data.regeneration.EnergyRegenerationEventReceiver"
+            android:directBootAware="true"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
         <service
             android:name=".data.wifi.WifiStatusService"
             android:enabled="true"
@@ -151,6 +164,12 @@
 
         <service
             android:name=".data.driving.DrivingRestoreService"
+            android:enabled="true"
+            android:foregroundServiceType="dataSync"
+            android:exported="false" />
+
+        <service
+            android:name=".data.regeneration.EnergyRegenerationRestoreService"
             android:enabled="true"
             android:foregroundServiceType="dataSync"
             android:exported="false" />

@@ -31,6 +31,15 @@ object VhalConstants {
     const val DRIVE_MODE_SNOW = 0x22010109
     const val DRIVE_MODE_ADAPTIVE = 0x22010116
 
+    /** Flyme OEM: SETTING_FUNC_ENERGY_REGENERATION (动能回收) */
+    const val PROP_SETTING_FUNC_ENERGY_REGENERATION = 0x22020500
+
+    /** Flyme OEM energy regen levels (VALUE_ENERGY_REGENERATION_LEVEL_*) */
+    const val REGEN_LEVEL_LOW = 0x22020501
+    const val REGEN_LEVEL_MID = 0x22020502
+    const val REGEN_LEVEL_HIGH = 0x22020503
+    const val REGEN_LEVEL_AUTO = 0x22020504
+
     /** Flyme OEM: BCM_FUNC_LIGHT_ATMOSPHERE_LAMPS (氛围灯开关) */
     const val PROP_BCM_FUNC_LIGHT_ATMOSPHERE_LAMPS = 0x21051000
 
