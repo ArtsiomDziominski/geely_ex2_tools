@@ -9,4 +9,5 @@ object AppRoutes {
     const val DRIVING = "driving"
     const val REGENERATION = "regeneration"
     const val AMBIENT = "ambient"
+    const val AVAS = "avas"
 }

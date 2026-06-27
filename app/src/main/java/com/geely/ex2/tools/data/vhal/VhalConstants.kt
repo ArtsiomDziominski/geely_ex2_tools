@@ -43,6 +43,21 @@ object VhalConstants {
     /** Flyme OEM: BCM_FUNC_LIGHT_ATMOSPHERE_LAMPS (氛围灯开关) */
     const val PROP_BCM_FUNC_LIGHT_ATMOSPHERE_LAMPS = 0x21051000
 
+    /** Flyme OEM: SETTING_FUNC_AVAS_SOUND_SWITCH (低速提示音量开关 / ESM) */
+    const val PROP_SETTING_FUNC_AVAS_SOUND_SWITCH = 0x2030b600
+
+    /** Flyme OEM: SETTING_FUNC_AVAS_SOUND_TYPE (低速提示音模式) */
+    const val PROP_SETTING_FUNC_AVAS_SOUND_TYPE = 0x201a0700
+
+    /** AVAS sound type values (AVAS_SOUND_TYPE_*) */
+    const val AVAS_SOUND_TYPE_NONE = 0
+    const val AVAS_SOUND_TYPE_1 = 0x201a0701
+    const val AVAS_SOUND_TYPE_2 = 0x201a0702
+    const val AVAS_SOUND_TYPE_3 = 0x201a0703
+
+    /** android.hardware.automotive.vehicle.V2_0.VehicleProperty.AVASSwitch */
+    const val PROP_AVAS_SWITCH = 0x2140a148
+
     /** ICarFunction.COMMON_VALUE_ON / COMMON_VALUE_OFF */
     const val COMMON_VALUE_ON = 1
     const val COMMON_VALUE_OFF = 0

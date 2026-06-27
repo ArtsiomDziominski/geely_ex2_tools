@@ -21,6 +21,7 @@ import com.geely.ex2.tools.data.wifi.WifiAppStarter
 import com.geely.ex2.tools.data.wifi.WifiStatusIconHelper
 import com.geely.ex2.tools.feature.home.ui.HomeScreen
 import com.geely.ex2.tools.feature.ambient.ui.AmbientLightScreen
+import com.geely.ex2.tools.feature.avas.ui.AvasSoundScreen
 import com.geely.ex2.tools.feature.battery.ui.BatteryScreen
 import com.geely.ex2.tools.feature.driving.ui.DrivingScreen
 import com.geely.ex2.tools.feature.regeneration.ui.RegenerationScreen
@@ -99,6 +100,11 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(AppRoutes.AMBIENT) {
                                 AmbientLightScreen(
+                                    onBack = { navController.popBackStack() },
+                                )
+                            }
+                            composable(AppRoutes.AVAS) {
+                                AvasSoundScreen(
                                     onBack = { navController.popBackStack() },
                                 )
                             }

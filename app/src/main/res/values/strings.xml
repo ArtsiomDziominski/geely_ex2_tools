@@ -24,6 +24,8 @@
     <string name="tool_regen_description">Низкая, Средняя, Высокая — как в штатных настройках вождения</string>
     <string name="tool_ambient_title">Атмосферная подсветка</string>
     <string name="tool_ambient_description">Вкл/выкл подсветки салона (BCM_FUNC_LIGHT_ATMOSPHERE_LAMPS)</string>
+    <string name="tool_avas_title">Звук авто (AVAS)</string>
+    <string name="tool_avas_description">Отключение низкоскоростного звука (SETTING_FUNC_AVAS_SOUND_SWITCH)</string>
 
     <string name="wifi_screen_title">Wi-Fi</string>
     <string name="wifi_section_control">Управление</string>
@@ -229,6 +231,37 @@
     <string name="ambient_raw_unavailable">Нет данных</string>
     <string name="ambient_source_unavailable">Данные недоступны</string>
     <string name="ambient_source_empty">Нет отладочной информации</string>
+
+    <string name="avas_screen_title">Звук авто (AVAS)</string>
+    <string name="avas_section_control">Управление</string>
+    <string name="avas_section_status">Статус</string>
+    <string name="avas_toggle_title">Низкоскоростной звук</string>
+    <string name="avas_toggle_summary_on">AVAS включён</string>
+    <string name="avas_toggle_summary_off">AVAS выключен</string>
+    <string name="avas_disable_completely">Отключить полностью</string>
+    <string name="avas_current_title">Сейчас</string>
+    <string name="avas_type_title">Режим звука</string>
+    <string name="avas_status_title">Состояние</string>
+    <string name="avas_raw_switch_title">Переключатель (VHAL)</string>
+    <string name="avas_raw_type_title">Тип звука (VHAL)</string>
+    <string name="avas_source_title">Источник данных</string>
+    <string name="avas_state_on">Включён</string>
+    <string name="avas_state_off">Выключен</string>
+    <string name="avas_current_unavailable">Состояние недоступно</string>
+    <string name="avas_current_unknown">Неизвестное значение (%1$s)</string>
+    <string name="avas_type_unavailable">Режим недоступен</string>
+    <string name="avas_type_unknown">Неизвестный режим</string>
+    <string name="avas_type_none">Выключен (NONE)</string>
+    <string name="avas_type_1">Режим 1</string>
+    <string name="avas_type_2">Режим 2</string>
+    <string name="avas_type_3">Режим 3</string>
+    <string name="avas_status_ok">Чтение успешно (%1$s)</string>
+    <string name="avas_status_error">Ошибка чтения (%1$s)</string>
+    <string name="avas_status_write_error">Ошибка записи: %1$s</string>
+    <string name="avas_write_error_unknown">неизвестная ошибка</string>
+    <string name="avas_raw_unavailable">Нет данных</string>
+    <string name="avas_source_unavailable">Данные недоступны</string>
+    <string name="avas_source_empty">Нет отладочной информации</string>
 
     <string name="nav_back">Назад</string>
 </resources>
