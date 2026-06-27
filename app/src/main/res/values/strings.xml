@@ -20,6 +20,8 @@
     <string name="tool_battery_description">SOC из VHAL (Flyme OEM / EV_BATTERY_LEVEL) в шторке Flyme</string>
     <string name="tool_driving_title">Вождение</string>
     <string name="tool_driving_description">Эко, Комфорт, Спорт — с запоминанием после пробуждения ГУ</string>
+    <string name="tool_regen_title">Рекуперация</string>
+    <string name="tool_regen_description">Низкая, Средняя, Высокая — как в штатных настройках вождения</string>
     <string name="tool_ambient_title">Атмосферная подсветка</string>
     <string name="tool_ambient_description">Вкл/выкл подсветки салона (BCM_FUNC_LIGHT_ATMOSPHERE_LAMPS)</string>
 
@@ -176,6 +178,35 @@
     <string name="driving_mode_xc">XC</string>
     <string name="driving_mode_hybrid">Гибрид</string>
     <string name="driving_mode_snow">Снег</string>
+
+    <string name="regen_screen_title">Рекуперация</string>
+    <string name="regen_section_level">Уровень рекуперации</string>
+    <string name="regen_section_status">Статус</string>
+    <string name="regen_level_switch_title">Уровень</string>
+    <string name="regen_level_switch_summary">Низкая, Средняя, Высокая</string>
+    <string name="regen_current_title">Сейчас</string>
+    <string name="regen_status_title">Состояние</string>
+    <string name="regen_raw_title">Значение VHAL</string>
+    <string name="regen_source_title">Источник данных</string>
+    <string name="regen_current_unavailable">Уровень недоступен</string>
+    <string name="regen_current_unknown">Неизвестный уровень (%1$s)</string>
+    <string name="regen_status_ok">Чтение успешно (%1$s)</string>
+    <string name="regen_status_ok_persist">Чтение успешно, уровень сохраняется (%1$s)</string>
+    <string name="regen_status_error">Ошибка чтения (%1$s)</string>
+    <string name="regen_status_write_error">Ошибка записи: %1$s</string>
+    <string name="regen_write_error_unknown">неизвестная ошибка</string>
+    <string name="regen_raw_unavailable">Нет данных</string>
+    <string name="regen_source_unavailable">VHAL недоступен</string>
+    <string name="regen_source_empty">Нет отладочной информации</string>
+    <string name="regen_level_auto">Авто</string>
+    <string name="regen_level_low">Низкая</string>
+    <string name="regen_level_mid">Средняя</string>
+    <string name="regen_level_high">Высокая</string>
+    <string name="regen_persist_title">Запоминать уровень</string>
+    <string name="regen_saved_title">Сохранённый уровень</string>
+    <string name="regen_restore_channel">Рекуперация</string>
+    <string name="regen_restore_notification_title">Рекуперация</string>
+    <string name="regen_restore_notification_text">Восстановление сохранённого уровня рекуперации</string>
 
     <string name="ambient_screen_title">Атмосферная подсветка</string>
     <string name="ambient_section_control">Управление</string>

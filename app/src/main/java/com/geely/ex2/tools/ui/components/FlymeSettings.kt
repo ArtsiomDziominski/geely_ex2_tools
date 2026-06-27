@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,6 +30,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.geely.ex2.tools.ui.theme.FlymeAccent
 
@@ -133,6 +136,8 @@ fun FlymeSettingsSegmentedItem(
     summary: String? = null,
     enabled: Boolean = true,
     showDivider: Boolean = true,
+    optionMinHeight: Dp? = null,
+    optionTextStyle: TextStyle? = null,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Column(
@@ -159,12 +164,16 @@ fun FlymeSettingsSegmentedItem(
                         selected = selectedIndex >= 0 && selectedIndex == index,
                         onClick = { onSelectedIndexChange(index) },
                         enabled = enabled,
+                        modifier = optionMinHeight?.let { Modifier.height(it) } ?: Modifier,
                         shape = SegmentedButtonDefaults.itemShape(
                             index = index,
                             count = options.size,
                         ),
                     ) {
-                        Text(label)
+                        Text(
+                            text = label,
+                            style = optionTextStyle ?: MaterialTheme.typography.labelLarge,
+                        )
                     }
                 }
             }

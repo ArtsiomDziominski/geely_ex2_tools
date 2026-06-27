@@ -48,6 +48,5 @@ Thumbs.db
 # Kotlin compiler cache
 .kotlin/
 
-# Temporary GeelyTools reference clones (used during feature porting)
-temp_geelytools/
-temp_geelytools*/
+# Temporary APK analysis artifacts
+.tmp/
