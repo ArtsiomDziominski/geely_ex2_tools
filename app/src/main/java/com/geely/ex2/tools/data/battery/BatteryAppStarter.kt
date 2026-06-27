@@ -62,5 +62,5 @@ object BatteryAppStarter {
         Log.i(TAG, "Battery service start requested: $reason")
     }
 
-    private const val TAG = "GeeKitBattery"
+    private const val TAG = "GeelyToolsBattery"
 }

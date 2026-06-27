@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import android.os.Build
 
 object TemperatureSettings {
-    private const val PREFS = "geekit_temperature"
+    private const val PREFS = "geelytools_temperature"
     private const val KEY_ENABLED = "enabled"
     private const val KEY_STATUS_ICON_RANK = "status_icon_rank"
     private const val KEY_WIDGET_POSITION = "widget_position"

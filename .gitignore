@@ -48,6 +48,6 @@ Thumbs.db
 # Kotlin compiler cache
 .kotlin/
 
-# Temporary GeeKit reference clones (used during feature porting)
-temp_geekit/
-temp_geekit*/
+# Temporary GeelyTools reference clones (used during feature porting)
+temp_geelytools/
+temp_geelytools*/

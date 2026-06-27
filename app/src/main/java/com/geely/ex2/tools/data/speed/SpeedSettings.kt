@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import android.os.Build
 
 object SpeedSettings {
-    private const val PREFS = "geekit_speed"
+    private const val PREFS = "geelytools_speed"
     private const val KEY_ENABLED = "enabled"
     private const val KEY_STATUS_ICON_RANK = "status_icon_rank"
 

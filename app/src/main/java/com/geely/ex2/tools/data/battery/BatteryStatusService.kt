@@ -77,6 +77,6 @@ class BatteryStatusService : Service() {
 
     companion object {
         const val EXTRA_REASON = "reason"
-        private const val TAG = "GeeKitBattery"
+        private const val TAG = "GeelyToolsBattery"
     }
 }

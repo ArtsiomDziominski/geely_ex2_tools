@@ -56,5 +56,5 @@ object TemperatureAppStarter {
         Log.i(TAG, "Temperature service start requested: $reason")
     }
 
-    private const val TAG = "GeeKitTemperature"
+    private const val TAG = "GeelyToolsTemperature"
 }

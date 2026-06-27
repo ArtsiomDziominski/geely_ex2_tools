@@ -22,7 +22,7 @@ class BatteryEventReceiver : BroadcastReceiver() {
     }
 
     companion object {
-        private const val TAG = "GeeKitBattery"
+        private const val TAG = "GeelyToolsBattery"
         private const val QUICKBOOT_POWERON = "android.intent.action.QUICKBOOT_POWERON"
     }
 }

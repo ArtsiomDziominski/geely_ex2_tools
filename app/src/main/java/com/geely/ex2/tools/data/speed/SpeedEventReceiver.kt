@@ -22,7 +22,7 @@ class SpeedEventReceiver : BroadcastReceiver() {
     }
 
     companion object {
-        private const val TAG = "GeeKitSpeed"
+        private const val TAG = "GeelyToolsSpeed"
         private const val QUICKBOOT_POWERON = "android.intent.action.QUICKBOOT_POWERON"
     }
 }

@@ -69,5 +69,5 @@ object TemperatureStatusFont {
         "sans-serif",
     )
 
-    private const val TAG = "GeeKitTemperature"
+    private const val TAG = "GeelyToolsTemperature"
 }

@@ -14,6 +14,6 @@ class BatteryLaunchActivity : Activity() {
     }
 
     companion object {
-        private const val TAG = "GeeKitBattery"
+        private const val TAG = "GeelyToolsBattery"
     }
 }

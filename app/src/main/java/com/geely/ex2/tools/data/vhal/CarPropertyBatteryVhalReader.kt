@@ -128,6 +128,6 @@ class CarPropertyBatteryVhalReader(context: Context) : VhalBatteryReader {
     }
 
     companion object {
-        private const val TAG = "GeeKitBattery"
+        private const val TAG = "GeelyToolsBattery"
     }
 }

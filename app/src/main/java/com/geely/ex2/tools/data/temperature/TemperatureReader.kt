@@ -193,7 +193,7 @@ class TemperatureReader(context: Context) {
     }
 
     companion object {
-        private const val TAG = "GeeKitTemperature"
+        private const val TAG = "GeelyToolsTemperature"
         private const val GLOBAL_AREA_ID = 0
         private const val AC_AMBIENT_TEMP = 0x2140a377
         private const val AC_INSIDE_TEMP = 0x2140a379

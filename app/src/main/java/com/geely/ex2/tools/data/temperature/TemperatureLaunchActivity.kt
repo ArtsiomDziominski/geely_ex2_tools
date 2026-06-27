@@ -14,6 +14,6 @@ class TemperatureLaunchActivity : Activity() {
     }
 
     companion object {
-        private const val TAG = "GeeKitTemperature"
+        private const val TAG = "GeelyToolsTemperature"
     }
 }

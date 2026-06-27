@@ -22,7 +22,7 @@ class TemperatureEventReceiver : BroadcastReceiver() {
     }
 
     companion object {
-        private const val TAG = "GeeKitTemperature"
+        private const val TAG = "GeelyToolsTemperature"
         private const val QUICKBOOT_POWERON = "android.intent.action.QUICKBOOT_POWERON"
     }
 }

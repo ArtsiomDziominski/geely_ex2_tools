@@ -77,6 +77,6 @@ class SpeedStatusService : Service() {
 
     companion object {
         const val EXTRA_REASON = "reason"
-        private const val TAG = "GeeKitSpeed"
+        private const val TAG = "GeelyToolsSpeed"
     }
 }

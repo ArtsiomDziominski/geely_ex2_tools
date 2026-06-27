@@ -45,10 +45,11 @@ class CarPropertyVhalReader(context: Context) : VhalSpeedReader {
             debug.append('\n').append(
                 String.format(
                     Locale.US,
-                    "driveModeSpeedKmh: abs(%.1f) clamp 0..%.0f = %.0f km/h",
+                    "driveModeSpeedKmh: raw=%.1f -> %.0f km/h (+%.0f if >= %.0f)",
                     probe.value,
-                    SpeedNormalizer.MAX_SPEED_KMH,
                     normalized,
+                    SpeedNormalizer.SPEED_OFFSET_KMH,
+                    SpeedNormalizer.SPEED_OFFSET_MIN_KMH,
                 ),
             )
             return SpeedSample(
@@ -136,6 +137,6 @@ class CarPropertyVhalReader(context: Context) : VhalSpeedReader {
     }
 
     companion object {
-        private const val TAG = "GeeKitSpeed"
+        private const val TAG = "GeelyToolsSpeed"
     }
 }

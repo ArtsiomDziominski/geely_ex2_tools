@@ -225,7 +225,7 @@ object SpeedStatusIconHelper {
         return (value * context.resources.displayMetrics.density + 0.5f).toInt()
     }
 
-    private const val TAG = "GeeKitSpeed"
+    private const val TAG = "GeelyToolsSpeed"
     private const val BASE_ICON_HEIGHT_DP = 24
     private const val MIN_HORIZONTAL_PADDING_DP = 2
     private const val BASE_TEXT_SIZE_RATIO = 0.72f

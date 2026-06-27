@@ -75,6 +75,6 @@ class TemperatureStatusService : Service() {
     companion object {
         const val EXTRA_REASON = "reason"
         private const val UPDATE_INTERVAL_MS = 100_000L
-        private const val TAG = "GeeKitTemperature"
+        private const val TAG = "GeelyToolsTemperature"
     }
 }

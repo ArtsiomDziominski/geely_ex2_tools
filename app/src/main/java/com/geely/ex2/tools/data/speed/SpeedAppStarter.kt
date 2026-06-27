@@ -63,5 +63,5 @@ object SpeedAppStarter {
         Log.i(TAG, "Speed service start requested: $reason")
     }
 
-    private const val TAG = "GeeKitSpeed"
+    private const val TAG = "GeelyToolsSpeed"
 }

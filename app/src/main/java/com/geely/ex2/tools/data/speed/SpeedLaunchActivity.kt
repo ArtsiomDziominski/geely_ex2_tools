@@ -14,6 +14,6 @@ class SpeedLaunchActivity : Activity() {
     }
 
     companion object {
-        private const val TAG = "GeeKitSpeed"
+        private const val TAG = "GeelyToolsSpeed"
     }
 }

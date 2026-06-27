@@ -200,7 +200,7 @@ class CarVhalBindings(context: Context) {
     }
 
     companion object {
-        private const val TAG = "GeeKitSpeed"
+        private const val TAG = "GeelyToolsSpeed"
 
         private fun shortError(error: Throwable): String {
             var cause = error

@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import android.os.Build
 
 object BatterySettings {
-    private const val PREFS = "geekit_battery"
+    private const val PREFS = "geelytools_battery"
     private const val KEY_ENABLED = "enabled"
     private const val KEY_STATUS_ICON_RANK = "status_icon_rank"
 
