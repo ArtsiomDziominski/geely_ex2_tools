@@ -3,7 +3,7 @@ package com.geely.ex2.tools.data.wifi
 object WifiWidgetRank {
     const val MIN = 1
     const val MAX = 30
-    const val DEFAULT = 21
+    const val DEFAULT = 3
     const val STEP = 1
 
     fun clamp(rank: Int): Int = rank.coerceIn(MIN, MAX)
