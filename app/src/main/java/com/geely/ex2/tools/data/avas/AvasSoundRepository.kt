@@ -4,20 +4,22 @@ import android.content.Context
 import com.geely.ex2.tools.data.vhal.AvasSoundSample
 import com.geely.ex2.tools.data.vhal.AvasSoundWriteResult
 import com.geely.ex2.tools.data.vhal.CarPropertyAvasSoundReader
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class AvasSoundRepository(private val context: Context) {
-    fun readAvasSound(): AvasSoundSample {
+    suspend fun readAvasSound(): AvasSoundSample = withContext(Dispatchers.IO) {
         val reader = CarPropertyAvasSoundReader(context)
-        return try {
+        try {
             reader.readAvasSound()
         } finally {
             reader.close()
         }
     }
 
-    fun setAvasSoundEnabled(enabled: Boolean): AvasSoundWriteResult {
+    suspend fun setAvasSoundEnabled(enabled: Boolean): AvasSoundWriteResult = withContext(Dispatchers.IO) {
         val reader = CarPropertyAvasSoundReader(context)
-        return try {
+        try {
             reader.writeAvasSound(enabled)
         } finally {
             reader.close()

@@ -9,16 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -42,6 +36,7 @@ import com.geely.ex2.tools.feature.wifi.WifiViewModel
 import com.geely.ex2.tools.ui.components.FlymeSettingsSection
 import com.geely.ex2.tools.ui.components.FlymeSettingsStepperItem
 import com.geely.ex2.tools.ui.components.FlymeSettingsSwitchItem
+import com.geely.ex2.tools.ui.components.GeelyTopAppBar
 import com.geely.ex2.tools.ui.theme.FlymeAccent
 import com.geely.ex2.tools.ui.theme.GeelyEx2ToolsTheme
 
@@ -57,13 +52,16 @@ fun WifiScreen(
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                viewModel.onResume()
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> viewModel.onResume()
+                Lifecycle.Event.ON_PAUSE -> viewModel.onPause()
+                else -> Unit
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
+            viewModel.onPause()
         }
     }
 
@@ -71,19 +69,9 @@ fun WifiScreen(
         modifier = modifier,
         containerColor = Color.Transparent,
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.wifi_screen_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.nav_back),
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.84f),
-                ),
+            GeelyTopAppBar(
+                title = stringResource(R.string.wifi_screen_title),
+                onBack = onBack,
             )
         },
     ) { innerPadding ->

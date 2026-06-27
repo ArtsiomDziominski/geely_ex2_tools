@@ -2,14 +2,20 @@ package com.geely.ex2.tools.feature.temperature
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.geely.ex2.tools.R
 import com.geely.ex2.tools.data.temperature.TemperatureReader
 import com.geely.ex2.tools.data.temperature.TemperatureRepository
 import com.geely.ex2.tools.data.temperature.TemperatureWidgetRank
+import com.geely.ex2.tools.data.vhal.VhalConstants
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 data class TemperatureUiState(
@@ -28,27 +34,28 @@ class TemperatureViewModel(application: Application) : AndroidViewModel(applicat
     private val _uiState = MutableStateFlow(TemperatureUiState())
     val uiState: StateFlow<TemperatureUiState> = _uiState.asStateFlow()
 
-    init {
-        refreshState()
-        repository.startStatusServiceIfEnabled("TemperatureViewModel init")
-        repository.notifyStatusIconIfEnabled("TemperatureViewModel init")
-    }
+    private var pollJob: Job? = null
 
     fun onResume() {
         refreshState()
-        repository.startStatusServiceIfEnabled("TemperatureScreen resume")
-        repository.notifyStatusIconIfEnabled("TemperatureScreen resume")
+        syncBackgroundWork("TemperatureScreen resume")
+        restartPolling()
+    }
+
+    fun onPause() {
+        stopPolling()
     }
 
     fun onEnabledCheckedChange(enabled: Boolean) {
         if (enabled == _uiState.value.isEnabled) return
         repository.setEnabled(enabled)
         if (enabled) {
-            repository.startStatusServiceIfEnabled("UI temperature enable")
-            repository.notifyStatusIconIfEnabled("UI temperature enable")
+            syncBackgroundWork("UI temperature enable")
+            restartPolling()
         } else {
             repository.stopStatusService("UI temperature disable")
-            repository.notifyStatusIconIfEnabled("UI temperature disable")
+            repository.cancelStatusIcon()
+            stopPolling()
         }
         refreshState()
     }
@@ -73,6 +80,43 @@ class TemperatureViewModel(application: Application) : AndroidViewModel(applicat
                 canStepWidgetRight = TemperatureWidgetRank.canStepRight(newRank),
             )
         }
+    }
+
+    override fun onCleared() {
+        stopPolling()
+        super.onCleared()
+    }
+
+    private fun syncBackgroundWork(reason: String) {
+        if (!repository.isEnabled()) {
+            repository.stopStatusService("$reason, disabled")
+            repository.cancelStatusIcon()
+            return
+        }
+        repository.startStatusServiceIfEnabled(reason)
+        repository.notifyStatusIconIfEnabled(reason)
+    }
+
+    private fun restartPolling() {
+        stopPolling()
+        if (repository.isEnabled()) {
+            startPolling()
+        }
+    }
+
+    private fun startPolling() {
+        pollJob?.cancel()
+        pollJob = viewModelScope.launch {
+            while (isActive) {
+                delay(VhalConstants.TEMPERATURE_POLL_INTERVAL_MS)
+                refreshState()
+            }
+        }
+    }
+
+    private fun stopPolling() {
+        pollJob?.cancel()
+        pollJob = null
     }
 
     private fun refreshState() {

@@ -22,7 +22,7 @@ class CarPropertyVhalReader(context: Context) : VhalSpeedReader {
                 return
             }
             onUpdate?.invoke(readSpeed())
-            handler.postDelayed(this, VhalConstants.POLL_INTERVAL_MS)
+            handler.postDelayed(this, VhalConstants.STATUS_WIDGET_POLL_INTERVAL_MS)
         }
     }
 
@@ -87,30 +87,12 @@ class CarPropertyVhalReader(context: Context) : VhalSpeedReader {
             return
         }
 
-        callbackToken = bindings.registerPropertyCallback(
-            propertyId = VhalConstants.PROP_PERF_VEHICLE_SPEED,
-            updateRateHz = 1f,
-            onValue = { raw ->
-                if (!shouldContinue()) return@registerPropertyCallback
-                val sample = SpeedSample(
-                    speedKmh = SpeedNormalizer.driveModeSpeedKmh(raw),
-                    isAvailable = true,
-                    source = "PERF_VEHICLE_SPEED callback",
-                    details = String.format(Locale.US, "raw=%.1f km/h", raw),
-                )
-                onUpdate(sample)
-            },
-            onError = { error ->
-                Log.w(TAG, "VHAL speed callback error: $error")
-            },
-        )
-
         if (shouldContinue()) {
             onUpdate(readSpeed())
         }
         handler.removeCallbacks(pollRunnable)
-        handler.postDelayed(pollRunnable, VhalConstants.POLL_INTERVAL_MS)
-        Log.i(TAG, "Speed listener started, callback=${callbackToken != null}")
+        handler.postDelayed(pollRunnable, VhalConstants.STATUS_WIDGET_POLL_INTERVAL_MS)
+        Log.i(TAG, "Speed listener started, interval=${VhalConstants.STATUS_WIDGET_POLL_INTERVAL_MS}ms")
     }
 
     override fun stopListening() {

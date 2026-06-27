@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
+import com.geely.ex2.tools.data.vhal.VhalConstants
 
 class TemperatureStatusService : Service() {
     private val handler = Handler(Looper.getMainLooper())
@@ -16,7 +17,7 @@ class TemperatureStatusService : Service() {
         override fun run() {
             updateTemperature("periodic")
             if (isRunning && TemperatureSettings.isEnabled(this@TemperatureStatusService)) {
-                handler.postDelayed(this, UPDATE_INTERVAL_MS)
+                handler.postDelayed(this, VhalConstants.TEMPERATURE_POLL_INTERVAL_MS)
             }
         }
     }
@@ -44,7 +45,7 @@ class TemperatureStatusService : Service() {
 
         updateTemperature(reason)
         handler.removeCallbacks(updateRunnable)
-        handler.postDelayed(updateRunnable, UPDATE_INTERVAL_MS)
+        handler.postDelayed(updateRunnable, VhalConstants.TEMPERATURE_POLL_INTERVAL_MS)
 
         return START_STICKY
     }
@@ -74,7 +75,6 @@ class TemperatureStatusService : Service() {
 
     companion object {
         const val EXTRA_REASON = "reason"
-        private const val UPDATE_INTERVAL_MS = 100_000L
         private const val TAG = "GeelyToolsTemperature"
     }
 }

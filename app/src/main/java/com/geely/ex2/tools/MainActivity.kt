@@ -5,22 +5,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.ui.graphics.Color
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.geely.ex2.tools.data.battery.BatteryAppStarter
 import com.geely.ex2.tools.data.battery.BatteryAppWidgetHelper
-import com.geely.ex2.tools.data.driving.DrivingAppStarter
-import com.geely.ex2.tools.data.regeneration.EnergyRegenerationAppStarter
-import com.geely.ex2.tools.data.speed.SpeedAppStarter
-import com.geely.ex2.tools.data.temperature.TemperatureAppStarter
-import com.geely.ex2.tools.data.wifi.WifiAppStarter
-import com.geely.ex2.tools.data.wifi.WifiStatusIconHelper
+import com.geely.ex2.tools.data.statuswidget.StatusWidgetBootstrap
 import com.geely.ex2.tools.feature.home.ui.HomeScreen
 import com.geely.ex2.tools.feature.ambient.ui.AmbientLightScreen
 import com.geely.ex2.tools.feature.avas.ui.AvasSoundScreen
@@ -37,17 +28,7 @@ import com.geely.ex2.tools.ui.theme.GeelyEx2ToolsTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WifiAppStarter.startStatusService(this, "MainActivity")
-        WifiStatusIconHelper.notifyStatusIcon(this, "MainActivity")
-        TemperatureAppStarter.startServiceIfEnabled(this, "MainActivity")
-        TemperatureAppStarter.notifyStatusIconIfEnabled(this, "MainActivity")
-        SpeedAppStarter.startServiceIfEnabled(this, "MainActivity")
-        SpeedAppStarter.notifyStatusIconIfEnabled(this, "MainActivity")
-        BatteryAppStarter.startServiceIfEnabled(this, "MainActivity")
-        BatteryAppStarter.notifyStatusIconIfEnabled(this, "MainActivity")
-        DrivingAppStarter.startRestoreService(this, "MainActivity")
-        EnergyRegenerationAppStarter.startRestoreService(this, "MainActivity")
-
+        StatusWidgetBootstrap.startEnabledWidgets(this, "MainActivity")
         enableEdgeToEdge()
         setContent {
             GeelyEx2ToolsTheme {
@@ -61,16 +42,12 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                GeelyEx2Background {
-                    Scaffold(
+                GeelyEx2Background(modifier = Modifier.fillMaxSize()) {
+                    NavHost(
+                        navController = navController,
+                        startDestination = AppRoutes.HOME,
                         modifier = Modifier.fillMaxSize(),
-                        containerColor = Color.Transparent,
-                    ) { innerPadding ->
-                        NavHost(
-                            navController = navController,
-                            startDestination = AppRoutes.HOME,
-                            modifier = Modifier.padding(innerPadding),
-                        ) {
+                    ) {
                             composable(AppRoutes.HOME) {
                                 HomeScreen(
                                     onToolClick = { route ->
@@ -118,24 +95,9 @@ class MainActivity : ComponentActivity() {
                                     onBack = { navController.popBackStack() },
                                 )
                             }
-                        }
                     }
                 }
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        WifiAppStarter.startStatusService(this, "MainActivity resume")
-        WifiStatusIconHelper.notifyStatusIcon(this, "MainActivity resume")
-        TemperatureAppStarter.startServiceIfEnabled(this, "MainActivity resume")
-        TemperatureAppStarter.notifyStatusIconIfEnabled(this, "MainActivity resume")
-        SpeedAppStarter.startServiceIfEnabled(this, "MainActivity resume")
-        SpeedAppStarter.notifyStatusIconIfEnabled(this, "MainActivity resume")
-        BatteryAppStarter.startServiceIfEnabled(this, "MainActivity resume")
-        BatteryAppStarter.notifyStatusIconIfEnabled(this, "MainActivity resume")
-        DrivingAppStarter.startRestoreService(this, "MainActivity resume")
-        EnergyRegenerationAppStarter.startRestoreService(this, "MainActivity resume")
     }
 }

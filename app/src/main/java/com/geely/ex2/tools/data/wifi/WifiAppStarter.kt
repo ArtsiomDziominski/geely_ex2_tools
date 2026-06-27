@@ -19,4 +19,9 @@ object WifiAppStarter {
 
         Log.i(WifiAutoEnableController.TAG, "Wi-Fi status service start requested: $reason")
     }
+
+    fun stopStatusService(context: Context, reason: String) {
+        Log.i(WifiAutoEnableController.TAG, "Wi-Fi status service stop requested: $reason")
+        context.applicationContext.stopService(Intent(context, WifiStatusService::class.java))
+    }
 }

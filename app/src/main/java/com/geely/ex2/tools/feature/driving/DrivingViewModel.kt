@@ -40,11 +40,6 @@ class DrivingViewModel(application: Application) : AndroidViewModel(application)
 
     private var pollJob: Job? = null
 
-    init {
-        refreshState()
-        startRestoreService("DrivingViewModel init")
-    }
-
     fun onResume() {
         refreshState()
         startRestoreService("DrivingScreen resume")
@@ -53,6 +48,7 @@ class DrivingViewModel(application: Application) : AndroidViewModel(application)
 
     fun onPause() {
         stopPolling()
+        repository.stopRestoreService("DrivingScreen pause")
     }
 
     fun onPersistCheckedChange(enabled: Boolean) {
@@ -119,9 +115,6 @@ class DrivingViewModel(application: Application) : AndroidViewModel(application)
         pollJob = viewModelScope.launch {
             while (isActive) {
                 delay(VhalConstants.POLL_INTERVAL_MS)
-                if (repository.isPersistEnabled()) {
-                    repository.restoreSavedModeIfNeeded("UI poll")
-                }
                 refreshState()
             }
         }

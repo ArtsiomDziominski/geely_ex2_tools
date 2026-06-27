@@ -82,6 +82,14 @@ object WifiStatusIconHelper {
         Log.i(WifiAutoEnableController.TAG, "Wi-Fi status icon hidden: $reason")
     }
 
+    fun cancelStatusIcon(context: Context) {
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
+        notificationManager?.cancel(NOTIFICATION_ID)
+        lastNotifiedRank = null
+        Log.i(WifiAutoEnableController.TAG, "Wi-Fi status icon cancelled")
+    }
+
     fun buildServiceNotification(context: Context): Notification {
         ensureServiceChannel(context)
 

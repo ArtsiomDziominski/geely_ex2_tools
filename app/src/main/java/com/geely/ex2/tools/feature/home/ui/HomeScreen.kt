@@ -11,14 +11,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Card
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import com.geely.ex2.tools.ui.components.GeelyTopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -98,19 +98,20 @@ fun HomeScreen(
         modifier = modifier,
         containerColor = Color.Transparent,
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.home_tools_title)) },
+            GeelyTopAppBar(
+                title = stringResource(R.string.home_tools_title),
                 actions = {
-                    IconButton(onClick = { showAboutDialog = true }) {
+                    IconButton(
+                        onClick = { showAboutDialog = true },
+                        modifier = Modifier.size(40.dp),
+                    ) {
                         Icon(
                             imageVector = Icons.Filled.Info,
                             contentDescription = stringResource(R.string.home_about_content_description),
+                            modifier = Modifier.size(22.dp),
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.84f),
-                ),
             )
         },
     ) { innerPadding ->

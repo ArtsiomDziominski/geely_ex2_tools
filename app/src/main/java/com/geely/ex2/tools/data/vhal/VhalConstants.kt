@@ -65,5 +65,10 @@ object VhalConstants {
     const val CAR_MANAGER_PROPERTY = "property"
 
     const val POLL_INTERVAL_MS = 1_000L
-    const val BATTERY_POLL_INTERVAL_MS = 30_000L
+
+    /** Интервал опроса виджетов в шторке (батарея, температура, скорость) */
+    const val STATUS_WIDGET_POLL_INTERVAL_MS = 100_000L
+
+    const val BATTERY_POLL_INTERVAL_MS = STATUS_WIDGET_POLL_INTERVAL_MS
+    const val TEMPERATURE_POLL_INTERVAL_MS = STATUS_WIDGET_POLL_INTERVAL_MS
 }

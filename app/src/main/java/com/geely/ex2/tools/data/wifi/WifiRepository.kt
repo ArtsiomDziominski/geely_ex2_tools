@@ -35,8 +35,16 @@ class WifiRepository(private val context: Context) {
         WifiAppStarter.startStatusService(context, reason)
     }
 
+    fun stopStatusService(reason: String) {
+        WifiAppStarter.stopStatusService(context, reason)
+    }
+
     fun notifyStatusIcon(reason: String, rank: Int? = null) {
         WifiStatusIconHelper.notifyStatusIcon(context, reason, rank)
+    }
+
+    fun cancelStatusIcon() {
+        WifiStatusIconHelper.cancelStatusIcon(context)
     }
 
     fun getStatusIconRank(): Int = WifiSettings.getStatusIconRank(context)

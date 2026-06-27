@@ -37,10 +37,6 @@ class AmbientLightViewModel(application: Application) : AndroidViewModel(applica
 
     private var pollJob: Job? = null
 
-    init {
-        refreshState()
-    }
-
     fun onResume() {
         refreshState()
         startPolling()

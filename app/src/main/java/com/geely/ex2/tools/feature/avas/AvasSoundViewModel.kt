@@ -40,10 +40,6 @@ class AvasSoundViewModel(application: Application) : AndroidViewModel(applicatio
 
     private var pollJob: Job? = null
 
-    init {
-        refreshState()
-    }
-
     fun onResume() {
         refreshState()
         startPolling()
@@ -64,7 +60,7 @@ class AvasSoundViewModel(application: Application) : AndroidViewModel(applicatio
                 writeError = if (result.ok) {
                     null
                 } else {
-                    result.error ?: appContext.getString(R.string.avas_write_error_unknown)
+                    formatWriteError(result.error)
                 },
             )
             _uiState.update { it.copy(isChanging = false) }
@@ -99,9 +95,11 @@ class AvasSoundViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     private fun refreshState(writeError: String? = null) {
-        val sample = repository.readAvasSound()
-        _uiState.update {
-            buildUiState(sample, writeError)
+        viewModelScope.launch {
+            val sample = repository.readAvasSound()
+            _uiState.update {
+                buildUiState(sample, writeError)
+            }
         }
     }
 
@@ -113,7 +111,7 @@ class AvasSoundViewModel(application: Application) : AndroidViewModel(applicatio
             isEnabled = isEnabled,
             isFullyDisabled = isFullyDisabled,
             isAvailable = sample.isAvailable,
-            isWritable = sample.isAvailable && !_uiState.value.isChanging,
+            isWritable = sample.isWritable && !_uiState.value.isChanging,
             currentStateText = buildCurrentStateText(sample),
             soundTypeText = buildSoundTypeText(sample),
             statusText = buildStatusText(sample, writeError),
@@ -183,5 +181,17 @@ class AvasSoundViewModel(application: Application) : AndroidViewModel(applicatio
         return sample.details.ifEmpty {
             appContext.getString(R.string.avas_source_empty)
         }
+    }
+
+    private fun formatWriteError(error: String?): String {
+        if (error.isNullOrEmpty()) {
+            return appContext.getString(R.string.avas_write_error_unknown)
+        }
+        if (error.contains("SecurityException", ignoreCase = true) ||
+            error.contains("CAR_CONTROL_AUDIO_VOLUME", ignoreCase = true)
+        ) {
+            return appContext.getString(R.string.avas_write_error_permission)
+        }
+        return error
     }
 }

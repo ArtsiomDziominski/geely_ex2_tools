@@ -3,12 +3,18 @@ package com.geely.ex2.tools.feature.wifi
 import android.app.Application
 import android.net.wifi.WifiManager
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.geely.ex2.tools.data.vhal.VhalConstants
 import com.geely.ex2.tools.data.wifi.WifiRepository
 import com.geely.ex2.tools.data.wifi.WifiWidgetRank
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 data class WifiUiState(
     val wifiState: Int = WifiManager.WIFI_STATE_UNKNOWN,
@@ -26,27 +32,37 @@ class WifiViewModel(application: Application) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow(WifiUiState())
     val uiState: StateFlow<WifiUiState> = _uiState.asStateFlow()
 
-    init {
-        refreshState()
-        startServiceAndIcon("WifiViewModel init")
-    }
+    private var pollJob: Job? = null
 
     fun onResume() {
         refreshState()
-        startServiceAndIcon("WifiScreen resume")
+        syncBackgroundWork("WifiScreen resume")
+        restartPolling()
+    }
+
+    fun onPause() {
+        stopPolling()
     }
 
     fun onWifiCheckedChange(enabled: Boolean) {
         if (enabled == _uiState.value.isWifiOn) return
         repository.setWifiEnabledFromUi(enabled)
-        startServiceAndIcon("UI Wi-Fi switch")
+        if (repository.isAutoEnableEnabled()) {
+            repository.notifyStatusIcon("UI Wi-Fi switch")
+        }
         refreshState()
     }
 
     fun onAutoEnableCheckedChange(enabled: Boolean) {
         if (enabled == _uiState.value.isAutoEnableEnabled) return
         repository.setAutoEnableEnabled(enabled)
-        startServiceAndIcon("UI auto-enable switch")
+        if (enabled) {
+            syncBackgroundWork("UI auto-enable switch")
+            restartPolling()
+        } else {
+            stopBackgroundWork("UI auto-enable switch")
+            stopPolling()
+        }
         refreshState()
     }
 
@@ -60,7 +76,9 @@ class WifiViewModel(application: Application) : AndroidViewModel(application) {
         if (!canStep) return
 
         val newRank = repository.stepStatusIconRank(delta)
-        repository.notifyStatusIcon("UI widget rank step", newRank)
+        if (repository.isAutoEnableEnabled()) {
+            repository.notifyStatusIcon("UI widget rank step", newRank)
+        }
         _uiState.update {
             it.copy(
                 widgetRank = newRank,
@@ -68,6 +86,11 @@ class WifiViewModel(application: Application) : AndroidViewModel(application) {
                 canStepWidgetRight = WifiWidgetRank.canStepRight(newRank),
             )
         }
+    }
+
+    override fun onCleared() {
+        stopPolling()
+        super.onCleared()
     }
 
     private fun refreshState() {
@@ -89,8 +112,40 @@ class WifiViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private fun startServiceAndIcon(reason: String) {
+    private fun syncBackgroundWork(reason: String) {
+        if (!repository.isAutoEnableEnabled()) {
+            stopBackgroundWork("$reason, auto-enable disabled")
+            return
+        }
         repository.startStatusService(reason)
         repository.notifyStatusIcon(reason)
+    }
+
+    private fun stopBackgroundWork(reason: String) {
+        repository.stopStatusService(reason)
+        repository.cancelStatusIcon()
+    }
+
+    private fun restartPolling() {
+        stopPolling()
+        if (repository.isAutoEnableEnabled()) {
+            startPolling()
+        }
+    }
+
+    private fun startPolling() {
+        pollJob?.cancel()
+        pollJob = viewModelScope.launch {
+            while (isActive) {
+                delay(VhalConstants.POLL_INTERVAL_MS)
+                refreshState()
+                repository.notifyStatusIcon("UI poll")
+            }
+        }
+    }
+
+    private fun stopPolling() {
+        pollJob?.cancel()
+        pollJob = null
     }
 }

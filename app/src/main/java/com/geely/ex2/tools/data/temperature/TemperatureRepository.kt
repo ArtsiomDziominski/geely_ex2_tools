@@ -21,6 +21,10 @@ class TemperatureRepository(private val context: Context) {
         TemperatureAppStarter.stopService(context, reason)
     }
 
+    fun cancelStatusIcon() {
+        TemperatureAppStarter.cancelStatusIcon(context)
+    }
+
     fun notifyStatusIconIfEnabled(reason: String, rank: Int? = null) {
         TemperatureAppStarter.notifyStatusIconIfEnabled(context, reason, rank)
     }

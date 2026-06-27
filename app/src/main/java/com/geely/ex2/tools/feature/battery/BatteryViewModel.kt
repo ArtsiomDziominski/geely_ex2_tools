@@ -2,14 +2,20 @@ package com.geely.ex2.tools.feature.battery
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.geely.ex2.tools.R
 import com.geely.ex2.tools.data.battery.BatteryRepository
 import com.geely.ex2.tools.data.battery.BatteryWidgetRank
 import com.geely.ex2.tools.data.vhal.BatterySample
+import com.geely.ex2.tools.data.vhal.VhalConstants
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 data class BatteryUiState(
@@ -29,14 +35,16 @@ class BatteryViewModel(application: Application) : AndroidViewModel(application)
     private val _uiState = MutableStateFlow(BatteryUiState())
     val uiState: StateFlow<BatteryUiState> = _uiState.asStateFlow()
 
-    init {
-        refreshState()
-        syncBackgroundWork("BatteryViewModel init")
-    }
+    private var pollJob: Job? = null
 
     fun onResume() {
         refreshState()
         syncBackgroundWork("BatteryScreen resume")
+        restartPolling()
+    }
+
+    fun onPause() {
+        stopPolling()
     }
 
     fun onEnabledCheckedChange(enabled: Boolean) {
@@ -44,9 +52,11 @@ class BatteryViewModel(application: Application) : AndroidViewModel(application)
         repository.setEnabled(enabled)
         if (enabled) {
             syncBackgroundWork("UI battery enable")
+            restartPolling()
         } else {
             repository.stopStatusService("UI battery disable")
             repository.cancelStatusIcon()
+            stopPolling()
         }
         refreshState()
     }
@@ -73,6 +83,11 @@ class BatteryViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    override fun onCleared() {
+        stopPolling()
+        super.onCleared()
+    }
+
     private fun syncBackgroundWork(reason: String) {
         if (!repository.isEnabled()) {
             repository.stopStatusService("$reason, disabled")
@@ -81,6 +96,28 @@ class BatteryViewModel(application: Application) : AndroidViewModel(application)
         }
         repository.startStatusServiceIfEnabled(reason)
         repository.notifyStatusIconIfEnabled(reason)
+    }
+
+    private fun restartPolling() {
+        stopPolling()
+        if (repository.isEnabled()) {
+            startPolling()
+        }
+    }
+
+    private fun startPolling() {
+        pollJob?.cancel()
+        pollJob = viewModelScope.launch {
+            while (isActive) {
+                delay(VhalConstants.BATTERY_POLL_INTERVAL_MS)
+                refreshState()
+            }
+        }
+    }
+
+    private fun stopPolling() {
+        pollJob?.cancel()
+        pollJob = null
     }
 
     private fun refreshState() {

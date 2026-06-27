@@ -6,6 +6,7 @@ data class AvasSoundSample(
     val rawSwitchValue: Int,
     val rawTypeValue: Int,
     val isAvailable: Boolean,
+    val isWritable: Boolean,
     val source: String,
     val details: String,
 )

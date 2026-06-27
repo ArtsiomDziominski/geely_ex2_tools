@@ -40,11 +40,6 @@ class RegenerationViewModel(application: Application) : AndroidViewModel(applica
 
     private var pollJob: Job? = null
 
-    init {
-        refreshState()
-        startRestoreService("RegenerationViewModel init")
-    }
-
     fun onResume() {
         refreshState()
         startRestoreService("RegenerationScreen resume")
@@ -53,6 +48,7 @@ class RegenerationViewModel(application: Application) : AndroidViewModel(applica
 
     fun onPause() {
         stopPolling()
+        repository.stopRestoreService("RegenerationScreen pause")
     }
 
     fun onPersistCheckedChange(enabled: Boolean) {
@@ -119,9 +115,6 @@ class RegenerationViewModel(application: Application) : AndroidViewModel(applica
         pollJob = viewModelScope.launch {
             while (isActive) {
                 delay(VhalConstants.POLL_INTERVAL_MS)
-                if (repository.isPersistEnabled()) {
-                    repository.restoreSavedLevelIfNeeded("UI poll")
-                }
                 refreshState()
             }
         }

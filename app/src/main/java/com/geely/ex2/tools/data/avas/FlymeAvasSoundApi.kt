@@ -6,6 +6,8 @@ import com.geely.ex2.tools.data.vhal.VhalConstants
 
 object FlymeAvasSoundApi {
     private const val TAG = "GeelyToolsAvas"
+    private const val READ_BACK_ATTEMPTS = 5
+    private const val READ_BACK_DELAY_MS = 200L
 
     @Volatile
     private var switchLiveData: Any? = null
@@ -13,10 +15,23 @@ object FlymeAvasSoundApi {
     @Volatile
     private var typeLiveData: Any? = null
 
+    fun isConnected(context: Context): Boolean {
+        return try {
+            Class.forName("com.flyme.auto.api.AutoFuncManager")
+            Class.forName("com.flyme.auto.api.AutoFuncId")
+            Class.forName("com.flyme.auto.api.data.BooleanFuncLiveData")
+            ensureAutoFuncManager(context)
+            true
+        } catch (t: Throwable) {
+            Log.w(TAG, "Flyme AVAS API unavailable", t)
+            false
+        }
+    }
+
     fun readSwitchEnabled(context: Context): Boolean? {
         return try {
             val liveData = getSwitchLiveData(context)
-            readBooleanLiveDataValue(liveData, "mValue")
+            waitForBooleanValue(liveData, "mValue") ?: readBooleanLiveDataValue(liveData, "mValue")
         } catch (t: Throwable) {
             Log.w(TAG, "Flyme AVAS switch read failed", t)
             null
@@ -26,7 +41,9 @@ object FlymeAvasSoundApi {
     fun readSoundType(context: Context): Int? {
         return try {
             val liveData = getTypeLiveData(context)
-            parseTypeValue(readLiveDataFieldValue(liveData, "mValue"))
+            val value = waitForLiveDataFieldValue(liveData, "mValue")
+                ?: readLiveDataFieldValue(liveData, "mValue")
+            parseTypeValue(value)
         } catch (t: Throwable) {
             Log.w(TAG, "Flyme AVAS type read failed", t)
             null
@@ -36,7 +53,8 @@ object FlymeAvasSoundApi {
     fun isSupported(context: Context): Boolean? {
         return try {
             val liveData = getSwitchLiveData(context)
-            readBooleanLiveDataValue(liveData, "mSupported")
+            waitForBooleanValue(liveData, "mSupported")
+                ?: readBooleanLiveDataValue(liveData, "mSupported")
         } catch (t: Throwable) {
             Log.w(TAG, "Flyme AVAS support check failed", t)
             null
@@ -47,10 +65,14 @@ object FlymeAvasSoundApi {
         return try {
             ensureAutoFuncManager(context)
             val liveData = getSwitchLiveData(context)
-            val update = liveData.javaClass.getMethod("updateFuncValueForce", Any::class.java)
-            update.invoke(liveData, enabled)
-            Log.i(TAG, "Flyme updateFuncValueForce switch=$enabled")
-            true
+            val rawValue = enabledToRawValue(enabled)
+            if (!invokeUpdateFuncValueForce(liveData, rawValue) &&
+                !invokeUpdateFuncValueForce(liveData, enabled)
+            ) {
+                return false
+            }
+            Log.i(TAG, "Flyme updateFuncValueForce switch=$enabled raw=$rawValue")
+            verifySwitchEnabled(context, enabled)
         } catch (t: Throwable) {
             Log.w(TAG, "Flyme AVAS switch write failed enabled=$enabled", t)
             false
@@ -68,7 +90,7 @@ object FlymeAvasSoundApi {
             )
             update.invoke(liveData, VhalConstants.AVAS_SOUND_TYPE_NONE, true)
             Log.i(TAG, "Flyme updateFuncValueForce type=NONE")
-            true
+            verifySoundTypeNone(context)
         } catch (t: Throwable) {
             Log.w(TAG, "Flyme AVAS type write failed", t)
             false
@@ -130,6 +152,53 @@ object FlymeAvasSoundApi {
 
         typeLiveData = liveData
         return liveData
+    }
+
+    private fun invokeUpdateFuncValueForce(liveData: Any, value: Any): Boolean {
+        return try {
+            val update = liveData.javaClass.getMethod("updateFuncValueForce", Any::class.java)
+            update.invoke(liveData, value)
+            true
+        } catch (t: Throwable) {
+            Log.w(TAG, "Flyme updateFuncValueForce failed value=$value", t)
+            false
+        }
+    }
+
+    private fun verifySwitchEnabled(context: Context, expected: Boolean): Boolean {
+        repeat(READ_BACK_ATTEMPTS) {
+            readSwitchEnabled(context)?.let { actual ->
+                if (actual == expected) return true
+            }
+            Thread.sleep(READ_BACK_DELAY_MS)
+        }
+        return false
+    }
+
+    private fun verifySoundTypeNone(context: Context): Boolean {
+        repeat(READ_BACK_ATTEMPTS) {
+            readSoundType(context)?.let { actual ->
+                if (actual == VhalConstants.AVAS_SOUND_TYPE_NONE) return true
+            }
+            Thread.sleep(READ_BACK_DELAY_MS)
+        }
+        return false
+    }
+
+    private fun waitForBooleanValue(liveData: Any, fieldName: String): Boolean? {
+        repeat(READ_BACK_ATTEMPTS) {
+            readBooleanLiveDataValue(liveData, fieldName)?.let { return it }
+            Thread.sleep(READ_BACK_DELAY_MS)
+        }
+        return null
+    }
+
+    private fun waitForLiveDataFieldValue(liveData: Any, fieldName: String): Any? {
+        repeat(READ_BACK_ATTEMPTS) {
+            readLiveDataFieldValue(liveData, fieldName)?.let { return it }
+            Thread.sleep(READ_BACK_DELAY_MS)
+        }
+        return null
     }
 
     private fun readBooleanLiveDataValue(liveData: Any, fieldName: String): Boolean? {

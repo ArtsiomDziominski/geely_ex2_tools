@@ -43,6 +43,10 @@ object TemperatureAppStarter {
         context.applicationContext.stopService(Intent(context, TemperatureStatusService::class.java))
     }
 
+    fun cancelStatusIcon(context: Context) {
+        TemperatureStatusIconHelper.cancelStatusIcon(context.applicationContext)
+    }
+
     private fun startService(context: Context, reason: String) {
         val intent = Intent(context, TemperatureStatusService::class.java).apply {
             putExtra(TemperatureStatusService.EXTRA_REASON, reason)

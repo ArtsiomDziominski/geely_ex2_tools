@@ -262,6 +262,7 @@
     <string name="avas_status_ok">Чтение успешно (%1$s)</string>
     <string name="avas_status_error">Ошибка чтения (%1$s)</string>
     <string name="avas_status_write_error">Ошибка записи: %1$s</string>
+    <string name="avas_write_error_permission">Нужны системные права (priv-app). Обычный APK не может писать AVAS: требуется android.car.permission.CAR_CONTROL_AUDIO_VOLUME. Установите в /system/priv-app/ и добавьте install/privapp-permissions-com.geely.ex2.tools.xml в /system/etc/permissions/, затем перезагрузите ГУ. Команда pm grant на штатной прошивке обычно не помогает.</string>
     <string name="avas_write_error_unknown">неизвестная ошибка</string>
     <string name="avas_raw_unavailable">Нет данных</string>
     <string name="avas_source_unavailable">Данные недоступны</string>
