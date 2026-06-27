@@ -19,6 +19,7 @@ import com.geely.ex2.tools.data.wifi.WifiAppStarter
 import com.geely.ex2.tools.data.wifi.WifiStatusIconHelper
 import com.geely.ex2.tools.feature.home.ui.HomeScreen
 import com.geely.ex2.tools.feature.battery.ui.BatteryScreen
+import com.geely.ex2.tools.feature.driving.ui.DrivingScreen
 import com.geely.ex2.tools.feature.speed.ui.SpeedScreen
 import com.geely.ex2.tools.feature.temperature.ui.TemperatureScreen
 import com.geely.ex2.tools.feature.wifi.ui.WifiScreen
@@ -77,6 +78,11 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(AppRoutes.BATTERY) {
                                 BatteryScreen(
+                                    onBack = { navController.popBackStack() },
+                                )
+                            }
+                            composable(AppRoutes.DRIVING) {
+                                DrivingScreen(
                                     onBack = { navController.popBackStack() },
                                 )
                             }

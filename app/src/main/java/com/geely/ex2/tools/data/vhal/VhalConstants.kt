@@ -18,6 +18,19 @@ object VhalConstants {
     /** android.car.VehiclePropertyIds.INFO_EV_BATTERY_CAPACITY */
     const val PROP_INFO_EV_BATTERY_CAPACITY = 0x11600106
 
+    /** Flyme OEM: DM_FUNC_DRIVE_MODE_SELECT */
+    const val PROP_DM_FUNC_DRIVE_MODE_SELECT = 0x22010100
+
+    /** Flyme OEM drive mode values (VALUE_DRIVE_MODE_SELECTION_*) */
+    const val DRIVE_MODE_ECO = 0x22010101
+    const val DRIVE_MODE_COMFORT = 0x22010102
+    const val DRIVE_MODE_DYNAMIC = 0x22010103
+    const val DRIVE_MODE_XC = 0x22010104
+    const val DRIVE_MODE_PURE = 0x22010106
+    const val DRIVE_MODE_HYBRID = 0x22010107
+    const val DRIVE_MODE_SNOW = 0x22010109
+    const val DRIVE_MODE_ADAPTIVE = 0x22010116
+
     const val CAR_MANAGER_PROPERTY = "property"
 
     const val POLL_INTERVAL_MS = 1_000L

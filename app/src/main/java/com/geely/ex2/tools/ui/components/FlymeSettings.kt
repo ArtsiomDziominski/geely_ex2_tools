@@ -154,7 +154,7 @@ fun FlymeSettingsSegmentedItem(
             SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
                 options.forEachIndexed { index, label ->
                     SegmentedButton(
-                        selected = selectedIndex == index,
+                        selected = selectedIndex >= 0 && selectedIndex == index,
                         onClick = { onSelectedIndexChange(index) },
                         enabled = enabled,
                         shape = SegmentedButtonDefaults.itemShape(

@@ -52,6 +52,11 @@ private val tools = listOf(
         titleRes = R.string.tool_battery_title,
         descriptionRes = R.string.tool_battery_description,
     ),
+    ToolItem(
+        route = AppRoutes.DRIVING,
+        titleRes = R.string.tool_driving_title,
+        descriptionRes = R.string.tool_driving_description,
+    ),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

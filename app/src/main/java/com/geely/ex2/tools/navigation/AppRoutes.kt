@@ -6,4 +6,5 @@ object AppRoutes {
     const val TEMPERATURE = "temperature"
     const val SPEED = "speed"
     const val BATTERY = "battery"
+    const val DRIVING = "driving"
 }

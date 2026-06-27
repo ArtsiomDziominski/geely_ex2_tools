@@ -31,6 +31,20 @@ class CarVhalBindings(context: Context) {
         return readFloat(manager, propertyId, areaId)
     }
 
+    fun readIntProperty(propertyId: Int, areaId: Int = VhalConstants.GLOBAL_AREA_ID): IntProbe {
+        val manager = propertyManager ?: return IntProbe.error(propertyId, "CarPropertyManager is null")
+        return readInt(manager, propertyId, areaId)
+    }
+
+    fun writeIntProperty(
+        propertyId: Int,
+        value: Int,
+        areaId: Int = VhalConstants.GLOBAL_AREA_ID,
+    ): WriteProbe {
+        val manager = propertyManager ?: return WriteProbe.error(propertyId, "CarPropertyManager is null")
+        return writeInt(manager, propertyId, areaId, value)
+    }
+
     fun registerPropertyCallback(
         propertyId: Int,
         updateRateHz: Float,
@@ -71,6 +85,51 @@ class CarVhalBindings(context: Context) {
             callback
         } catch (t: Throwable) {
             Log.w(TAG, "Failed to register VHAL callback for 0x${propertyId.toString(16)}", t)
+            onError(shortError(t))
+            null
+        }
+    }
+
+    fun registerIntPropertyCallback(
+        propertyId: Int,
+        updateRateHz: Float,
+        onValue: (Int) -> Unit,
+        onError: (String) -> Unit,
+    ): Any? {
+        val manager = propertyManager ?: return null
+
+        return try {
+            val callbackClass = Class.forName(
+                "android.car.hardware.property.CarPropertyManager\$CarPropertyEventCallback",
+            )
+            val callback = java.lang.reflect.Proxy.newProxyInstance(
+                callbackClass.classLoader,
+                arrayOf(callbackClass),
+            ) { _, method, args ->
+                when (method.name) {
+                    "onChangeEvent" -> {
+                        val value = args?.getOrNull(0) ?: return@newProxyInstance null
+                        parseIntValue(value)?.let(onValue)
+                    }
+                    "onErrorEvent" -> {
+                        val propId = args?.getOrNull(0) as? Int ?: propertyId
+                        val zone = args?.getOrNull(1) as? Int ?: 0
+                        onError("property 0x${propId.toString(16)} zone $zone")
+                    }
+                }
+                null
+            }
+
+            val register = manager.javaClass.getMethod(
+                "registerCallback",
+                callbackClass,
+                Int::class.javaPrimitiveType,
+                Float::class.javaPrimitiveType,
+            )
+            register.invoke(manager, callback, propertyId, updateRateHz)
+            callback
+        } catch (t: Throwable) {
+            Log.w(TAG, "Failed to register int VHAL callback for 0x${propertyId.toString(16)}", t)
             onError(shortError(t))
             null
         }
@@ -150,6 +209,41 @@ class CarVhalBindings(context: Context) {
         }
     }
 
+    private fun readInt(manager: Any, propertyId: Int, areaId: Int): IntProbe {
+        return try {
+            val method: Method = manager.javaClass.getMethod(
+                "getIntProperty",
+                Int::class.javaPrimitiveType,
+                Int::class.javaPrimitiveType,
+            )
+            val value = method.invoke(manager, propertyId, areaId)
+            if (value is Int) {
+                IntProbe.ok(propertyId, value)
+            } else {
+                IntProbe.error(propertyId, "not Int: $value")
+            }
+        } catch (t: Throwable) {
+            Log.w(TAG, "Failed to read int property 0x${propertyId.toString(16)}", t)
+            IntProbe.error(propertyId, shortError(t))
+        }
+    }
+
+    private fun writeInt(manager: Any, propertyId: Int, areaId: Int, value: Int): WriteProbe {
+        return try {
+            val method: Method = manager.javaClass.getMethod(
+                "setIntProperty",
+                Int::class.javaPrimitiveType,
+                Int::class.javaPrimitiveType,
+                Int::class.javaPrimitiveType,
+            )
+            method.invoke(manager, propertyId, areaId, value)
+            WriteProbe.ok(propertyId)
+        } catch (t: Throwable) {
+            Log.w(TAG, "Failed to write int property 0x${propertyId.toString(16)}", t)
+            WriteProbe.error(propertyId, shortError(t))
+        }
+    }
+
     private fun readFloat(manager: Any, propertyId: Int, areaId: Int): FloatProbe {
         return try {
             val method: Method = manager.javaClass.getMethod(
@@ -166,6 +260,21 @@ class CarVhalBindings(context: Context) {
         } catch (t: Throwable) {
             Log.w(TAG, "Failed to read float property 0x${propertyId.toString(16)}", t)
             FloatProbe.error(propertyId, shortError(t))
+        }
+    }
+
+    private fun parseIntValue(carPropertyValue: Any): Int? {
+        return try {
+            val getValue = carPropertyValue.javaClass.getMethod("getValue")
+            when (val value = getValue.invoke(carPropertyValue)) {
+                is Int -> value
+                is Byte -> value.toInt()
+                is Short -> value.toInt()
+                else -> null
+            }
+        } catch (t: Throwable) {
+            Log.w(TAG, "Failed to parse int CarPropertyValue", t)
+            null
         }
     }
 
@@ -199,8 +308,37 @@ class CarVhalBindings(context: Context) {
         }
     }
 
+    data class IntProbe(
+        val propertyId: Int,
+        val ok: Boolean,
+        val value: Int,
+        val error: String?,
+    ) {
+        companion object {
+            fun ok(propertyId: Int, value: Int): IntProbe =
+                IntProbe(propertyId, true, value, null)
+
+            fun error(propertyId: Int, error: String): IntProbe =
+                IntProbe(propertyId, false, 0, error)
+        }
+    }
+
+    data class WriteProbe(
+        val propertyId: Int,
+        val ok: Boolean,
+        val error: String?,
+    ) {
+        companion object {
+            fun ok(propertyId: Int): WriteProbe =
+                WriteProbe(propertyId, true, null)
+
+            fun error(propertyId: Int, error: String): WriteProbe =
+                WriteProbe(propertyId, false, error)
+        }
+    }
+
     companion object {
-        private const val TAG = "GeelyToolsSpeed"
+        private const val TAG = "GeelyToolsVhal"
 
         private fun shortError(error: Throwable): String {
             var cause = error
