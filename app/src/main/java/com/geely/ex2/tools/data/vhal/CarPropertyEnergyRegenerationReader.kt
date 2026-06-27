@@ -55,7 +55,7 @@ class CarPropertyEnergyRegenerationReader(private val context: Context) {
         val debug = StringBuilder()
 
         if (FlymeEnergyRegenerationApi.writeLevelValue(context, levelValue)) {
-            debug.append("Flyme updateValueDelayWriter: OK")
+            debug.append("Flyme write: OK")
             val readBack = FlymeEnergyRegenerationApi.readLevelValue(context)
             if (readBack != null) {
                 debug.append('\n').append(

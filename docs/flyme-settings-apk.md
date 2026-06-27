@@ -443,7 +443,36 @@ Hex property id часто **совпадает** с int, передаваемы
 | `LampViewModel` | `currentLampMode` | `MutableLiveData<Integer>` |
 | `AtmosphereLightManager` | singleton | `getMode()`, `ATMOSPHERE_MODE_*` |
 
-### 6.4 Свойства VHAL, встречающиеся в контексте Settings / car UI
+### 6.4 Рекуперация (energy recovery)
+
+| AutoFuncId | Property id | Hex |
+|------------|-------------|-----|
+| `SETTING_FUNC_ENERGY_REGENERATION` | kinetic recovery | `0x22020500` |
+
+**Значения (`VALUE_ENERGY_REGENERATION_LEVEL_*`):**
+
+| UI (DrivingFragment) | Hex | AutoFuncId |
+|----------------------|-----|------------|
+| Низкий | `0x22020501` | `VALUE_ENERGY_REGENERATION_LEVEL_LOW` |
+| Средний | `0x22020502` | `VALUE_ENERGY_REGENERATION_LEVEL_MID` |
+| Высокий | `0x22020503` | `VALUE_ENERGY_REGENERATION_LEVEL_HIGH` |
+| Авто (не на всех рынках) | `0x22020504` | `VALUE_ENERGY_REGENERATION_LEVEL_AUTO` |
+
+**Где в APK:**
+
+| Класс | Поле / метод |
+|-------|----------------|
+| `DrivingViewModel` | `energyRegeneration` — `EnumFuncLiveData(SETTING_FUNC_ENERGY_REGENERATION, 3000L, false).init2()` |
+| `DrivingFragment` | кнопки `levelLow` / `levelMid` / `levelHeight` / `levelAuto` |
+| `DrivingViewModel.onSwitchEnergyRegen` | `energyRegeneration.updateValueDelayWriter(AutoFuncId)` |
+
+**Чтение:** `energyRegeneration.mValue.getValue()` → `Integer` или `AutoFuncId.id`.
+
+**Запись в Settings APK:** `updateValueDelayWriter(AutoFuncId)` (debounce 3 с).
+
+**Запись в geely_ex2_tools:** как у режима вождения — `updateFuncValueForce(levelInt)` через `FlymeEnergyRegenerationApi.kt`; fallback — `updateValueDelayWriter`, если force недоступен. Конструктор LiveData: `(AutoFuncId, false)` + `init()`.
+
+### 6.5 Свойства VHAL, встречающиеся в контексте Settings / car UI
 
 | Имя (логическое) | Hex | Тип | Примечание из анализа |
 |------------------|-----|-----|------------------------|

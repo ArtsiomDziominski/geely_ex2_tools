@@ -6,10 +6,21 @@ import com.geely.ex2.tools.data.vhal.VhalConstants
 
 object FlymeEnergyRegenerationApi {
     private const val TAG = "GeelyToolsRegen"
-    private const val WRITE_DELAY_MS = 3000L
 
     @Volatile
     private var energyRegenLiveData: Any? = null
+
+    fun isAvailable(context: Context): Boolean {
+        return try {
+            Class.forName("com.flyme.auto.api.AutoFuncManager")
+            Class.forName("com.flyme.auto.api.data.EnumFuncLiveData")
+            ensureAutoFuncManager(context)
+            true
+        } catch (t: Throwable) {
+            Log.w(TAG, "Flyme regen API unavailable", t)
+            false
+        }
+    }
 
     fun readLevelValue(context: Context): Int? {
         return try {
@@ -24,21 +35,40 @@ object FlymeEnergyRegenerationApi {
     fun writeLevelValue(context: Context, levelValue: Int): Boolean {
         return try {
             ensureAutoFuncManager(context)
-            val fieldName = levelValueToAutoFuncFieldName(levelValue)
-                ?: return false.also {
-                    Log.w(TAG, "Unknown regen level 0x${levelValue.toString(16)}")
-                }
-            val autoFuncIdClass = Class.forName("com.flyme.auto.api.AutoFuncId")
-            val autoFuncId = autoFuncIdClass.getField(fieldName).get(null)
             val liveData = getEnergyRegenLiveData(context)
-            liveData.javaClass.getMethod("updateValueDelayWriter", Any::class.java)
-                .invoke(liveData, autoFuncId)
-            Log.i(TAG, "Flyme updateValueDelayWriter $fieldName (0x${levelValue.toString(16)})")
-            true
+            if (writeWithForce(liveData, levelValue)) {
+                Log.i(TAG, "Flyme updateFuncValueForce 0x${levelValue.toString(16)}")
+                return true
+            }
+            writeWithDelayWriter(liveData, levelValue)
         } catch (t: Throwable) {
             Log.w(TAG, "Flyme regen write failed for 0x${levelValue.toString(16)}", t)
             false
         }
+    }
+
+    private fun writeWithForce(liveData: Any, levelValue: Int): Boolean {
+        return try {
+            liveData.javaClass.getMethod("updateFuncValueForce", Any::class.java)
+                .invoke(liveData, levelValue)
+            true
+        } catch (t: Throwable) {
+            Log.w(TAG, "Flyme updateFuncValueForce failed for 0x${levelValue.toString(16)}", t)
+            false
+        }
+    }
+
+    private fun writeWithDelayWriter(liveData: Any, levelValue: Int): Boolean {
+        val fieldName = levelValueToAutoFuncFieldName(levelValue)
+            ?: return false.also {
+                Log.w(TAG, "Unknown regen level 0x${levelValue.toString(16)}")
+            }
+        val autoFuncIdClass = Class.forName("com.flyme.auto.api.AutoFuncId")
+        val autoFuncId = autoFuncIdClass.getField(fieldName).get(null)
+        liveData.javaClass.getMethod("updateValueDelayWriter", Any::class.java)
+            .invoke(liveData, autoFuncId)
+        Log.i(TAG, "Flyme updateValueDelayWriter $fieldName (0x${levelValue.toString(16)})")
+        return true
     }
 
     private fun ensureAutoFuncManager(context: Context) {
@@ -66,16 +96,8 @@ object FlymeEnergyRegenerationApi {
         val funcId = autoFuncIdClass.getField("SETTING_FUNC_ENERGY_REGENERATION").get(null)
 
         val liveDataClass = Class.forName("com.flyme.auto.api.data.EnumFuncLiveData")
-        val liveData = try {
-            liveDataClass.getConstructor(
-                autoFuncIdClass,
-                Long::class.javaPrimitiveType,
-                Boolean::class.javaPrimitiveType,
-            ).newInstance(funcId, WRITE_DELAY_MS, false)
-        } catch (_: NoSuchMethodException) {
-            liveDataClass.getConstructor(autoFuncIdClass, Boolean::class.javaPrimitiveType)
-                .newInstance(funcId, false)
-        }
+        val liveData = liveDataClass.getConstructor(autoFuncIdClass, Boolean::class.javaPrimitiveType)
+            .newInstance(funcId, false)
         liveDataClass.getMethod("init").invoke(liveData)
 
         energyRegenLiveData = liveData
