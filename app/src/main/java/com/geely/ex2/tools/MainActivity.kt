@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.geely.ex2.tools.data.battery.BatteryAppStarter
+import com.geely.ex2.tools.data.battery.BatteryAppWidgetHelper
 import com.geely.ex2.tools.data.driving.DrivingAppStarter
 import com.geely.ex2.tools.data.regeneration.EnergyRegenerationAppStarter
 import com.geely.ex2.tools.data.speed.SpeedAppStarter
@@ -50,6 +52,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             GeelyEx2ToolsTheme {
                 val navController = rememberNavController()
+                val startRoute = intent?.getStringExtra(BatteryAppWidgetHelper.EXTRA_START_ROUTE)
+
+                LaunchedEffect(startRoute) {
+                    if (!startRoute.isNullOrBlank() && startRoute != AppRoutes.HOME) {
+                        navController.navigate(startRoute)
+                        intent?.removeExtra(BatteryAppWidgetHelper.EXTRA_START_ROUTE)
+                    }
+                }
 
                 GeelyEx2Background {
                     Scaffold(

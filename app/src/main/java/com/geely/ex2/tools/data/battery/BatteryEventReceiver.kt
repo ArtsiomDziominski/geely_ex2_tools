@@ -18,6 +18,7 @@ class BatteryEventReceiver : BroadcastReceiver() {
         ) {
             BatteryAppStarter.startServiceIfEnabled(context, "receiver: $action")
             BatteryAppStarter.notifyStatusIconIfEnabled(context, "receiver: $action")
+            BatteryAppWidgetHelper.updateAll(context, "receiver: $action")
         }
     }
 

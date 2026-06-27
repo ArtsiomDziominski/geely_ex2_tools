@@ -63,6 +63,7 @@ class BatteryStatusService : Service() {
                     Log.w(TAG, "Battery read failed: ${sample.source}")
                 }
                 BatteryStatusIconHelper.notifyBattery(this, sample, "listener")
+                BatteryAppWidgetHelper.updateAll(this, "listener")
             },
             shouldContinue = { BatterySettings.isEnabled(this) },
         )

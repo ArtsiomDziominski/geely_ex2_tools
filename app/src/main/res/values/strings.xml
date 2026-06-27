@@ -147,6 +147,10 @@
     <string name="battery_status_icon_text_unavailable">Заряд недоступен</string>
     <string name="battery_service_notification_title">Сервис заряда</string>
     <string name="battery_service_notification_text">Поддержание иконки заряда</string>
+    <string name="battery_app_widget_label">Заряд батареи</string>
+    <string name="battery_app_widget_description">Текущий заряд батареи в процентах (VHAL)</string>
+    <string name="battery_app_widget_placeholder">—</string>
+    <string name="battery_app_widget_unavailable">—</string>
 
     <string name="driving_screen_title">Вождение</string>
     <string name="driving_section_mode">Режим вождения</string>

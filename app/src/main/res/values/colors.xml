@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="widget_battery_background">#1E1E1E</color>
+    <color name="widget_battery_text">#FFFFFF</color>
+    <color name="widget_battery_text_secondary">#B3FFFFFF</color>
+    <color name="widget_battery_progress">#4CAF50</color>
+    <color name="widget_battery_progress_track">#33FFFFFF</color>
+</resources>

@@ -57,6 +57,7 @@
 | Исходный APK (ADBAppControl) | `downloads/250060 IHU629G/Оболочка (com.android.shell) [v.9].apk` |
 | Локальная копия | `.tmp/android-shell.apk` |
 | Распакованный APK | `.tmp/android-shell-apk/` |
+| JADX | `.tmp/android-shell-jadx/` |
 
 > **PowerShell:** в имени файла есть `[v.9]` — используйте `-LiteralPath`, иначе скобки интерпретируются как wildcard.
 

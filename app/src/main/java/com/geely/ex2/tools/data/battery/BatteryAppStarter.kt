@@ -37,6 +37,7 @@ object BatteryAppStarter {
             reason = reason,
             rank = rank ?: BatterySettings.getStatusIconRank(appContext),
         )
+        BatteryAppWidgetHelper.updateAll(appContext, reason)
     }
 
     fun stopService(context: Context, reason: String) {
