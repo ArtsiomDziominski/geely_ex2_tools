@@ -109,7 +109,7 @@ class SpeedViewModel(application: Application) : AndroidViewModel(application) {
         pollJob?.cancel()
         pollJob = viewModelScope.launch {
             while (isActive) {
-                delay(VhalConstants.STATUS_WIDGET_POLL_INTERVAL_MS)
+                delay(VhalConstants.SPEED_POLL_INTERVAL_MS)
                 refreshState()
             }
         }

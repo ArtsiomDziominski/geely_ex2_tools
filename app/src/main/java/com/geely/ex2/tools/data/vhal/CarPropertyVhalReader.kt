@@ -22,7 +22,7 @@ class CarPropertyVhalReader(context: Context) : VhalSpeedReader {
                 return
             }
             onUpdate?.invoke(readSpeed())
-            handler.postDelayed(this, VhalConstants.STATUS_WIDGET_POLL_INTERVAL_MS)
+            handler.postDelayed(this, VhalConstants.SPEED_POLL_INTERVAL_MS)
         }
     }
 
@@ -45,10 +45,9 @@ class CarPropertyVhalReader(context: Context) : VhalSpeedReader {
             debug.append('\n').append(
                 String.format(
                     Locale.US,
-                    "driveModeSpeedKmh: raw=%.1f -> %.0f km/h (+%.0f if >= %.0f)",
+                    "driveModeSpeedKmh: raw=%.1f -> %.0f km/h (+1 if >= %.0f)",
                     probe.value,
                     normalized,
-                    SpeedNormalizer.SPEED_OFFSET_KMH,
                     SpeedNormalizer.SPEED_OFFSET_MIN_KMH,
                 ),
             )
@@ -91,8 +90,8 @@ class CarPropertyVhalReader(context: Context) : VhalSpeedReader {
             onUpdate(readSpeed())
         }
         handler.removeCallbacks(pollRunnable)
-        handler.postDelayed(pollRunnable, VhalConstants.STATUS_WIDGET_POLL_INTERVAL_MS)
-        Log.i(TAG, "Speed listener started, interval=${VhalConstants.STATUS_WIDGET_POLL_INTERVAL_MS}ms")
+        handler.postDelayed(pollRunnable, VhalConstants.SPEED_POLL_INTERVAL_MS)
+        Log.i(TAG, "Speed listener started, interval=${VhalConstants.SPEED_POLL_INTERVAL_MS}ms")
     }
 
     override fun stopListening() {

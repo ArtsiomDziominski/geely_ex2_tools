@@ -39,9 +39,12 @@ object VhalConstants {
 
     const val POLL_INTERVAL_MS = 1_000L
 
-    /** Интервал опроса виджетов в шторке (батарея, температура, скорость) */
+    /** Интервал опроса виджетов в шторке (батарея, температура) */
     const val STATUS_WIDGET_POLL_INTERVAL_MS = 100_000L
 
     const val BATTERY_POLL_INTERVAL_MS = STATUS_WIDGET_POLL_INTERVAL_MS
     const val TEMPERATURE_POLL_INTERVAL_MS = STATUS_WIDGET_POLL_INTERVAL_MS
+
+    /** Спидометр в шторке Flyme — обновление раз в 3 секунды */
+    const val SPEED_POLL_INTERVAL_MS = 3_000L
 }
