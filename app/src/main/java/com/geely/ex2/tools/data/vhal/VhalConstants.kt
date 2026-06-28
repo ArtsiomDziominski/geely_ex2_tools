@@ -31,33 +31,6 @@ object VhalConstants {
     const val DRIVE_MODE_SNOW = 0x22010109
     const val DRIVE_MODE_ADAPTIVE = 0x22010116
 
-    /** Flyme OEM: SETTING_FUNC_ENERGY_REGENERATION (动能回收) */
-    const val PROP_SETTING_FUNC_ENERGY_REGENERATION = 0x22020500
-
-    /** Flyme OEM energy regen levels (VALUE_ENERGY_REGENERATION_LEVEL_*) */
-    const val REGEN_LEVEL_LOW = 0x22020501
-    const val REGEN_LEVEL_MID = 0x22020502
-    const val REGEN_LEVEL_HIGH = 0x22020503
-    const val REGEN_LEVEL_AUTO = 0x22020504
-
-    /** Flyme OEM: BCM_FUNC_LIGHT_ATMOSPHERE_LAMPS (氛围灯开关) */
-    const val PROP_BCM_FUNC_LIGHT_ATMOSPHERE_LAMPS = 0x21051000
-
-    /** Flyme OEM: SETTING_FUNC_AVAS_SOUND_SWITCH (低速提示音量开关 / ESM) */
-    const val PROP_SETTING_FUNC_AVAS_SOUND_SWITCH = 0x2030b600
-
-    /** Flyme OEM: SETTING_FUNC_AVAS_SOUND_TYPE (低速提示音模式) */
-    const val PROP_SETTING_FUNC_AVAS_SOUND_TYPE = 0x201a0700
-
-    /** AVAS sound type values (AVAS_SOUND_TYPE_*) */
-    const val AVAS_SOUND_TYPE_NONE = 0
-    const val AVAS_SOUND_TYPE_1 = 0x201a0701
-    const val AVAS_SOUND_TYPE_2 = 0x201a0702
-    const val AVAS_SOUND_TYPE_3 = 0x201a0703
-
-    /** android.hardware.automotive.vehicle.V2_0.VehicleProperty.AVASSwitch */
-    const val PROP_AVAS_SWITCH = 0x2140a148
-
     /** ICarFunction.COMMON_VALUE_ON / COMMON_VALUE_OFF */
     const val COMMON_VALUE_ON = 1
     const val COMMON_VALUE_OFF = 0

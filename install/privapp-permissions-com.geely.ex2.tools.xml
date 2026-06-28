@@ -2,7 +2,6 @@
 <!-- Push to /system/etc/permissions/ when installing as priv-app on Flyme HU -->
 <permissions>
     <privapp-permissions package="com.geely.ex2.tools">
-        <permission name="android.car.permission.CAR_CONTROL_AUDIO_VOLUME" />
         <permission name="android.car.permission.CAR_VENDOR_EXTENSION" />
     </privapp-permissions>
 </permissions>

@@ -27,7 +27,7 @@
 
 1. **Live wallpaper** — отображение текущего набора обоев на домашнем экране с анимацией свайпа (как карусель).
 2. **Синхронизация** — чтение/запись `wallpaper_launcher_current_wallpaper_path`, реакция на смену коллекции в Customize Center.
-3. **Ввод** — жесты через MIPC от лаунчера (`com.flyme.auto.launcher`) и eCarX `LauncherAPI`; голосовые команды через broadcast TTS.
+3. **Ввод** — жесты через MIPC от лаунчера (`com.flyme.auto.launcher`) и eCarX `LauncherAPI`; голосовые команды через broadcast TTS. См. [flyme-launcher-apk.md](./flyme-launcher-apk.md).
 4. **Car3D** — в APK вшиты `CarView` / `ISetting` / `IRender` для режима 3D-обоев (`com.flyme.auto.car3d`); при активном wallpaper Car3D скрывает свой `SurfaceView`.
 5. **Boot UX** — через 6 с после создания surface выставляет флаги завершения переключения пользователя / лаунчера.
 

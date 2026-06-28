@@ -250,8 +250,11 @@ object WifiStatusIconHelper {
         }
 
         if (!isConnected) {
-            Log.i(WifiAutoEnableController.TAG, "Wi-Fi enabled but not connected, use dimmed level 0 icon")
-            return R.drawable.ic_wifi_0
+            Log.i(
+                WifiAutoEnableController.TAG,
+                "Wi-Fi enabled but not connected, use dimmed full icon",
+            )
+            return R.drawable.ic_wifi_disconnected
         }
 
         val wifiInfo = wifiManager.connectionInfo

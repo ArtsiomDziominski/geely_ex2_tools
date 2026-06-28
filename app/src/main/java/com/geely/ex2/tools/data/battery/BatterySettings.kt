@@ -11,7 +11,7 @@ object BatterySettings {
 
     const val ICON_SIZE_PERCENT = 130
 
-    fun isEnabled(context: Context): Boolean = prefs(context).getBoolean(KEY_ENABLED, true)
+    fun isEnabled(context: Context): Boolean = prefs(context).getBoolean(KEY_ENABLED, false)
 
     fun setEnabled(context: Context, enabled: Boolean) {
         prefs(context).edit().putBoolean(KEY_ENABLED, enabled).commit()

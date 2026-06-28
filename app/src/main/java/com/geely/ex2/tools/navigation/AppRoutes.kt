@@ -7,7 +7,4 @@ object AppRoutes {
     const val SPEED = "speed"
     const val BATTERY = "battery"
     const val DRIVING = "driving"
-    const val REGENERATION = "regeneration"
-    const val AMBIENT = "ambient"
-    const val AVAS = "avas"
 }

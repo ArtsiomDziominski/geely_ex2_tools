@@ -14,6 +14,7 @@
 | [flyme-scenedirector-apk.md](./flyme-scenedirector-apk.md) | Разбор APK `com.flyme.auto.scenedirector` (Scene Mode): Rest/Camping, HAL, VR, SceneProvider |
 | [android-shell-apk.md](./android-shell-apk.md) | Разбор APK `com.android.shell` (Оболочка): UID shell, bugreport UX, dumpstate |
 | [flyme-wallpaperlauncher-apk.md](./flyme-wallpaperlauncher-apk.md) | Разбор APK `com.flyme.auto.wallpaperlauncher`: live wallpaper, Customize Provider, MIPC/Car3D |
+| [flyme-launcher-apk.md](./flyme-launcher-apk.md) | Разбор APK `com.flyme.auto.launcher` (Lib): HOME, Aicy Widget, applist, plugins, recent apps |
 
 ## Локальные артефакты
 
@@ -54,5 +55,10 @@
 | `.tmp/flyme-wallpaperlauncher.apk` | Оригинальный APK (опционально) |
 | `.tmp/flyme-wallpaperlauncher-apk/` | Распакованный `com.flyme.auto.wallpaperlauncher` |
 | `.tmp/flyme-wallpaperlauncher-jadx/` | JADX-декомпилят AutoWallpaperLauncher |
+| `.tmp/flyme-launcher.apk` | Оригинальный APK (опционально) |
+| `.tmp/flyme-launcher-apk/` | Распакованный `com.flyme.auto.launcher` |
+| `.tmp/flyme-launcher-badging.txt` | `aapt dump badging` AutoLauncher |
+| `.tmp/flyme-launcher-manifest.txt` | `aapt dump xmltree` манифест лаунчера |
+| `.tmp/flyme-launcher-analysis.txt` | Анализ классов/пакетов dex лаунчера |
 
 Папка `.tmp/` в `.gitignore`.

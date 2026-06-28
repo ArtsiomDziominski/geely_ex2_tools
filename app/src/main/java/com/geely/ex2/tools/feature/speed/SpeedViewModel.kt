@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 data class SpeedUiState(
-    val isEnabled: Boolean = true,
+    val isEnabled: Boolean = false,
     val widgetRank: Int = SpeedWidgetRank.DEFAULT,
     val canStepWidgetLeft: Boolean = true,
     val canStepWidgetRight: Boolean = true,
