@@ -6,7 +6,7 @@ object SpeedNormalizer {
     const val MAX_SPEED_KMH = 140f
 
     /** Спидометр VHAL занижает скорость; компенсация не применяется на очень малых скоростях. */
-    internal const val SPEED_OFFSET_KMH = 3f
+    internal const val SPEED_OFFSET_KMH = 1f
     internal const val SPEED_OFFSET_MIN_KMH = 10f
 
     fun driveModeSpeedKmh(rawKmh: Float): Float {
