@@ -15,9 +15,9 @@
     <string name="tool_temperature_title">Температура</string>
     <string name="tool_temperature_description">Статус температуры за бортом в шторке Flyme</string>
     <string name="tool_speed_title">Спидометр</string>
-    <string name="tool_speed_description">Скорость из VHAL (PERF_VEHICLE_SPEED) в шторке Flyme</string>
+    <string name="tool_speed_description">Скорость в шторке Flyme</string>
     <string name="tool_battery_title">Заряд батареи</string>
-    <string name="tool_battery_description">SOC из VHAL (Flyme OEM / EV_BATTERY_LEVEL) в шторке Flyme</string>
+    <string name="tool_battery_description">SOC в шторке Flyme</string>
     <string name="tool_driving_title">Вождение</string>
     <string name="tool_driving_description">Эко, Комфорт, Спорт — с запоминанием после пробуждения ГУ</string>
 

@@ -14,6 +14,8 @@ object DrivingModeController {
             return
         }
 
+        FlymeDrivingModeApi.resetCache()
+
         val savedMode = DrivingSettings.getSavedModeValue(appContext)
         if (!DrivingMode.isSelectableValue(savedMode)) {
             Log.w(TAG, "Skip driving mode restore, invalid saved mode: 0x${savedMode.toString(16)} ($reason)")

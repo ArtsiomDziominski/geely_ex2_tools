@@ -10,6 +10,10 @@ object FlymeDrivingModeApi {
     @Volatile
     private var driveModeLiveData: Any? = null
 
+    fun resetCache() {
+        driveModeLiveData = null
+    }
+
     fun isAvailable(context: Context): Boolean {
         return try {
             Class.forName("com.flyme.auto.api.AutoFuncManager")

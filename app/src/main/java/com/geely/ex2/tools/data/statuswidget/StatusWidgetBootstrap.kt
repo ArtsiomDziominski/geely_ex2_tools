@@ -2,6 +2,7 @@ package com.geely.ex2.tools.data.statuswidget
 
 import android.content.Context
 import com.geely.ex2.tools.data.battery.BatteryAppStarter
+import com.geely.ex2.tools.data.driving.DrivingAppStarter
 import com.geely.ex2.tools.data.speed.SpeedAppStarter
 import com.geely.ex2.tools.data.temperature.TemperatureAppStarter
 import com.geely.ex2.tools.data.wifi.WifiAppStarter
@@ -25,5 +26,7 @@ object StatusWidgetBootstrap {
             WifiAppStarter.startStatusService(appContext, reason)
             WifiStatusIconHelper.notifyStatusIcon(appContext, reason)
         }
+
+        DrivingAppStarter.startRestoreServiceIfEnabled(appContext, reason)
     }
 }

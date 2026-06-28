@@ -6,6 +6,16 @@ import android.os.Build
 import android.util.Log
 
 object DrivingAppStarter {
+    fun startRestoreServiceIfEnabled(context: Context, reason: String) {
+        val appContext = context.applicationContext
+        if (!DrivingSettings.isPersistEnabled(appContext)) {
+            Log.i(DrivingModeController.TAG, "Driving restore service not started, persist disabled: $reason")
+            stopRestoreService(appContext, reason)
+            return
+        }
+        startRestoreService(appContext, reason)
+    }
+
     fun startRestoreService(context: Context, reason: String) {
         val appContext = context.applicationContext
         DrivingModeController.restoreDrivingModeIfNeeded(appContext, reason)

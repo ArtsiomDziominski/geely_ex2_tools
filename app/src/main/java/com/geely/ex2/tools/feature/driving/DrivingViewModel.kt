@@ -107,7 +107,11 @@ class DrivingViewModel(application: Application) : AndroidViewModel(application)
     }
 
     private fun startRestoreService(reason: String) {
-        repository.startRestoreService(reason)
+        if (repository.isPersistEnabled()) {
+            repository.startRestoreService(reason)
+        } else {
+            repository.stopRestoreService(reason)
+        }
     }
 
     private fun startPolling() {

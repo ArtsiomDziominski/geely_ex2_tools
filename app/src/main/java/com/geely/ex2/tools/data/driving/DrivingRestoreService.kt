@@ -8,6 +8,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.ConnectivityManager
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
@@ -34,9 +36,12 @@ class DrivingRestoreService : Service() {
 
     private val eventReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
+            if (!DrivingSettings.isPersistEnabled(context)) {
+                return
+            }
             val action = intent?.action ?: "null"
             Log.i(TAG, "Event receiver: $action")
-            DrivingModeController.restoreDrivingModeIfNeeded(context, "service event: $action")
+            DrivingWakeEvents.onServiceWake(context, "service Wi-Fi event: $action")
         }
     }
 
@@ -69,10 +74,10 @@ class DrivingRestoreService : Service() {
         if (isReceiverRegistered) return
 
         val filter = IntentFilter().apply {
-            addAction(Intent.ACTION_SCREEN_ON)
-            addAction(Intent.ACTION_USER_PRESENT)
-            addAction(Intent.ACTION_POWER_CONNECTED)
-            addAction(ACTION_QUICKBOOT_POWERON)
+            addAction(WifiManager.WIFI_STATE_CHANGED_ACTION)
+            addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION)
+            addAction(WifiManager.RSSI_CHANGED_ACTION)
+            addAction(ConnectivityManager.CONNECTIVITY_ACTION)
         }
         registerReceiver(eventReceiver, filter)
         isReceiverRegistered = true
@@ -119,6 +124,5 @@ class DrivingRestoreService : Service() {
         private const val CHANNEL_ID = "driving_restore"
         private const val NOTIFICATION_ID = 4106
         private const val POLL_INTERVAL_MS = VhalConstants.POLL_INTERVAL_MS
-        private const val ACTION_QUICKBOOT_POWERON = "android.intent.action.QUICKBOOT_POWERON"
     }
 }

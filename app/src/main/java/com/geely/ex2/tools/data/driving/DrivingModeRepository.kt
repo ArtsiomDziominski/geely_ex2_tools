@@ -21,7 +21,7 @@ class DrivingModeRepository(private val context: Context) {
     }
 
     fun startRestoreService(reason: String) {
-        DrivingAppStarter.startRestoreService(appContext, reason)
+        DrivingAppStarter.startRestoreServiceIfEnabled(appContext, reason)
     }
 
     fun stopRestoreService(reason: String) {
