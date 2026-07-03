@@ -38,6 +38,8 @@ object WifiStatusIconHelper {
     private const val FLAG_STATUS_ICON_IS_PICK_ON = "flag_status_icon_is_pick_on"
     private const val FLAG_STATUS_ICON_SPECIFIC_WIDTH = "flag_status_icon_specific_width"
 
+    fun isWifiConnected(context: Context): Boolean = isWifiConnectedToNetwork(context)
+
     fun notifyStatusIcon(context: Context, reason: String, rank: Int? = null) {
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
@@ -48,6 +50,12 @@ object WifiStatusIconHelper {
         }
 
         if (!WifiAutoEnableController.isWifiEnabledOrEnabling(context)) {
+            if (WifiAutoEnableController.isAutoEnableEnabled(context) &&
+                WifiAutoEnableController.getWifiState(context) == WifiManager.WIFI_STATE_DISABLING
+            ) {
+                Log.d(WifiAutoEnableController.TAG, "Wi-Fi disabling, keep icon until stable: $reason")
+                return
+            }
             hideStatusIcon(context, notificationManager, reason)
             return
         }
