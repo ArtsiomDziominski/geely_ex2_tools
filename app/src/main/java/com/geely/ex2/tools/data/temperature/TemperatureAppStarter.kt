@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
+import com.geely.ex2.tools.data.vhal.CarPropertyIo
 
 object TemperatureAppStarter {
     fun startServiceIfEnabled(context: Context, reason: String) {
@@ -24,18 +25,21 @@ object TemperatureAppStarter {
             return
         }
 
-        val reader = TemperatureReader(appContext)
-        val result = try {
-            reader.readTemperature()
-        } finally {
-            reader.close()
+        val iconRank = rank ?: TemperatureSettings.getStatusIconRank(appContext)
+        CarPropertyIo.execute {
+            val reader = TemperatureReader(appContext)
+            val result = try {
+                reader.readTemperature()
+            } finally {
+                reader.close()
+            }
+            TemperatureStatusIconHelper.notifyTemperature(
+                context = appContext,
+                result = result,
+                reason = reason,
+                rank = iconRank,
+            )
         }
-        TemperatureStatusIconHelper.notifyTemperature(
-            context = appContext,
-            result = result,
-            reason = reason,
-            rank = rank ?: TemperatureSettings.getStatusIconRank(appContext),
-        )
     }
 
     fun stopService(context: Context, reason: String) {

@@ -18,7 +18,6 @@ object DrivingAppStarter {
 
     fun startRestoreService(context: Context, reason: String) {
         val appContext = context.applicationContext
-        DrivingModeController.restoreDrivingModeIfNeeded(appContext, reason)
 
         val intent = Intent(appContext, DrivingRestoreService::class.java).apply {
             putExtra(DrivingRestoreService.EXTRA_REASON, reason)

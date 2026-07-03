@@ -8,6 +8,7 @@ import com.geely.ex2.tools.data.driving.DrivingModeRepository
 import com.geely.ex2.tools.data.vhal.DrivingMode
 import com.geely.ex2.tools.data.vhal.DrivingModeSample
 import com.geely.ex2.tools.data.vhal.VhalConstants
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
 
 data class DrivingUiState(
@@ -54,23 +56,27 @@ class DrivingViewModel(application: Application) : AndroidViewModel(application)
     fun onPersistCheckedChange(enabled: Boolean) {
         if (enabled == _uiState.value.isPersistEnabled) return
         repository.setPersistEnabled(enabled)
-        if (enabled) {
-            val sample = repository.readDrivingMode()
-            val modeToSave = when {
-                sample.isAvailable && DrivingMode.isSelectableValue(sample.modeValue) ->
-                    sample.modeValue
-                DrivingMode.isSelectableValue(repository.getSavedModeValue()) ->
-                    repository.getSavedModeValue()
-                else ->
-                    VhalConstants.DRIVE_MODE_COMFORT
+        viewModelScope.launch {
+            if (enabled) {
+                val sample = withContext(Dispatchers.IO) {
+                    repository.readDrivingMode()
+                }
+                val modeToSave = when {
+                    sample.isAvailable && DrivingMode.isSelectableValue(sample.modeValue) ->
+                        sample.modeValue
+                    DrivingMode.isSelectableValue(repository.getSavedModeValue()) ->
+                        repository.getSavedModeValue()
+                    else ->
+                        VhalConstants.DRIVE_MODE_COMFORT
+                }
+                repository.saveSelectedMode(modeToSave)
+                repository.restoreSavedModeIfNeeded("UI persist enable")
+            } else {
+                repository.stopRestoreService("UI persist disable")
             }
-            repository.saveSelectedMode(modeToSave)
-            repository.restoreSavedModeIfNeeded("UI persist enable")
-        } else {
-            repository.stopRestoreService("UI persist disable")
+            startRestoreService("UI persist toggle")
+            refreshState()
         }
-        startRestoreService("UI persist toggle")
-        refreshState()
     }
 
     fun onModeSelected(index: Int) {
@@ -82,7 +88,9 @@ class DrivingViewModel(application: Application) : AndroidViewModel(application)
 
         _uiState.update { it.copy(isChangingMode = true) }
         viewModelScope.launch {
-            val result = repository.setDrivingMode(option.vhalValue)
+            val result = withContext(Dispatchers.IO) {
+                repository.setDrivingMode(option.vhalValue)
+            }
             if (result.ok) {
                 repository.saveSelectedMode(option.vhalValue)
                 if (repository.isPersistEnabled()) {
@@ -130,9 +138,13 @@ class DrivingViewModel(application: Application) : AndroidViewModel(application)
     }
 
     private fun refreshState(writeError: String? = null) {
-        val sample = repository.readDrivingMode()
-        _uiState.update {
-            buildUiState(sample, writeError)
+        viewModelScope.launch {
+            val sample = withContext(Dispatchers.IO) {
+                repository.readDrivingMode()
+            }
+            _uiState.update {
+                buildUiState(sample, writeError)
+            }
         }
     }
 

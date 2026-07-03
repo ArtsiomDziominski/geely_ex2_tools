@@ -10,17 +10,21 @@ class CarPropertyDrivingModeReader(private val context: Context) {
     fun readDrivingMode(): DrivingModeSample {
         val debug = StringBuilder()
 
-        val flymeValue = FlymeDrivingModeApi.readModeValue(context)
-        if (flymeValue != null) {
-            debug.append("Flyme mValue: 0x").append(flymeValue.toString(16))
-            return DrivingModeSample(
-                modeValue = flymeValue,
-                isAvailable = true,
-                source = "Flyme EnumFuncLiveData",
-                details = debug.toString(),
-            )
+        if (FlymeDrivingModeApi.isAvailable(context)) {
+            val flymeValue = FlymeDrivingModeApi.readModeValue(context)
+            if (flymeValue != null) {
+                debug.append("Flyme mValue: 0x").append(flymeValue.toString(16))
+                return DrivingModeSample(
+                    modeValue = flymeValue,
+                    isAvailable = true,
+                    source = "Flyme EnumFuncLiveData",
+                    details = debug.toString(),
+                )
+            }
+            debug.append("Flyme read: unavailable")
+        } else {
+            debug.append("Flyme read: skipped")
         }
-        debug.append("Flyme read: unavailable")
 
         if (!bindings.ensureConnected(debug)) {
             return DrivingModeSample(
