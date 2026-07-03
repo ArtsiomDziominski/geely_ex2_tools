@@ -42,9 +42,9 @@ object VhalConstants {
     /** UI экрана Driving — реже poll, ECU не успевает отвечать за 1 сек после write */
     const val DRIVING_UI_POLL_INTERVAL_MS = 3_000L
 
-    /** Пауза перед read-back после setIntProperty (ECU применяет режим с задержкой) */
-    const val DRIVING_RESTORE_VERIFY_BASE_MS = 400L
-    const val DRIVING_RESTORE_VERIFY_STEP_MS = 400L
+    /** Пауза перед read-back после write (ECU применяет режим с задержкой) */
+    const val DRIVING_RESTORE_VERIFY_BASE_MS = 800L
+    const val DRIVING_RESTORE_VERIFY_STEP_MS = 800L
 
     /** Интервал опроса виджетов в шторке (батарея, температура) */
     const val STATUS_WIDGET_POLL_INTERVAL_MS = 100_000L

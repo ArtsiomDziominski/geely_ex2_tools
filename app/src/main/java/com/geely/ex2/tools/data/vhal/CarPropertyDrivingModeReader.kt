@@ -1,6 +1,8 @@
 package com.geely.ex2.tools.data.vhal
 
 import android.content.Context
+import com.geely.ex2.tools.data.driving.DrivingModeValues
+import com.geely.ex2.tools.data.driving.EcarxDrivingModeApi
 import com.geely.ex2.tools.data.driving.FlymeDrivingModeApi
 import java.util.Locale
 
@@ -26,6 +28,22 @@ class CarPropertyDrivingModeReader(private val context: Context) {
             debug.append("Flyme read: skipped")
         }
 
+        if (EcarxDrivingModeApi.isAvailable(context)) {
+            val ecarxValue = EcarxDrivingModeApi.readModeValue(context)
+            if (ecarxValue != null) {
+                debug.append('\n').append("eCarX read: 0x").append(ecarxValue.toString(16))
+                return DrivingModeSample(
+                    modeValue = ecarxValue,
+                    isAvailable = true,
+                    source = "eCarX ICarFunction",
+                    details = debug.toString(),
+                )
+            }
+            debug.append('\n').append("eCarX read: unavailable")
+        } else {
+            debug.append('\n').append("eCarX read: skipped")
+        }
+
         if (!bindings.ensureConnected(debug)) {
             return DrivingModeSample(
                 modeValue = 0,
@@ -40,7 +58,7 @@ class CarPropertyDrivingModeReader(private val context: Context) {
 
         if (probe.ok) {
             return DrivingModeSample(
-                modeValue = probe.value,
+                modeValue = DrivingModeValues.normalizeReadValue(probe.value),
                 isAvailable = true,
                 source = "DM_FUNC_DRIVE_MODE_SELECT 0x22010100",
                 details = debug.toString(),
@@ -73,6 +91,22 @@ class CarPropertyDrivingModeReader(private val context: Context) {
             )
         }
         debug.append("Flyme write: failed")
+
+        if (EcarxDrivingModeApi.writeModeValue(context, modeValue)) {
+            debug.append('\n').append("eCarX write: OK")
+            val readBack = EcarxDrivingModeApi.readModeValue(context)
+            if (readBack != null) {
+                debug.append('\n').append(
+                    String.format(Locale.US, "eCarX read-back: 0x%08X", readBack),
+                )
+            }
+            return DrivingModeWriteResult(
+                ok = true,
+                requestedValue = modeValue,
+                error = null,
+            )
+        }
+        debug.append('\n').append("eCarX write: failed")
 
         if (!bindings.ensureConnected(debug)) {
             return DrivingModeWriteResult(
