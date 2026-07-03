@@ -41,16 +41,16 @@ class DrivingViewModel(application: Application) : AndroidViewModel(application)
     val uiState: StateFlow<DrivingUiState> = _uiState.asStateFlow()
 
     private var pollJob: Job? = null
+    private var refreshJob: Job? = null
 
     fun onResume() {
+        repository.restoreSavedModeIfNeeded("DrivingScreen resume")
         refreshState()
-        startRestoreService("DrivingScreen resume")
         startPolling()
     }
 
     fun onPause() {
         stopPolling()
-        repository.stopRestoreService("DrivingScreen pause")
     }
 
     fun onPersistCheckedChange(enabled: Boolean) {
@@ -111,6 +111,7 @@ class DrivingViewModel(application: Application) : AndroidViewModel(application)
 
     override fun onCleared() {
         stopPolling()
+        refreshJob?.cancel()
         super.onCleared()
     }
 
@@ -126,7 +127,7 @@ class DrivingViewModel(application: Application) : AndroidViewModel(application)
         pollJob?.cancel()
         pollJob = viewModelScope.launch {
             while (isActive) {
-                delay(VhalConstants.POLL_INTERVAL_MS)
+                delay(VhalConstants.DRIVING_UI_POLL_INTERVAL_MS)
                 refreshState()
             }
         }
@@ -138,7 +139,8 @@ class DrivingViewModel(application: Application) : AndroidViewModel(application)
     }
 
     private fun refreshState(writeError: String? = null) {
-        viewModelScope.launch {
+        refreshJob?.cancel()
+        refreshJob = viewModelScope.launch {
             val sample = withContext(Dispatchers.IO) {
                 repository.readDrivingMode()
             }

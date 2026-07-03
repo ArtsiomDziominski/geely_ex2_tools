@@ -51,6 +51,11 @@ object WifiAutoEnableController {
         val state = wifiManager.wifiState
         Log.i(TAG, "Wi-Fi state before enable: $state, reason: $reason")
 
+        if (state == WifiManager.WIFI_STATE_DISABLING) {
+            Log.i(TAG, "Wi-Fi disabling in progress, skip enable")
+            return
+        }
+
         if (state == WifiManager.WIFI_STATE_ENABLED || state == WifiManager.WIFI_STATE_ENABLING) {
             Log.i(TAG, "Wi-Fi already enabled or enabling")
             return
