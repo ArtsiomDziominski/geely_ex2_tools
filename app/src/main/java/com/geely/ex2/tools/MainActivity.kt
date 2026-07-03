@@ -11,7 +11,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.geely.ex2.tools.data.battery.BatteryAppWidgetHelper
-import com.geely.ex2.tools.data.statuswidget.StatusWidgetBootstrap
 import com.geely.ex2.tools.feature.home.ui.HomeScreen
 import com.geely.ex2.tools.feature.battery.ui.BatteryScreen
 import com.geely.ex2.tools.feature.driving.ui.DrivingScreen
@@ -25,7 +24,6 @@ import com.geely.ex2.tools.ui.theme.GeelyEx2ToolsTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        StatusWidgetBootstrap.startEnabledWidgets(this, "MainActivity")
         enableEdgeToEdge()
         setContent {
             GeelyEx2ToolsTheme {

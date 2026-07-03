@@ -10,23 +10,38 @@ object FlymeDrivingModeApi {
     @Volatile
     private var driveModeLiveData: Any? = null
 
+    @Volatile
+    private var flymeAvailability: Boolean? = null
+
     fun resetCache() {
         driveModeLiveData = null
     }
 
     fun isAvailable(context: Context): Boolean {
-        return try {
-            Class.forName("com.flyme.auto.api.AutoFuncManager")
-            Class.forName("com.flyme.auto.api.data.EnumFuncLiveData")
-            ensureAutoFuncManager(context)
-            true
-        } catch (t: Throwable) {
-            Log.w(TAG, "Flyme driving API unavailable", t)
-            false
+        flymeAvailability?.let { return it }
+        return synchronized(this) {
+            flymeAvailability?.let { return it }
+            val available = probeFlymeClasses()
+            flymeAvailability = available
+            if (!available) {
+                Log.i(TAG, "Flyme driving API unavailable on this head unit")
+            } else {
+                try {
+                    ensureAutoFuncManager(context)
+                } catch (t: Throwable) {
+                    Log.w(TAG, "Flyme driving API init failed", t)
+                    flymeAvailability = false
+                    return@synchronized false
+                }
+            }
+            available
         }
     }
 
     fun readModeValue(context: Context): Int? {
+        if (!isAvailable(context)) {
+            return null
+        }
         return try {
             val liveData = getDriveModeLiveData(context)
             parseModeValue(readLiveDataFieldValue(liveData, "mValue"))
@@ -37,6 +52,9 @@ object FlymeDrivingModeApi {
     }
 
     fun writeModeValue(context: Context, modeValue: Int): Boolean {
+        if (!isAvailable(context)) {
+            return false
+        }
         return try {
             ensureAutoFuncManager(context)
             val liveData = getDriveModeLiveData(context)
@@ -46,6 +64,16 @@ object FlymeDrivingModeApi {
             true
         } catch (t: Throwable) {
             Log.w(TAG, "Flyme driving mode write failed for 0x${modeValue.toString(16)}", t)
+            false
+        }
+    }
+
+    private fun probeFlymeClasses(): Boolean {
+        return try {
+            Class.forName("com.flyme.auto.api.AutoFuncManager")
+            Class.forName("com.flyme.auto.api.data.EnumFuncLiveData")
+            true
+        } catch (_: Throwable) {
             false
         }
     }
