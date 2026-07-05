@@ -20,6 +20,8 @@
     <string name="tool_battery_description">SOC в шторке Flyme</string>
     <string name="tool_driving_title">Вождение</string>
     <string name="tool_driving_description">Эко, Комфорт, Спорт — с запоминанием после пробуждения ГУ</string>
+    <string name="tool_ambient_light_title">Атмосферная подсветка</string>
+    <string name="tool_ambient_light_description">Расписание включения и отключения ambient light</string>
 
     <string name="wifi_screen_title">Wi-Fi</string>
     <string name="wifi_section_control">Управление</string>
@@ -178,6 +180,47 @@
     <string name="driving_mode_xc">XC</string>
     <string name="driving_mode_hybrid">Гибрид</string>
     <string name="driving_mode_snow">Снег</string>
+
+    <string name="ambient_light_screen_title">Атмосферная подсветка</string>
+    <string name="ambient_light_info_content_description">Справка по атмосферной подсветке</string>
+    <string name="ambient_light_info_title">Как это работает</string>
+    <string name="ambient_light_info_text">Этот раздел управляет атмосферной подсветкой салона — мягкой подсветкой панели, дверей и других зон.\n\nАвто — подсветка включается и выключается по вашему расписанию. Укажите время «Включить подсветку» и «Выключить подсветку». Расписание работает в фоне, даже когда приложение закрыто или ГУ перезагрузился. Этот режим сохраняется.\n\nВыкл и Вкл — подсветка постоянно выключена или постоянно включена. Режим действует до перезапуска приложения. При следующем входе в раздел приложение покажет, как подсветка включена в машине сейчас.</string>
+    <string name="ambient_light_section_control">Управление</string>
+    <string name="ambient_light_section_status">Статус</string>
+    <string name="ambient_light_toggle_title">Подсветка</string>
+    <string name="ambient_light_toggle_summary_on">Включена</string>
+    <string name="ambient_light_toggle_summary_off">Выключена</string>
+    <string name="ambient_light_current_title">Сейчас</string>
+    <string name="ambient_light_header_on">Включена</string>
+    <string name="ambient_light_header_off">Выключена</string>
+    <string name="ambient_light_current_unavailable">Недоступно</string>
+    <string name="ambient_light_status_title">Состояние</string>
+    <string name="ambient_light_source_title">Источник данных</string>
+    <string name="ambient_light_status_ok">Чтение успешно (%1$s)</string>
+    <string name="ambient_light_status_error">Ошибка чтения (%1$s)</string>
+    <string name="ambient_light_status_write_error">Ошибка записи: %1$s</string>
+    <string name="ambient_light_write_error_unknown">неизвестная ошибка</string>
+    <string name="ambient_light_source_unavailable">VHAL недоступен</string>
+    <string name="ambient_light_section_schedule">Расписание</string>
+    <string name="ambient_light_mode_title">Режим</string>
+    <string name="ambient_light_mode_auto">Авто</string>
+    <string name="ambient_light_mode_off">Выкл</string>
+    <string name="ambient_light_mode_on">Вкл</string>
+    <string name="ambient_light_mode_summary_off">Подсветка всегда выключена</string>
+    <string name="ambient_light_mode_summary_on">Подсветка всегда включена</string>
+    <string name="ambient_light_schedule_active_on">По расписанию сейчас включена</string>
+    <string name="ambient_light_schedule_active_off">По расписанию сейчас выключена</string>
+    <string name="ambient_light_start_time_title">Включить подсветку</string>
+    <string name="ambient_light_end_time_title">Выключить подсветку</string>
+    <string name="ambient_light_time_picker_confirm">Подтвердить</string>
+    <string name="ambient_light_time_picker_cancel">Отмена</string>
+    <string name="ambient_light_status_ok_schedule">Чтение успешно (%1$s), расписание: %2$s</string>
+    <string name="ambient_light_schedule_channel">Атмосферная подсветка</string>
+    <string name="ambient_light_schedule_notification_title">Расписание подсветки</string>
+    <string name="ambient_light_schedule_notification_text">Автоматическое включение и выключение</string>
+    <string name="ambient_light_restore_channel">Атмосферная подсветка</string>
+    <string name="ambient_light_restore_notification_title">Подсветка</string>
+    <string name="ambient_light_restore_notification_text">Применение режима подсветки</string>
 
     <string name="nav_back">Назад</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.geely.ex2.tools.data.statuswidget
 
 import android.content.Context
+import com.geely.ex2.tools.data.ambient.AmbientLightScheduleController
+import com.geely.ex2.tools.data.ambient.AmbientLightAppStarter
 import com.geely.ex2.tools.data.battery.BatteryAppStarter
 import com.geely.ex2.tools.data.driving.DrivingAppStarter
 import com.geely.ex2.tools.data.speed.SpeedAppStarter
@@ -28,5 +30,8 @@ object StatusWidgetBootstrap {
         }
 
         DrivingAppStarter.startRestoreServiceIfEnabled(appContext, reason)
+
+        AmbientLightScheduleController.syncBackgroundWork(appContext, reason)
+        AmbientLightAppStarter.startRestoreServiceIfEnabled(appContext, reason)
     }
 }
