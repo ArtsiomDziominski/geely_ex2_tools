@@ -8,6 +8,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.car.permission.CAR_VENDOR_EXTENSION" />
 
     <application
@@ -140,6 +143,29 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".data.ambient.AmbientLightEventReceiver"
+            android:directBootAware="true"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".data.ambient.AmbientLightScheduleReceiver"
+            android:directBootAware="true"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.geely.ex2.tools.action.AMBIENT_LIGHT_SCHEDULE_TICK" />
+            </intent-filter>
+        </receiver>
+
         <service
             android:name=".data.wifi.WifiStatusService"
             android:enabled="true"
@@ -166,6 +192,18 @@
 
         <service
             android:name=".data.driving.DrivingRestoreService"
+            android:enabled="true"
+            android:foregroundServiceType="dataSync"
+            android:exported="false" />
+
+        <service
+            android:name=".data.ambient.AmbientLightScheduleService"
+            android:enabled="true"
+            android:foregroundServiceType="dataSync"
+            android:exported="false" />
+
+        <service
+            android:name=".data.ambient.AmbientLightRestoreService"
             android:enabled="true"
             android:foregroundServiceType="dataSync"
             android:exported="false" />

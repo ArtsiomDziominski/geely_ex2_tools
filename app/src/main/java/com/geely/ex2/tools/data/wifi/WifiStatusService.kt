@@ -12,6 +12,7 @@ import android.os.Looper
 import android.util.Log
 
 import com.geely.ex2.tools.data.driving.DrivingWifiWake
+import com.geely.ex2.tools.data.ambient.AmbientLightWifiWake
 
 class WifiStatusService : Service() {
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -121,6 +122,7 @@ class WifiStatusService : Service() {
     private fun notifyDrivingOnWifiStatus(reason: String) {
         val connected = WifiStatusIconHelper.isWifiConnected(this)
         DrivingWifiWake.onWifiStatusUpdated(this, connected, reason)
+        AmbientLightWifiWake.onWifiStatusUpdated(this, connected, reason)
     }
 
     companion object {

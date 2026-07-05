@@ -36,6 +36,25 @@ class CarVhalBindings(context: Context) {
         return readInt(manager, propertyId, areaId)
     }
 
+    fun readBooleanProperty(propertyId: Int, areaId: Int = VhalConstants.GLOBAL_AREA_ID): BooleanProbe {
+        val manager = propertyManager ?: return BooleanProbe.error(propertyId, "CarPropertyManager is null")
+        return readBoolean(manager, propertyId, areaId)
+    }
+
+    fun readSwitchProperty(propertyId: Int, areaId: Int = VhalConstants.GLOBAL_AREA_ID): SwitchProbe {
+        val manager = propertyManager ?: return SwitchProbe.error(propertyId, "CarPropertyManager is null")
+
+        readBoolean(manager, propertyId, areaId).takeIf { it.ok }?.let {
+            return SwitchProbe.ok(propertyId, it.value, "boolean")
+        }
+
+        readInt(manager, propertyId, areaId).takeIf { it.ok }?.let {
+            return SwitchProbe.ok(propertyId, it.value != VhalConstants.COMMON_VALUE_OFF, "int")
+        }
+
+        return readPropertySwitch(manager, propertyId, areaId)
+    }
+
     fun writeIntProperty(
         propertyId: Int,
         value: Int,
@@ -43,6 +62,32 @@ class CarVhalBindings(context: Context) {
     ): WriteProbe {
         val manager = propertyManager ?: return WriteProbe.error(propertyId, "CarPropertyManager is null")
         return writeInt(manager, propertyId, areaId, value)
+    }
+
+    fun writeBooleanProperty(
+        propertyId: Int,
+        value: Boolean,
+        areaId: Int = VhalConstants.GLOBAL_AREA_ID,
+    ): WriteProbe {
+        val manager = propertyManager ?: return WriteProbe.error(propertyId, "CarPropertyManager is null")
+        return writeBoolean(manager, propertyId, areaId, value)
+    }
+
+    fun writeSwitchProperty(
+        propertyId: Int,
+        enabled: Boolean,
+        areaId: Int = VhalConstants.GLOBAL_AREA_ID,
+    ): WriteProbe {
+        val manager = propertyManager ?: return WriteProbe.error(propertyId, "CarPropertyManager is null")
+
+        writeBoolean(manager, propertyId, areaId, enabled).takeIf { it.ok }?.let { return it }
+
+        val intValue = if (enabled) {
+            VhalConstants.COMMON_VALUE_ON
+        } else {
+            VhalConstants.COMMON_VALUE_OFF
+        }
+        return writeInt(manager, propertyId, areaId, intValue)
     }
 
     fun registerPropertyCallback(
@@ -209,6 +254,72 @@ class CarVhalBindings(context: Context) {
         }
     }
 
+    private fun readBoolean(manager: Any, propertyId: Int, areaId: Int): BooleanProbe {
+        return try {
+            val method: Method = manager.javaClass.getMethod(
+                "getBooleanProperty",
+                Int::class.javaPrimitiveType,
+                Int::class.javaPrimitiveType,
+            )
+            val value = method.invoke(manager, propertyId, areaId)
+            if (value is Boolean) {
+                BooleanProbe.ok(propertyId, value)
+            } else {
+                BooleanProbe.error(propertyId, "not Boolean: $value")
+            }
+        } catch (t: Throwable) {
+            Log.w(TAG, "Failed to read boolean property 0x${propertyId.toString(16)}", t)
+            BooleanProbe.error(propertyId, shortError(t))
+        }
+    }
+
+    private fun readPropertySwitch(manager: Any, propertyId: Int, areaId: Int): SwitchProbe {
+        return try {
+            val method: Method = manager.javaClass.getMethod(
+                "getProperty",
+                Int::class.javaPrimitiveType,
+                Int::class.javaPrimitiveType,
+            )
+            val carPropertyValue = method.invoke(manager, propertyId, areaId) ?: return SwitchProbe.error(
+                propertyId,
+                "getProperty returned null",
+            )
+            when (val rawValue = carPropertyValue.javaClass.getMethod("getValue").invoke(carPropertyValue)) {
+                is Boolean -> SwitchProbe.ok(propertyId, rawValue, "getProperty boolean")
+                is Int -> SwitchProbe.ok(
+                    propertyId,
+                    rawValue != VhalConstants.COMMON_VALUE_OFF,
+                    "getProperty int",
+                )
+                is Number -> SwitchProbe.ok(
+                    propertyId,
+                    rawValue.toInt() != VhalConstants.COMMON_VALUE_OFF,
+                    "getProperty number",
+                )
+                else -> SwitchProbe.error(propertyId, "unsupported value: $rawValue")
+            }
+        } catch (t: Throwable) {
+            Log.w(TAG, "Failed to read switch property 0x${propertyId.toString(16)}", t)
+            SwitchProbe.error(propertyId, shortError(t))
+        }
+    }
+
+    private fun writeBoolean(manager: Any, propertyId: Int, areaId: Int, value: Boolean): WriteProbe {
+        return try {
+            val method: Method = manager.javaClass.getMethod(
+                "setBooleanProperty",
+                Int::class.javaPrimitiveType,
+                Int::class.javaPrimitiveType,
+                Boolean::class.javaPrimitiveType,
+            )
+            method.invoke(manager, propertyId, areaId, value)
+            WriteProbe.ok(propertyId)
+        } catch (t: Throwable) {
+            Log.w(TAG, "Failed to write boolean property 0x${propertyId.toString(16)}", t)
+            WriteProbe.error(propertyId, shortError(t))
+        }
+    }
+
     private fun readInt(manager: Any, propertyId: Int, areaId: Int): IntProbe {
         return try {
             val method: Method = manager.javaClass.getMethod(
@@ -320,6 +431,37 @@ class CarVhalBindings(context: Context) {
 
             fun error(propertyId: Int, error: String): IntProbe =
                 IntProbe(propertyId, false, 0, error)
+        }
+    }
+
+    data class BooleanProbe(
+        val propertyId: Int,
+        val ok: Boolean,
+        val value: Boolean,
+        val error: String?,
+    ) {
+        companion object {
+            fun ok(propertyId: Int, value: Boolean): BooleanProbe =
+                BooleanProbe(propertyId, true, value, null)
+
+            fun error(propertyId: Int, error: String): BooleanProbe =
+                BooleanProbe(propertyId, false, false, error)
+        }
+    }
+
+    data class SwitchProbe(
+        val propertyId: Int,
+        val ok: Boolean,
+        val value: Boolean,
+        val valueType: String,
+        val error: String?,
+    ) {
+        companion object {
+            fun ok(propertyId: Int, value: Boolean, valueType: String): SwitchProbe =
+                SwitchProbe(propertyId, true, value, valueType, null)
+
+            fun error(propertyId: Int, error: String): SwitchProbe =
+                SwitchProbe(propertyId, false, false, "", error)
         }
     }
 

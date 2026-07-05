@@ -18,6 +18,12 @@ object VhalConstants {
     /** android.car.VehiclePropertyIds.INFO_EV_BATTERY_CAPACITY */
     const val PROP_INFO_EV_BATTERY_CAPACITY = 0x11600106
 
+    /** Flyme OEM: BCM_FUNC_LIGHT_ATMOSPHERE_LAMPS */
+    const val PROP_BCM_FUNC_LIGHT_ATMOSPHERE_LAMPS = 0x21051000
+
+    /** android.car LIGHTINSIDE_ATMOSPHERE_LAMP_SWITCH */
+    const val PROP_LIGHTINSIDE_ATMOSPHERE_LAMP_SWITCH = 557885013
+
     /** Flyme OEM: DM_FUNC_DRIVE_MODE_SELECT */
     const val PROP_DM_FUNC_DRIVE_MODE_SELECT = 0x22010100
 
@@ -41,6 +47,14 @@ object VhalConstants {
 
     /** UI экрана Driving — реже poll, ECU не успевает отвечать за 1 сек после write */
     const val DRIVING_UI_POLL_INTERVAL_MS = 3_000L
+
+    /** UI экрана атмосферной подсветки */
+    const val AMBIENT_LIGHT_UI_POLL_INTERVAL_MS = 3_000L
+
+    /** Пробуждение ГУ — VHAL/Flyme API может подниматься с задержкой */
+    const val AMBIENT_LIGHT_WAKE_VERIFY_BASE_MS = 1_000L
+    const val AMBIENT_LIGHT_WAKE_VERIFY_STEP_MS = 1_500L
+    const val AMBIENT_LIGHT_WAKE_APPLY_ATTEMPTS = 6
 
     /** Пауза перед read-back после write (ECU применяет режим с задержкой) */
     const val DRIVING_RESTORE_VERIFY_BASE_MS = 800L

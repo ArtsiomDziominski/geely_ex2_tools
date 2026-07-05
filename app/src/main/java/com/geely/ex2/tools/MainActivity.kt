@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.geely.ex2.tools.data.battery.BatteryAppWidgetHelper
 import com.geely.ex2.tools.feature.home.ui.HomeScreen
 import com.geely.ex2.tools.feature.battery.ui.BatteryScreen
+import com.geely.ex2.tools.feature.ambient.ui.AmbientLightScreen
 import com.geely.ex2.tools.feature.driving.ui.DrivingScreen
 import com.geely.ex2.tools.feature.speed.ui.SpeedScreen
 import com.geely.ex2.tools.feature.temperature.ui.TemperatureScreen
@@ -72,6 +73,11 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(AppRoutes.DRIVING) {
                                 DrivingScreen(
+                                    onBack = { navController.popBackStack() },
+                                )
+                            }
+                            composable(AppRoutes.AMBIENT_LIGHT) {
+                                AmbientLightScreen(
                                     onBack = { navController.popBackStack() },
                                 )
                             }
