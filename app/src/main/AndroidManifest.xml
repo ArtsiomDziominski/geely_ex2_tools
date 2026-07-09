@@ -15,7 +15,7 @@
 
     <application
         android:name=".GeelyEx2ToolsApp"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:directBootAware="true"
         android:fullBackupContent="@xml/backup_rules"
@@ -38,28 +38,28 @@
         <activity
             android:name=".data.wifi.WifiLaunchActivity"
             android:excludeFromRecents="true"
-            android:exported="true"
+            android:exported="false"
             android:taskAffinity=""
             android:theme="@android:style/Theme.NoDisplay" />
 
         <activity
             android:name=".data.temperature.TemperatureLaunchActivity"
             android:excludeFromRecents="true"
-            android:exported="true"
+            android:exported="false"
             android:taskAffinity=""
             android:theme="@android:style/Theme.NoDisplay" />
 
         <activity
             android:name=".data.speed.SpeedLaunchActivity"
             android:excludeFromRecents="true"
-            android:exported="true"
+            android:exported="false"
             android:taskAffinity=""
             android:theme="@android:style/Theme.NoDisplay" />
 
         <activity
             android:name=".data.battery.BatteryLaunchActivity"
             android:excludeFromRecents="true"
-            android:exported="true"
+            android:exported="false"
             android:taskAffinity=""
             android:theme="@android:style/Theme.NoDisplay" />
 
