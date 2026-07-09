@@ -46,11 +46,25 @@ object AmbientLightScheduleController {
         }
     }
 
-    fun applyIfNeeded(context: Context, reason: String): Boolean {
-        val desired = desiredEnabled(context) ?: return false
-        return CarPropertyIo.call {
-            applyDesiredState(context.applicationContext, desired, reason)
+    /** Fire-and-forget; safe from main. */
+    fun applyIfNeeded(context: Context, reason: String) {
+        val appContext = context.applicationContext
+        CarPropertyIo.execute {
+            applyIfNeededOnIoThread(appContext, reason)
         }
+    }
+
+    /** Blocks until apply finishes. Call only from a background thread. */
+    fun applyIfNeededBlocking(context: Context, reason: String): Boolean {
+        val appContext = context.applicationContext
+        return CarPropertyIo.call {
+            applyIfNeededOnIoThread(appContext, reason)
+        }
+    }
+
+    private fun applyIfNeededOnIoThread(context: Context, reason: String): Boolean {
+        val desired = desiredEnabled(context) ?: return false
+        return applyDesiredState(context, desired, reason)
     }
 
     fun syncBackgroundWork(context: Context, reason: String) {

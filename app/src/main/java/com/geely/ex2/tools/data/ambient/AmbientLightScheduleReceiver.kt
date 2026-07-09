@@ -27,7 +27,7 @@ class AmbientLightScheduleReceiver : BroadcastReceiver() {
         val pendingResult = goAsync()
         Thread {
             try {
-                AmbientLightScheduleController.applyIfNeeded(appContext, "alarm tick")
+                AmbientLightScheduleController.applyIfNeededBlocking(appContext, "alarm tick")
                 AmbientLightScheduleAlarm.scheduleNext(appContext, "alarm chain")
                 AmbientLightAppStarter.startScheduleService(appContext, "alarm tick keepalive")
             } finally {
