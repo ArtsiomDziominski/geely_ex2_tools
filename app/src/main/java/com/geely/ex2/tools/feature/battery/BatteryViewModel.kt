@@ -8,6 +8,7 @@ import com.geely.ex2.tools.data.battery.BatteryRepository
 import com.geely.ex2.tools.data.battery.BatteryWidgetRank
 import com.geely.ex2.tools.data.vhal.BatterySample
 import com.geely.ex2.tools.data.vhal.VhalConstants
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
 
 data class BatteryUiState(
@@ -36,6 +38,7 @@ class BatteryViewModel(application: Application) : AndroidViewModel(application)
     val uiState: StateFlow<BatteryUiState> = _uiState.asStateFlow()
 
     private var pollJob: Job? = null
+    private var refreshJob: Job? = null
 
     fun onResume() {
         refreshState()
@@ -85,6 +88,7 @@ class BatteryViewModel(application: Application) : AndroidViewModel(application)
 
     override fun onCleared() {
         stopPolling()
+        refreshJob?.cancel()
         super.onCleared()
     }
 
@@ -121,24 +125,30 @@ class BatteryViewModel(application: Application) : AndroidViewModel(application)
     }
 
     private fun refreshState() {
-        val enabled = repository.isEnabled()
-        val widgetRank = repository.getStatusIconRank()
-        val sample = if (enabled) {
-            repository.readBatterySoc()
-        } else {
-            null
-        }
+        refreshJob?.cancel()
+        refreshJob = viewModelScope.launch {
+            val enabled = repository.isEnabled()
+            val sample = if (enabled) {
+                withContext(Dispatchers.IO) {
+                    repository.readBatterySoc()
+                }
+            } else {
+                null
+            }
+            val widgetRank = repository.getStatusIconRank()
+            val enabledAfter = repository.isEnabled()
 
-        _uiState.update {
-            BatteryUiState(
-                isEnabled = enabled,
-                widgetRank = widgetRank,
-                canStepWidgetLeft = BatteryWidgetRank.canStepLeft(widgetRank),
-                canStepWidgetRight = BatteryWidgetRank.canStepRight(widgetRank),
-                statusText = buildStatusText(enabled, sample),
-                latestSocText = buildLatestSocText(enabled, sample),
-                sourceText = buildSourceText(enabled, sample),
-            )
+            _uiState.update {
+                BatteryUiState(
+                    isEnabled = enabledAfter,
+                    widgetRank = widgetRank,
+                    canStepWidgetLeft = BatteryWidgetRank.canStepLeft(widgetRank),
+                    canStepWidgetRight = BatteryWidgetRank.canStepRight(widgetRank),
+                    statusText = buildStatusText(enabledAfter, sample.takeIf { enabledAfter }),
+                    latestSocText = buildLatestSocText(enabledAfter, sample.takeIf { enabledAfter }),
+                    sourceText = buildSourceText(enabledAfter, sample.takeIf { enabledAfter }),
+                )
+            }
         }
     }
 

@@ -8,6 +8,7 @@ import com.geely.ex2.tools.data.temperature.TemperatureReader
 import com.geely.ex2.tools.data.temperature.TemperatureRepository
 import com.geely.ex2.tools.data.temperature.TemperatureWidgetRank
 import com.geely.ex2.tools.data.vhal.VhalConstants
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
 
 data class TemperatureUiState(
@@ -35,6 +37,7 @@ class TemperatureViewModel(application: Application) : AndroidViewModel(applicat
     val uiState: StateFlow<TemperatureUiState> = _uiState.asStateFlow()
 
     private var pollJob: Job? = null
+    private var refreshJob: Job? = null
 
     fun onResume() {
         refreshState()
@@ -84,6 +87,7 @@ class TemperatureViewModel(application: Application) : AndroidViewModel(applicat
 
     override fun onCleared() {
         stopPolling()
+        refreshJob?.cancel()
         super.onCleared()
     }
 
@@ -120,23 +124,32 @@ class TemperatureViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     private fun refreshState() {
-        val enabled = repository.isEnabled()
-        val widgetRank = repository.getStatusIconRank()
-        val result = if (enabled) {
-            repository.readTemperature()
-        } else {
-            null
-        }
+        refreshJob?.cancel()
+        refreshJob = viewModelScope.launch {
+            val enabled = repository.isEnabled()
+            val result = if (enabled) {
+                withContext(Dispatchers.IO) {
+                    repository.readTemperature()
+                }
+            } else {
+                null
+            }
+            val widgetRank = repository.getStatusIconRank()
+            val enabledAfter = repository.isEnabled()
 
-        _uiState.update {
-            TemperatureUiState(
-                isEnabled = enabled,
-                widgetRank = widgetRank,
-                canStepWidgetLeft = TemperatureWidgetRank.canStepLeft(widgetRank),
-                canStepWidgetRight = TemperatureWidgetRank.canStepRight(widgetRank),
-                statusText = buildStatusText(enabled, result),
-                latestTemperatureText = buildLatestTemperatureText(enabled, result),
-            )
+            _uiState.update {
+                TemperatureUiState(
+                    isEnabled = enabledAfter,
+                    widgetRank = widgetRank,
+                    canStepWidgetLeft = TemperatureWidgetRank.canStepLeft(widgetRank),
+                    canStepWidgetRight = TemperatureWidgetRank.canStepRight(widgetRank),
+                    statusText = buildStatusText(enabledAfter, result.takeIf { enabledAfter }),
+                    latestTemperatureText = buildLatestTemperatureText(
+                        enabledAfter,
+                        result.takeIf { enabledAfter },
+                    ),
+                )
+            }
         }
     }
 
