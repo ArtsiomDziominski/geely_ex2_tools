@@ -6,15 +6,21 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
+import com.geely.ex2.tools.data.vhal.CarPropertyIo
 import com.geely.ex2.tools.data.vhal.VhalConstants
 
 class TemperatureStatusService : Service() {
     private val handler = Handler(Looper.getMainLooper())
     private var reader: TemperatureReader? = null
+
+    @Volatile
     private var isRunning = false
 
     private val updateRunnable = object : Runnable {
         override fun run() {
+            if (!isRunning || !TemperatureSettings.isEnabled(this@TemperatureStatusService)) {
+                return
+            }
             updateTemperature("periodic")
             if (isRunning && TemperatureSettings.isEnabled(this@TemperatureStatusService)) {
                 handler.postDelayed(this, VhalConstants.TEMPERATURE_POLL_INTERVAL_MS)
@@ -24,7 +30,6 @@ class TemperatureStatusService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        reader = TemperatureReader(this)
         isRunning = true
         startForeground(
             TemperatureStatusIconHelper.SERVICE_NOTIFICATION_ID,
@@ -38,7 +43,10 @@ class TemperatureStatusService : Service() {
 
         if (!TemperatureSettings.isEnabled(this)) {
             Log.i(TAG, "Temperature service stopping, disabled: $reason")
+            isRunning = false
+            handler.removeCallbacks(updateRunnable)
             TemperatureStatusIconHelper.cancelStatusIcon(this)
+            closeReaderAsync()
             stopSelf()
             return START_NOT_STICKY
         }
@@ -54,8 +62,7 @@ class TemperatureStatusService : Service() {
         isRunning = false
         handler.removeCallbacks(updateRunnable)
         TemperatureStatusIconHelper.cancelStatusIcon(this)
-        reader?.close()
-        reader = null
+        closeReaderAsync()
         Log.i(TAG, "Temperature service destroyed")
         super.onDestroy()
     }
@@ -63,14 +70,37 @@ class TemperatureStatusService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     private fun updateTemperature(reason: String) {
-        val temperatureReader = reader ?: TemperatureReader(this).also { reader = it }
-        val result = temperatureReader.readTemperature()
-        if (result.ok) {
-            Log.i(TAG, "Outside temperature: ${result.value} C, source: ${result.source}")
-        } else {
-            Log.w(TAG, "Temperature read failed: ${result.source}, details: ${result.details}")
+        CarPropertyIo.execute {
+            if (!isRunning || !TemperatureSettings.isEnabled(this@TemperatureStatusService)) {
+                return@execute
+            }
+
+            val temperatureReader = reader ?: TemperatureReader(this@TemperatureStatusService).also {
+                reader = it
+            }
+            val result = temperatureReader.readTemperature()
+            if (!isRunning || !TemperatureSettings.isEnabled(this@TemperatureStatusService)) {
+                return@execute
+            }
+
+            if (result.ok) {
+                Log.i(TAG, "Outside temperature: ${result.value} C, source: ${result.source}")
+            } else {
+                Log.w(TAG, "Temperature read failed: ${result.source}, details: ${result.details}")
+            }
+            TemperatureStatusIconHelper.notifyTemperature(
+                this@TemperatureStatusService,
+                result,
+                reason,
+            )
         }
-        TemperatureStatusIconHelper.notifyTemperature(this, result, reason)
+    }
+
+    private fun closeReaderAsync() {
+        CarPropertyIo.execute {
+            reader?.close()
+            reader = null
+        }
     }
 
     companion object {

@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.geely.ex2.tools.data.vhal.CarPropertyIo
 
 class SpeedEventReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
@@ -16,8 +17,16 @@ class SpeedEventReceiver : BroadcastReceiver() {
             action == Intent.ACTION_MY_PACKAGE_REPLACED ||
             action == QUICKBOOT_POWERON
         ) {
-            SpeedAppStarter.startServiceIfEnabled(context, "receiver: $action")
-            SpeedAppStarter.notifyStatusIconIfEnabled(context, "receiver: $action")
+            val appContext = context.applicationContext
+            val pendingResult = goAsync()
+            CarPropertyIo.execute {
+                try {
+                    SpeedAppStarter.startServiceIfEnabled(appContext, "receiver: $action")
+                    SpeedAppStarter.notifyStatusIconIfEnabled(appContext, "receiver: $action")
+                } finally {
+                    pendingResult.finish()
+                }
+            }
         }
     }
 

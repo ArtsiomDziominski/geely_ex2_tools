@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
+import com.geely.ex2.tools.data.vhal.CarPropertyIo
 import com.geely.ex2.tools.data.vhal.VhalBatteryReaderFactory
 
 object BatteryAppStarter {
@@ -25,19 +26,22 @@ object BatteryAppStarter {
             return
         }
 
-        val reader = VhalBatteryReaderFactory.create(appContext)
-        val sample = try {
-            reader.readBatterySoc()
-        } finally {
-            reader.close()
+        val iconRank = rank ?: BatterySettings.getStatusIconRank(appContext)
+        CarPropertyIo.execute {
+            val reader = VhalBatteryReaderFactory.create(appContext)
+            val sample = try {
+                reader.readBatterySoc()
+            } finally {
+                reader.close()
+            }
+            BatteryStatusIconHelper.notifyBattery(
+                context = appContext,
+                sample = sample,
+                reason = reason,
+                rank = iconRank,
+            )
+            BatteryAppWidgetHelper.updateAll(appContext, reason)
         }
-        BatteryStatusIconHelper.notifyBattery(
-            context = appContext,
-            sample = sample,
-            reason = reason,
-            rank = rank ?: BatterySettings.getStatusIconRank(appContext),
-        )
-        BatteryAppWidgetHelper.updateAll(appContext, reason)
     }
 
     fun stopService(context: Context, reason: String) {

@@ -77,9 +77,9 @@ class AmbientLightViewModel(application: Application) : AndroidViewModel(applica
         if (mode == _uiState.value.controlMode) return
 
         AmbientLightSettings.setControlMode(appContext, mode)
+        refreshState()
         AmbientLightScheduleController.syncBackgroundWork(appContext, "UI control mode $mode")
         AmbientLightAppStarter.startRestoreServiceIfEnabled(appContext, "UI control mode $mode")
-        refreshState()
     }
 
     fun onStartTimeClick() {
@@ -101,10 +101,10 @@ class AmbientLightViewModel(application: Application) : AndroidViewModel(applica
             AmbientLightTimePickerTarget.END -> AmbientLightSettings.setEndTime(appContext, hour, minute)
         }
         _uiState.update { it.copy(timePickerTarget = null) }
+        refreshState()
         if (AmbientLightSettings.isScheduleEnabled(appContext)) {
             AmbientLightScheduleController.applyIfNeeded(appContext, "UI time changed")
         }
-        refreshState()
     }
 
     override fun onCleared() {

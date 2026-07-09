@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
+import com.geely.ex2.tools.data.vhal.CarPropertyIo
 import com.geely.ex2.tools.data.vhal.VhalSpeedReaderFactory
 
 object SpeedAppStarter {
@@ -25,18 +26,21 @@ object SpeedAppStarter {
             return
         }
 
-        val reader = VhalSpeedReaderFactory.create(appContext)
-        val sample = try {
-            reader.readSpeed()
-        } finally {
-            reader.close()
+        val iconRank = rank ?: SpeedSettings.getStatusIconRank(appContext)
+        CarPropertyIo.execute {
+            val reader = VhalSpeedReaderFactory.create(appContext)
+            val sample = try {
+                reader.readSpeed()
+            } finally {
+                reader.close()
+            }
+            SpeedStatusIconHelper.notifySpeed(
+                context = appContext,
+                sample = sample,
+                reason = reason,
+                rank = iconRank,
+            )
         }
-        SpeedStatusIconHelper.notifySpeed(
-            context = appContext,
-            sample = sample,
-            reason = reason,
-            rank = rank ?: SpeedSettings.getStatusIconRank(appContext),
-        )
     }
 
     fun stopService(context: Context, reason: String) {

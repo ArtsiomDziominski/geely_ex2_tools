@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.geely.ex2.tools.data.vhal.CarPropertyIo
 
 class BatteryEventReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
@@ -16,9 +17,17 @@ class BatteryEventReceiver : BroadcastReceiver() {
             action == Intent.ACTION_MY_PACKAGE_REPLACED ||
             action == QUICKBOOT_POWERON
         ) {
-            BatteryAppStarter.startServiceIfEnabled(context, "receiver: $action")
-            BatteryAppStarter.notifyStatusIconIfEnabled(context, "receiver: $action")
-            BatteryAppWidgetHelper.updateAll(context, "receiver: $action")
+            val appContext = context.applicationContext
+            val pendingResult = goAsync()
+            CarPropertyIo.execute {
+                try {
+                    BatteryAppStarter.startServiceIfEnabled(appContext, "receiver: $action")
+                    // Nested execute runs inline; also updates the app widget.
+                    BatteryAppStarter.notifyStatusIconIfEnabled(appContext, "receiver: $action")
+                } finally {
+                    pendingResult.finish()
+                }
+            }
         }
     }
 
