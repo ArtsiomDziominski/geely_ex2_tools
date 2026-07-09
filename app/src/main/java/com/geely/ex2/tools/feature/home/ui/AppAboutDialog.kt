@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
@@ -23,9 +22,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.geely.ex2.tools.R
-import com.geely.ex2.tools.ui.theme.FlymeAccent
+import com.geely.ex2.tools.ui.theme.GeelyEx2ToolsTheme
 
 private const val DEVELOPER_TELEGRAM = "i_am_artsiom"
 
@@ -43,9 +43,16 @@ fun AppAboutDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        shape = RoundedCornerShape(16.dp),
+        containerColor = MaterialTheme.colorScheme.surface,
+        titleContentColor = MaterialTheme.colorScheme.onSurface,
+        textContentColor = MaterialTheme.colorScheme.onSurface,
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.home_about_close))
+                Text(
+                    text = stringResource(R.string.home_about_close),
+                    color = MaterialTheme.colorScheme.primary,
+                )
             }
         },
         title = {
@@ -53,6 +60,7 @@ fun AppAboutDialog(
                 text = stringResource(R.string.home_about_title),
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleMedium,
             )
         },
         text = {
@@ -71,6 +79,7 @@ fun AppAboutDialog(
                 Text(
                     text = stringResource(R.string.home_about_version, versionName),
                     style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -84,7 +93,7 @@ fun AppAboutDialog(
                     Text(
                         text = stringResource(R.string.home_about_telegram),
                         style = MaterialTheme.typography.bodyLarge,
-                        color = FlymeAccent,
+                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.clickable {
                             openTelegram(context, DEVELOPER_TELEGRAM)
                         },
@@ -100,5 +109,21 @@ private fun openTelegram(context: android.content.Context, username: String) {
     val intent = Intent(Intent.ACTION_VIEW, uri)
     runCatching {
         context.startActivity(intent)
+    }
+}
+
+@Preview(showBackground = true, name = "About Light")
+@Composable
+private fun AppAboutDialogPreviewLight() {
+    GeelyEx2ToolsTheme(darkTheme = false) {
+        AppAboutDialog(onDismiss = {})
+    }
+}
+
+@Preview(showBackground = true, name = "About Dark")
+@Composable
+private fun AppAboutDialogPreviewDark() {
+    GeelyEx2ToolsTheme(darkTheme = true) {
+        AppAboutDialog(onDismiss = {})
     }
 }

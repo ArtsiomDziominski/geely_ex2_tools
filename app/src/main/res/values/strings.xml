@@ -4,6 +4,9 @@
     <string name="welcome_subtitle">Утилиты для настройки Geely EX2</string>
 
     <string name="home_tools_title">Инструменты</string>
+    <string name="home_brand_title">Flyme Auto</string>
+    <string name="home_access_footer">Доступ и информация</string>
+    <string name="nav_home">Главная</string>
     <string name="home_about_content_description">О приложении</string>
     <string name="home_about_title">О приложении</string>
     <string name="home_about_version">Версия %1$s</string>

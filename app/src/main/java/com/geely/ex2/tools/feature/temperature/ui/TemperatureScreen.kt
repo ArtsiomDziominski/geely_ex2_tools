@@ -38,8 +38,7 @@ import com.geely.ex2.tools.ui.components.FlymeSettingsStepperItem
 import com.geely.ex2.tools.ui.components.FlymeSettingsSection
 import com.geely.ex2.tools.ui.components.FlymeSettingsSwitchItem
 import com.geely.ex2.tools.ui.components.GeelyTopAppBar
-import com.geely.ex2.tools.ui.theme.FlymeAccent
-import com.geely.ex2.tools.ui.theme.FlymeTextSecondary
+import com.geely.ex2.tools.ui.components.isFlymeRailCompact
 import com.geely.ex2.tools.ui.theme.GeelyEx2ToolsTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,7 +72,7 @@ fun TemperatureScreen(
         topBar = {
             GeelyTopAppBar(
                 title = stringResource(R.string.temperature_screen_title),
-                onBack = onBack,
+                onBack = onBack.takeIf { isFlymeRailCompact() },
             )
         },
     ) { innerPadding ->
@@ -153,7 +152,11 @@ private fun TemperatureStatusHeader(
             contentDescription = null,
             modifier = Modifier.size(72.dp),
             colorFilter = ColorFilter.tint(
-                if (isEnabled) FlymeAccent else FlymeTextSecondary,
+                if (isEnabled) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
             ),
         )
         Text(
@@ -169,10 +172,18 @@ private fun TemperatureStatusHeader(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Temperature Light")
 @Composable
-private fun TemperatureScreenPreview() {
-    GeelyEx2ToolsTheme {
+private fun TemperatureScreenPreviewLight() {
+    GeelyEx2ToolsTheme(darkTheme = false) {
+        TemperatureScreen(onBack = {})
+    }
+}
+
+@Preview(showBackground = true, name = "Temperature Dark")
+@Composable
+private fun TemperatureScreenPreviewDark() {
+    GeelyEx2ToolsTheme(darkTheme = true) {
         TemperatureScreen(onBack = {})
     }
 }

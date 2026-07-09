@@ -44,7 +44,7 @@ import com.geely.ex2.tools.ui.components.FlymeSettingsSegmentedItem
 import com.geely.ex2.tools.ui.components.FlymeSettingsValueItem
 import com.geely.ex2.tools.ui.components.FlymeTimePickerDialog
 import com.geely.ex2.tools.ui.components.GeelyTopAppBar
-import com.geely.ex2.tools.ui.theme.FlymeAccent
+import com.geely.ex2.tools.ui.components.isFlymeRailCompact
 import com.geely.ex2.tools.ui.theme.GeelyEx2ToolsTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -112,7 +112,7 @@ fun AmbientLightScreen(
         topBar = {
             GeelyTopAppBar(
                 title = stringResource(R.string.ambient_light_screen_title),
-                onBack = onBack,
+                onBack = onBack.takeIf { isFlymeRailCompact() },
                 actions = {
                     IconButton(
                         onClick = { showInfoDialog = true },
@@ -212,7 +212,7 @@ private fun AmbientLightStatusHeader(
             style = MaterialTheme.typography.headlineSmall,
             textAlign = TextAlign.Center,
             color = if (isEnabled && isAvailable) {
-                FlymeAccent
+                MaterialTheme.colorScheme.primary
             } else {
                 MaterialTheme.colorScheme.onSurface
             },
@@ -228,10 +228,18 @@ private fun AmbientLightStatusHeader(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Ambient Light")
 @Composable
-private fun AmbientLightScreenPreview() {
-    GeelyEx2ToolsTheme {
+private fun AmbientLightScreenPreviewLight() {
+    GeelyEx2ToolsTheme(darkTheme = false) {
+        AmbientLightScreen(onBack = {})
+    }
+}
+
+@Preview(showBackground = true, name = "Ambient Dark")
+@Composable
+private fun AmbientLightScreenPreviewDark() {
+    GeelyEx2ToolsTheme(darkTheme = true) {
         AmbientLightScreen(onBack = {})
     }
 }
