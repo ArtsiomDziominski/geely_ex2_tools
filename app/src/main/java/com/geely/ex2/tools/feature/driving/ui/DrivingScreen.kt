@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import com.geely.ex2.tools.ui.components.GeelyTopAppBar
+import com.geely.ex2.tools.ui.components.isFlymeRailCompact
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -68,7 +69,7 @@ fun DrivingScreen(
         topBar = {
             GeelyTopAppBar(
                 title = stringResource(R.string.driving_screen_title),
-                onBack = onBack,
+                onBack = onBack.takeIf { isFlymeRailCompact() },
             )
         },
     ) { innerPadding ->
@@ -94,8 +95,6 @@ fun DrivingScreen(
                     onSelectedIndexChange = viewModel::onModeSelected,
                     enabled = uiState.isWritable && !uiState.isChangingMode,
                     showDivider = true,
-                    optionMinHeight = 120.dp,
-                    optionTextStyle = MaterialTheme.typography.headlineSmall,
                 )
                 FlymeSettingsSwitchItem(
                     title = stringResource(R.string.driving_persist_title),
@@ -157,10 +156,18 @@ private fun DrivingStatusHeader(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Driving Light")
 @Composable
-private fun DrivingScreenPreview() {
-    GeelyEx2ToolsTheme {
+private fun DrivingScreenPreviewLight() {
+    GeelyEx2ToolsTheme(darkTheme = false) {
+        DrivingScreen(onBack = {})
+    }
+}
+
+@Preview(showBackground = true, name = "Driving Dark")
+@Composable
+private fun DrivingScreenPreviewDark() {
+    GeelyEx2ToolsTheme(darkTheme = true) {
         DrivingScreen(onBack = {})
     }
 }

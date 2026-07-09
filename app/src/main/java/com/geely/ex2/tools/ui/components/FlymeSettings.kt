@@ -1,28 +1,25 @@
 package com.geely.ex2.tools.ui.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -31,10 +28,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.geely.ex2.tools.ui.theme.FlymeAccent
+import com.geely.ex2.tools.ui.theme.FlymeTheme
+
+private val SettingsGroupShape = RoundedCornerShape(16.dp)
 
 @Composable
 fun FlymeSettingsSection(
@@ -61,8 +59,8 @@ fun FlymeSettingsGroup(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.88f)),
+            .clip(SettingsGroupShape)
+            .background(MaterialTheme.colorScheme.surface),
         content = content,
     )
 }
@@ -108,25 +106,24 @@ fun FlymeSettingsSwitchItem(
                 onCheckedChange = onCheckedChange,
                 enabled = enabled,
                 colors = SwitchDefaults.colors(
-                    checkedThumbColor = MaterialTheme.colorScheme.surface,
-                    checkedTrackColor = FlymeAccent,
-                    uncheckedThumbColor = MaterialTheme.colorScheme.surface,
-                    uncheckedTrackColor = MaterialTheme.colorScheme.outlineVariant,
+                    checkedThumbColor = Color.White,
+                    checkedTrackColor = MaterialTheme.colorScheme.primary,
+                    uncheckedThumbColor = Color.White,
+                    uncheckedTrackColor = FlymeTheme.extraColors.switchTrackOff,
                     uncheckedBorderColor = Color.Transparent,
+                    checkedBorderColor = Color.Transparent,
                 ),
             )
         }
         if (showDivider) {
-            HorizontalDivider(
-                modifier = Modifier.padding(start = 16.dp),
-                thickness = 0.5.dp,
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.55f),
-            )
+            SettingsDivider()
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+/** Shared Flyme segmented toggle size (same as Driving mode control). */
+private val FlymeSegmentedOptionMinHeight = 120.dp
+
 @Composable
 fun FlymeSettingsSegmentedItem(
     title: String,
@@ -137,8 +134,6 @@ fun FlymeSettingsSegmentedItem(
     summary: String? = null,
     enabled: Boolean = true,
     showDivider: Boolean = true,
-    optionMinHeight: Dp? = null,
-    optionTextStyle: TextStyle? = null,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Column(
@@ -159,32 +154,66 @@ fun FlymeSettingsSegmentedItem(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-                options.forEachIndexed { index, label ->
-                    SegmentedButton(
-                        selected = selectedIndex >= 0 && selectedIndex == index,
-                        onClick = { onSelectedIndexChange(index) },
-                        enabled = enabled,
-                        modifier = optionMinHeight?.let { Modifier.height(it) } ?: Modifier,
-                        shape = SegmentedButtonDefaults.itemShape(
-                            index = index,
-                            count = options.size,
-                        ),
-                    ) {
-                        Text(
-                            text = label,
-                            style = optionTextStyle ?: MaterialTheme.typography.labelLarge,
-                        )
-                    }
-                }
-            }
+            FlymeSegmentedRow(
+                options = options,
+                selectedIndex = selectedIndex,
+                onSelectedIndexChange = onSelectedIndexChange,
+                enabled = enabled,
+            )
         }
         if (showDivider) {
-            HorizontalDivider(
-                modifier = Modifier.padding(start = 16.dp),
-                thickness = 0.5.dp,
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.55f),
-            )
+            SettingsDivider()
+        }
+    }
+}
+
+@Composable
+fun FlymeSegmentedRow(
+    options: List<String>,
+    selectedIndex: Int,
+    onSelectedIndexChange: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+) {
+    val optionTextStyle = MaterialTheme.typography.headlineSmall
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .padding(3.dp),
+        horizontalArrangement = Arrangement.spacedBy(0.dp),
+    ) {
+        options.forEachIndexed { index, label ->
+            val isSelected = selectedIndex >= 0 && selectedIndex == index
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .heightIn(min = FlymeSegmentedOptionMinHeight)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(
+                        if (isSelected) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            Color.Transparent
+                        },
+                    )
+                    .clickable(enabled = enabled) { onSelectedIndexChange(index) }
+                    .padding(horizontal = 8.dp, vertical = 12.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = label,
+                    style = optionTextStyle,
+                    color = if (isSelected) {
+                        MaterialTheme.colorScheme.onPrimary
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                )
+            }
         }
     }
 }
@@ -257,11 +286,7 @@ fun FlymeSettingsStepperItem(
             }
         }
         if (showDivider) {
-            HorizontalDivider(
-                modifier = Modifier.padding(start = 16.dp),
-                thickness = 0.5.dp,
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.55f),
-            )
+            SettingsDivider()
         }
     }
 }
@@ -302,11 +327,7 @@ fun FlymeSettingsValueItem(
             )
         }
         if (showDivider) {
-            HorizontalDivider(
-                modifier = Modifier.padding(start = 16.dp),
-                thickness = 0.5.dp,
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.55f),
-            )
+            SettingsDivider()
         }
     }
 }
@@ -334,4 +355,57 @@ fun FlymeSettingsInfoItem(
             modifier = Modifier.padding(top = 2.dp),
         )
     }
+}
+
+@Composable
+fun FlymeSettingsNavRow(
+    title: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    summary: String? = null,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .background(MaterialTheme.colorScheme.surface)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 12.dp),
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            if (summary != null) {
+                Text(
+                    text = summary,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 2.dp),
+                )
+            }
+        }
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(24.dp),
+        )
+    }
+}
+
+@Composable
+private fun SettingsDivider() {
+    HorizontalDivider(
+        modifier = Modifier.padding(start = 16.dp),
+        thickness = 0.5.dp,
+        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f),
+    )
 }

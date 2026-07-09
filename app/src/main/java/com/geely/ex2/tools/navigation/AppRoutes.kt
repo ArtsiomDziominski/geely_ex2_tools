@@ -2,6 +2,8 @@ package com.geely.ex2.tools.navigation
 
 object AppRoutes {
     const val HOME = "home"
+    /** Empty start — no sidebar item selected. */
+    const val NONE = "none"
     const val WIFI = "wifi"
     const val TEMPERATURE = "temperature"
     const val SPEED = "speed"

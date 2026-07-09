@@ -38,8 +38,7 @@ import com.geely.ex2.tools.ui.components.FlymeSettingsSection
 import com.geely.ex2.tools.ui.components.FlymeSettingsStepperItem
 import com.geely.ex2.tools.ui.components.FlymeSettingsSwitchItem
 import com.geely.ex2.tools.ui.components.GeelyTopAppBar
-import com.geely.ex2.tools.ui.theme.FlymeAccent
-import com.geely.ex2.tools.ui.theme.FlymeTextSecondary
+import com.geely.ex2.tools.ui.components.isFlymeRailCompact
 import com.geely.ex2.tools.ui.theme.GeelyEx2ToolsTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,7 +72,7 @@ fun SpeedScreen(
         topBar = {
             GeelyTopAppBar(
                 title = stringResource(R.string.speed_screen_title),
-                onBack = onBack,
+                onBack = onBack.takeIf { isFlymeRailCompact() },
             )
         },
     ) { innerPadding ->
@@ -157,7 +156,11 @@ private fun SpeedStatusHeader(
             contentDescription = null,
             modifier = Modifier.size(72.dp),
             colorFilter = ColorFilter.tint(
-                if (isEnabled) FlymeAccent else FlymeTextSecondary,
+                if (isEnabled) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
             ),
         )
         Text(
@@ -173,10 +176,18 @@ private fun SpeedStatusHeader(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Speed Light")
 @Composable
-private fun SpeedScreenPreview() {
-    GeelyEx2ToolsTheme {
+private fun SpeedScreenPreviewLight() {
+    GeelyEx2ToolsTheme(darkTheme = false) {
+        SpeedScreen(onBack = {})
+    }
+}
+
+@Preview(showBackground = true, name = "Speed Dark")
+@Composable
+private fun SpeedScreenPreviewDark() {
+    GeelyEx2ToolsTheme(darkTheme = true) {
         SpeedScreen(onBack = {})
     }
 }

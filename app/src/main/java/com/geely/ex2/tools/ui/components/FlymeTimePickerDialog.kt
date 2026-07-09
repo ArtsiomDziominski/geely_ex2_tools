@@ -4,7 +4,7 @@ import android.widget.NumberPicker
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -34,6 +34,10 @@ fun FlymeTimePickerDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        shape = RoundedCornerShape(16.dp),
+        containerColor = MaterialTheme.colorScheme.surface,
+        titleContentColor = MaterialTheme.colorScheme.onSurface,
+        textContentColor = MaterialTheme.colorScheme.onSurface,
         title = {
             Text(
                 text = title,
@@ -93,12 +97,18 @@ fun FlymeTimePickerDialog(
         },
         confirmButton = {
             TextButton(onClick = { onConfirm(hour, minute) }) {
-                Text(stringResource(R.string.ambient_light_time_picker_confirm))
+                Text(
+                    text = stringResource(R.string.ambient_light_time_picker_confirm),
+                    color = MaterialTheme.colorScheme.primary,
+                )
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.ambient_light_time_picker_cancel))
+                Text(
+                    text = stringResource(R.string.ambient_light_time_picker_cancel),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         },
     )

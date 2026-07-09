@@ -37,7 +37,7 @@ import com.geely.ex2.tools.ui.components.FlymeSettingsSection
 import com.geely.ex2.tools.ui.components.FlymeSettingsStepperItem
 import com.geely.ex2.tools.ui.components.FlymeSettingsSwitchItem
 import com.geely.ex2.tools.ui.components.GeelyTopAppBar
-import com.geely.ex2.tools.ui.theme.FlymeAccent
+import com.geely.ex2.tools.ui.components.isFlymeRailCompact
 import com.geely.ex2.tools.ui.theme.GeelyEx2ToolsTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,7 +71,7 @@ fun WifiScreen(
         topBar = {
             GeelyTopAppBar(
                 title = stringResource(R.string.wifi_screen_title),
-                onBack = onBack,
+                onBack = onBack.takeIf { isFlymeRailCompact() },
             )
         },
     ) { innerPadding ->
@@ -147,7 +147,11 @@ private fun WifiStatusHeader(
             contentDescription = null,
             modifier = Modifier.size(72.dp),
             colorFilter = ColorFilter.tint(
-                if (isWifiOn) FlymeAccent else MaterialTheme.colorScheme.onSurfaceVariant,
+                if (isWifiOn) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
             ),
         )
         Text(
@@ -163,10 +167,18 @@ private fun WifiStatusHeader(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Wi-Fi Light")
 @Composable
-private fun WifiScreenPreview() {
-    GeelyEx2ToolsTheme {
+private fun WifiScreenPreviewLight() {
+    GeelyEx2ToolsTheme(darkTheme = false) {
+        WifiScreen(onBack = {})
+    }
+}
+
+@Preview(showBackground = true, name = "Wi-Fi Dark")
+@Composable
+private fun WifiScreenPreviewDark() {
+    GeelyEx2ToolsTheme(darkTheme = true) {
         WifiScreen(onBack = {})
     }
 }

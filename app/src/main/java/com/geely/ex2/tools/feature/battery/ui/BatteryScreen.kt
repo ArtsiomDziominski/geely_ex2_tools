@@ -38,8 +38,7 @@ import com.geely.ex2.tools.ui.components.FlymeSettingsSection
 import com.geely.ex2.tools.ui.components.FlymeSettingsStepperItem
 import com.geely.ex2.tools.ui.components.FlymeSettingsSwitchItem
 import com.geely.ex2.tools.ui.components.GeelyTopAppBar
-import com.geely.ex2.tools.ui.theme.FlymeAccent
-import com.geely.ex2.tools.ui.theme.FlymeTextSecondary
+import com.geely.ex2.tools.ui.components.isFlymeRailCompact
 import com.geely.ex2.tools.ui.theme.GeelyEx2ToolsTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,7 +72,7 @@ fun BatteryScreen(
         topBar = {
             GeelyTopAppBar(
                 title = stringResource(R.string.battery_screen_title),
-                onBack = onBack,
+                onBack = onBack.takeIf { isFlymeRailCompact() },
             )
         },
     ) { innerPadding ->
@@ -157,7 +156,11 @@ private fun BatteryStatusHeader(
             contentDescription = null,
             modifier = Modifier.size(72.dp),
             colorFilter = ColorFilter.tint(
-                if (isEnabled) FlymeAccent else FlymeTextSecondary,
+                if (isEnabled) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
             ),
         )
         Text(
@@ -173,10 +176,18 @@ private fun BatteryStatusHeader(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Battery Light")
 @Composable
-private fun BatteryScreenPreview() {
-    GeelyEx2ToolsTheme {
+private fun BatteryScreenPreviewLight() {
+    GeelyEx2ToolsTheme(darkTheme = false) {
+        BatteryScreen(onBack = {})
+    }
+}
+
+@Preview(showBackground = true, name = "Battery Dark")
+@Composable
+private fun BatteryScreenPreviewDark() {
+    GeelyEx2ToolsTheme(darkTheme = true) {
         BatteryScreen(onBack = {})
     }
 }
