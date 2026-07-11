@@ -297,7 +297,7 @@ LAUNCHER → MainActivity.onCreate
 | ConnAdaptor patch | MainActivity / update flow | Bind `ca_fix.apk` → `/system/app/ConnAdaptor/ConnAdaptor.apk` |
 | CarplayMonitor | MainActivity / update | Bind binary → `/system/bin/CarplayMonitor` |
 | AEB | Watchdog + QuickAccess | Boolean VHAL `557858874` |
-| AVAS mute | Watchdog + UI | `CarAudioManager.setAVASMode(0)` |
+| AVAS mute | Watchdog + UI | `CarAudioManager.setAVASMode(0)` (+ verify). Unmute → last mode. Pref `avas_muted_saved`. EX2 Tools: тот же API **только** в system flavor (`sharedUserId` + platform testkey) — см. `docs/system-install.md` |
 | Телеметрия | `VhalProviderService` + `TelemetryReader` | JSON stream :47800 |
 | Status temp | `StatusTempIcon` | Иконки в status bar: ambient + SOC |
 | Self-update | Watchdog `autoUpdateRunnable` | `update.json` → APK → `pm install` |

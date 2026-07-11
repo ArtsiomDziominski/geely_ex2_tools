@@ -50,3 +50,6 @@ Thumbs.db
 
 # Temporary APK analysis artifacts
 .tmp/
+
+# Platform-signed install outputs
+install/out/

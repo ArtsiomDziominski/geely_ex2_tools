@@ -18,6 +18,23 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    /**
+     * `user` — обычный debug/sideload (как сейчас).
+     * `system` — sharedUserId=android.uid.system + platform-подпись (как CentralEXAuto);
+     *           иначе setAVASMode / CAR_CONTROL_AUDIO_VOLUME не работают.
+     */
+    flavorDimensions += "install"
+    productFlavors {
+        create("user") {
+            dimension = "install"
+            isDefault = true
+        }
+        create("system") {
+            dimension = "install"
+            versionNameSuffix = "-system"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
