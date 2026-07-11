@@ -9,6 +9,8 @@ object DrivingSettings {
     private const val PREFS = "geelytools_driving"
     private const val KEY_PERSIST_ENABLED = "persist_enabled"
     private const val KEY_SAVED_MODE_VALUE = "saved_mode_value"
+    private const val KEY_REGEN_PERSIST_ENABLED = "regen_persist_enabled"
+    private const val KEY_SAVED_REGEN_VALUE = "saved_regen_value"
 
     fun isPersistEnabled(context: Context): Boolean =
         prefs(context).getBoolean(KEY_PERSIST_ENABLED, true)
@@ -26,6 +28,23 @@ object DrivingSettings {
 
     fun hasSavedMode(context: Context): Boolean =
         prefs(context).contains(KEY_SAVED_MODE_VALUE)
+
+    fun isRegenPersistEnabled(context: Context): Boolean =
+        prefs(context).getBoolean(KEY_REGEN_PERSIST_ENABLED, false)
+
+    fun setRegenPersistEnabled(context: Context, enabled: Boolean) {
+        prefs(context).edit().putBoolean(KEY_REGEN_PERSIST_ENABLED, enabled).commit()
+    }
+
+    fun getSavedRegenValue(context: Context): Int =
+        prefs(context).getInt(KEY_SAVED_REGEN_VALUE, VhalConstants.ENERGY_REGENERATION_LEVEL_MID)
+
+    fun setSavedRegenValue(context: Context, levelValue: Int) {
+        prefs(context).edit().putInt(KEY_SAVED_REGEN_VALUE, levelValue).commit()
+    }
+
+    fun hasAnyPersistEnabled(context: Context): Boolean =
+        isPersistEnabled(context) || isRegenPersistEnabled(context)
 
     private fun prefs(context: Context): SharedPreferences {
         val appContext = context.applicationContext

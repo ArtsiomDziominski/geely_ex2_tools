@@ -8,7 +8,7 @@ import android.util.Log
 object DrivingAppStarter {
     fun startRestoreServiceIfEnabled(context: Context, reason: String) {
         val appContext = context.applicationContext
-        if (!DrivingSettings.isPersistEnabled(appContext)) {
+        if (!DrivingSettings.hasAnyPersistEnabled(appContext)) {
             Log.i(DrivingModeController.TAG, "Driving restore service not started, persist disabled: $reason")
             stopRestoreService(appContext, reason)
             return
@@ -28,6 +28,15 @@ object DrivingAppStarter {
             appContext.startService(intent)
         }
         Log.i(DrivingModeController.TAG, "Driving restore service start requested: $reason")
+    }
+
+    fun stopRestoreServiceIfIdle(context: Context, reason: String) {
+        val appContext = context.applicationContext
+        if (DrivingSettings.hasAnyPersistEnabled(appContext)) {
+            Log.i(DrivingModeController.TAG, "Driving restore service kept, other persist still on: $reason")
+            return
+        }
+        stopRestoreService(appContext, reason)
     }
 
     fun stopRestoreService(context: Context, reason: String) {

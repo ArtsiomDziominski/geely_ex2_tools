@@ -11,9 +11,11 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import com.geely.ex2.tools.R
+import java.util.concurrent.atomic.AtomicInteger
 
 class DrivingRestoreService : Service() {
     private val mainHandler = Handler(Looper.getMainLooper())
+    private val pendingRestores = AtomicInteger(0)
 
     override fun onCreate() {
         super.onCreate()
@@ -24,16 +26,38 @@ class DrivingRestoreService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val reason = intent?.getStringExtra(EXTRA_REASON) ?: "service start"
-        if (!DrivingSettings.isPersistEnabled(this)) {
+        val restoreMode = DrivingSettings.isPersistEnabled(this)
+        val restoreRegen = DrivingSettings.isRegenPersistEnabled(this)
+
+        if (!restoreMode && !restoreRegen) {
             Log.i(TAG, "Driving restore skipped, persist disabled: $reason")
             finishService()
             return START_NOT_STICKY
         }
 
-        DrivingModeController.restoreDrivingModeIfNeeded(this, reason) {
-            mainHandler.post { finishService() }
+        var scheduled = 0
+        if (restoreMode) scheduled++
+        if (restoreRegen) scheduled++
+        pendingRestores.addAndGet(scheduled)
+
+        if (restoreMode) {
+            DrivingModeController.restoreDrivingModeIfNeeded(this, reason) {
+                onRestoreFinished()
+            }
+        }
+        if (restoreRegen) {
+            EnergyRegenController.restoreEnergyRegenerationIfNeeded(this, reason) {
+                onRestoreFinished()
+            }
         }
         return START_NOT_STICKY
+    }
+
+    private fun onRestoreFinished() {
+        if (pendingRestores.decrementAndGet() <= 0) {
+            pendingRestores.set(0)
+            mainHandler.post { finishService() }
+        }
     }
 
     override fun onDestroy() {

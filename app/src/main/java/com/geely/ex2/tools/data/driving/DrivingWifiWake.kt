@@ -16,11 +16,22 @@ object DrivingWifiWake {
         }
 
         val appContext = context.applicationContext
-        if (!DrivingSettings.isPersistEnabled(appContext)) {
+        val restoreMode = DrivingSettings.isPersistEnabled(appContext)
+        val restoreRegen = DrivingSettings.isRegenPersistEnabled(appContext)
+        if (!restoreMode && !restoreRegen) {
             return
         }
 
-        Log.i(DrivingModeController.TAG, "Wi-Fi reconnected, restore driving mode: $reason")
-        DrivingModeController.restoreDrivingModeIfNeeded(appContext, "Wi-Fi reconnected: $reason")
+        if (restoreMode) {
+            Log.i(DrivingModeController.TAG, "Wi-Fi reconnected, restore driving mode: $reason")
+            DrivingModeController.restoreDrivingModeIfNeeded(appContext, "Wi-Fi reconnected: $reason")
+        }
+        if (restoreRegen) {
+            Log.i(DrivingModeController.TAG, "Wi-Fi reconnected, restore regen: $reason")
+            EnergyRegenController.restoreEnergyRegenerationIfNeeded(
+                appContext,
+                "Wi-Fi reconnected: $reason",
+            )
+        }
     }
 }
