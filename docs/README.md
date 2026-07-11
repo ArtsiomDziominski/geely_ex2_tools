@@ -15,6 +15,7 @@
 | [android-shell-apk.md](./android-shell-apk.md) | Разбор APK `com.android.shell` (Оболочка): UID shell, bugreport UX, dumpstate |
 | [flyme-wallpaperlauncher-apk.md](./flyme-wallpaperlauncher-apk.md) | Разбор APK `com.flyme.auto.wallpaperlauncher`: live wallpaper, Customize Provider, MIPC/Car3D |
 | [flyme-launcher-apk.md](./flyme-launcher-apk.md) | Разбор APK `com.flyme.auto.launcher` (Lib): HOME, Aicy Widget, applist, plugins, recent apps |
+| [centralexauto-apk.md](./centralexauto-apk.md) | Разбор APK `com.ex.auto` (CentralEXAuto): watchdog, AA/CarPlay, floaters, VHAL, GitHub updates |
 
 ## Локальные артефакты
 
@@ -60,5 +61,8 @@
 | `.tmp/flyme-launcher-badging.txt` | `aapt dump badging` AutoLauncher |
 | `.tmp/flyme-launcher-manifest.txt` | `aapt dump xmltree` манифест лаунчера |
 | `.tmp/flyme-launcher-analysis.txt` | Анализ классов/пакетов dex лаунчера |
+| `.tmp/centralexauto.apk` | Оригинальный APK CentralEXAuto (опционально) |
+| `.tmp/centralexauto/` | Распакованный APK + badging/manifest |
+| `.tmp/centralexauto-jadx/` | JADX-декомпилят CentralEXAuto |
 
 Папка `.tmp/` в `.gitignore`.

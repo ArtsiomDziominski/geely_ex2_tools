@@ -22,7 +22,7 @@
     <string name="tool_battery_title">Заряд батареи</string>
     <string name="tool_battery_description">SOC в шторке Flyme</string>
     <string name="tool_driving_title">Вождение</string>
-    <string name="tool_driving_description">Эко, Комфорт, Спорт — с запоминанием после пробуждения ГУ</string>
+    <string name="tool_driving_description">Режим и рекуперация — с запоминанием после пробуждения ГУ</string>
     <string name="tool_ambient_light_title">Атмосферная подсветка</string>
     <string name="tool_ambient_light_description">Расписание включения и отключения ambient light</string>
 
@@ -153,17 +153,27 @@
 
     <string name="driving_screen_title">Вождение</string>
     <string name="driving_section_mode">Режим вождения</string>
+    <string name="driving_section_regen">Рекуперация</string>
     <string name="driving_section_status">Статус</string>
     <string name="driving_mode_switch_title">Режим</string>
     <string name="driving_mode_switch_summary">Эко, Комфорт, Спорт</string>
+    <string name="driving_regen_switch_title">Уровень</string>
+    <string name="driving_regen_switch_summary">Низкий, Средний, Высокий</string>
     <string name="driving_current_title">Сейчас</string>
-    <string name="driving_status_title">Состояние</string>
-    <string name="driving_raw_title">Значение VHAL</string>
-    <string name="driving_source_title">Источник данных</string>
+    <string name="driving_regen_current_title">Рекуперация сейчас</string>
+    <string name="driving_status_title">Состояние режима</string>
+    <string name="driving_regen_status_title">Состояние рекуперации</string>
+    <string name="driving_raw_title">VHAL режима</string>
+    <string name="driving_regen_raw_title">VHAL рекуперации</string>
+    <string name="driving_source_title">Источник режима</string>
+    <string name="driving_regen_source_title">Источник рекуперации</string>
     <string name="driving_current_unavailable">Режим недоступен</string>
+    <string name="driving_regen_current_unavailable">Рекуперация недоступна</string>
     <string name="driving_current_unknown">Неизвестный режим (%1$s)</string>
+    <string name="driving_regen_current_unknown">Неизвестный уровень (%1$s)</string>
     <string name="driving_status_ok">Чтение успешно (%1$s)</string>
     <string name="driving_status_ok_persist">Чтение успешно, режим сохраняется (%1$s)</string>
+    <string name="driving_regen_status_ok_persist">Чтение успешно, уровень сохраняется (%1$s)</string>
     <string name="driving_status_error">Ошибка чтения (%1$s)</string>
     <string name="driving_status_write_error">Ошибка записи: %1$s</string>
     <string name="driving_write_error_unknown">неизвестная ошибка</string>
@@ -175,10 +185,15 @@
     <string name="driving_mode_adaptive">Умный</string>
     <string name="driving_mode_dynamic">Спорт</string>
     <string name="driving_persist_title">Запоминать режим</string>
+    <string name="driving_regen_persist_title">Запоминать рекуперацию</string>
     <string name="driving_saved_title">Сохранённый режим</string>
+    <string name="driving_regen_saved_title">Сохранённая рекуперация</string>
+    <string name="driving_regen_low">Низкий</string>
+    <string name="driving_regen_mid">Средний</string>
+    <string name="driving_regen_high">Высокий</string>
     <string name="driving_restore_channel">Режим вождения</string>
-    <string name="driving_restore_notification_title">Режим вождения</string>
-    <string name="driving_restore_notification_text">Восстановление сохранённого режима</string>
+    <string name="driving_restore_notification_title">Вождение</string>
+    <string name="driving_restore_notification_text">Восстановление режима и рекуперации</string>
     <string name="driving_mode_eco">Эко</string>
     <string name="driving_mode_xc">XC</string>
     <string name="driving_mode_hybrid">Гибрид</string>

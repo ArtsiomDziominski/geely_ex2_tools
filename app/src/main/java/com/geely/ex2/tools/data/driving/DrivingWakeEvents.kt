@@ -16,7 +16,7 @@ object DrivingWakeEvents {
 
     fun onManifestWake(context: Context, reason: String) {
         val appContext = context.applicationContext
-        if (!DrivingSettings.isPersistEnabled(appContext)) {
+        if (!DrivingSettings.hasAnyPersistEnabled(appContext)) {
             DrivingAppStarter.stopRestoreService(appContext, reason)
             return
         }

@@ -30,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.geely.ex2.tools.R
 import com.geely.ex2.tools.data.vhal.DrivingMode
+import com.geely.ex2.tools.data.vhal.EnergyRegeneration
 import com.geely.ex2.tools.feature.driving.DrivingViewModel
 import com.geely.ex2.tools.ui.components.FlymeSettingsInfoItem
 import com.geely.ex2.tools.ui.components.FlymeSettingsSection
@@ -47,6 +48,7 @@ fun DrivingScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
     val modeLabels = DrivingMode.selectable.map { stringResource(it.labelRes) }
+    val regenLabels = EnergyRegeneration.selectable.map { stringResource(it.labelRes) }
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -83,6 +85,7 @@ fun DrivingScreen(
         ) {
             DrivingStatusHeader(
                 currentModeText = uiState.currentModeText,
+                currentRegenText = uiState.currentRegenText,
                 modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
             )
 
@@ -104,6 +107,24 @@ fun DrivingScreen(
                 )
             }
 
+            FlymeSettingsSection(title = stringResource(R.string.driving_section_regen)) {
+                FlymeSettingsSegmentedItem(
+                    title = stringResource(R.string.driving_regen_switch_title),
+                    summary = stringResource(R.string.driving_regen_switch_summary),
+                    options = regenLabels,
+                    selectedIndex = uiState.regenSelectedIndex,
+                    onSelectedIndexChange = viewModel::onRegenSelected,
+                    enabled = uiState.isRegenWritable && !uiState.isChangingRegen,
+                    showDivider = true,
+                )
+                FlymeSettingsSwitchItem(
+                    title = stringResource(R.string.driving_regen_persist_title),
+                    checked = uiState.isRegenPersistEnabled,
+                    onCheckedChange = viewModel::onRegenPersistCheckedChange,
+                    showDivider = false,
+                )
+            }
+
             FlymeSettingsSection(title = stringResource(R.string.driving_section_status)) {
                 FlymeSettingsInfoItem(
                     title = stringResource(R.string.driving_current_title),
@@ -116,16 +137,38 @@ fun DrivingScreen(
                     )
                 }
                 FlymeSettingsInfoItem(
+                    title = stringResource(R.string.driving_regen_current_title),
+                    summary = uiState.currentRegenText,
+                )
+                if (uiState.isRegenPersistEnabled) {
+                    FlymeSettingsInfoItem(
+                        title = stringResource(R.string.driving_regen_saved_title),
+                        summary = uiState.savedRegenText,
+                    )
+                }
+                FlymeSettingsInfoItem(
                     title = stringResource(R.string.driving_status_title),
                     summary = uiState.statusText,
+                )
+                FlymeSettingsInfoItem(
+                    title = stringResource(R.string.driving_regen_status_title),
+                    summary = uiState.regenStatusText,
                 )
                 FlymeSettingsInfoItem(
                     title = stringResource(R.string.driving_raw_title),
                     summary = uiState.rawValueText,
                 )
                 FlymeSettingsInfoItem(
+                    title = stringResource(R.string.driving_regen_raw_title),
+                    summary = uiState.regenRawValueText,
+                )
+                FlymeSettingsInfoItem(
                     title = stringResource(R.string.driving_source_title),
                     summary = uiState.sourceText,
+                )
+                FlymeSettingsInfoItem(
+                    title = stringResource(R.string.driving_regen_source_title),
+                    summary = uiState.regenSourceText,
                 )
             }
         }
@@ -135,6 +178,7 @@ fun DrivingScreen(
 @Composable
 private fun DrivingStatusHeader(
     currentModeText: String,
+    currentRegenText: String,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -150,6 +194,17 @@ private fun DrivingStatusHeader(
         Text(
             text = currentModeText,
             style = MaterialTheme.typography.headlineSmall,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Text(
+            text = stringResource(R.string.driving_regen_current_title),
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            text = currentRegenText,
+            style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface,
         )
