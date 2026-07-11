@@ -5,8 +5,6 @@ data class BatterySample(
     val isAvailable: Boolean,
     val source: String = "",
     val details: String = "",
-    val tempCelsius: Float? = null,
-    val tempSource: String = "",
 )
 
 interface VhalBatteryReader {

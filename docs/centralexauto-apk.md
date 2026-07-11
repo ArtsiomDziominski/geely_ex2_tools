@@ -332,7 +332,7 @@ LAUNCHER → MainActivity.onCreate
 | `291504647` / `648` | speed | AOSP speed / display |
 | `291504644` | odo | odometer |
 | `289407752` | range | remaining |
-| `557885103`, `098`, `105`, `120`, `121` | battery temp | кандидаты HV temp |
+| `557885103`, `098`, `105`, `120`, `121` | ~~battery temp~~ | **Ошибка в CentralEXAuto:** это `CHARGING_RATE_SET` / `IPK_AVERAGE_POWER_CONSUMPTION` / `CHANGING_VCU_StsChg` / `DISCHARGING_*`, не HV temp. На EX2 live HV temp через Car API не отдаётся — в EX2 Tools не используется |
 
 Areas: `PROPERTY_AREAS = {0, 1, 16777216}`, `HVAC_AC_AREAS = {1, 5, 49, 0}`.
 

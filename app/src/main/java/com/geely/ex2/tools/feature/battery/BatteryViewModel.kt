@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Locale
 import kotlin.math.roundToInt
 
 data class BatteryUiState(
@@ -28,7 +27,6 @@ data class BatteryUiState(
     val canStepWidgetRight: Boolean = true,
     val statusText: String = "",
     val latestSocText: String = "",
-    val latestTempText: String = "",
     val sourceText: String = "",
 )
 
@@ -134,7 +132,6 @@ class BatteryViewModel(application: Application) : AndroidViewModel(application)
                     canStepWidgetRight = BatteryWidgetRank.canStepRight(widgetRank),
                     statusText = buildStatusText(enabled, sample),
                     latestSocText = buildLatestSocText(enabled, sample),
-                    latestTempText = buildLatestTempText(sample),
                     sourceText = buildSourceText(sample),
                 )
             }
@@ -160,18 +157,6 @@ class BatteryViewModel(application: Application) : AndroidViewModel(application)
             return appContext.getString(R.string.battery_latest_value, sample.socPercent.roundToInt())
         }
         return appContext.getString(R.string.battery_latest_unavailable)
-    }
-
-    private fun buildLatestTempText(sample: BatterySample): String {
-        val temp = sample.tempCelsius
-        return if (temp != null) {
-            appContext.getString(
-                R.string.battery_temp_value,
-                String.format(Locale.US, "%.1f", temp),
-            )
-        } else {
-            appContext.getString(R.string.battery_temp_unavailable)
-        }
     }
 
     private fun buildSourceText(sample: BatterySample): String {

@@ -87,7 +87,6 @@ fun BatteryScreen(
             BatteryStatusHeader(
                 isEnabled = uiState.isEnabled,
                 latestSocText = uiState.latestSocText,
-                latestTempText = uiState.latestTempText,
                 modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
             )
 
@@ -133,10 +132,6 @@ fun BatteryScreen(
                     summary = uiState.latestSocText,
                 )
                 FlymeSettingsInfoItem(
-                    title = stringResource(R.string.battery_temp_title),
-                    summary = uiState.latestTempText,
-                )
-                FlymeSettingsInfoItem(
                     title = stringResource(R.string.battery_source_title),
                     summary = uiState.sourceText,
                 )
@@ -149,7 +144,6 @@ fun BatteryScreen(
 private fun BatteryStatusHeader(
     isEnabled: Boolean,
     latestSocText: String,
-    latestTempText: String,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -175,12 +169,6 @@ private fun BatteryStatusHeader(
             } else {
                 stringResource(R.string.battery_header_off)
             },
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-        Text(
-            text = latestTempText,
             style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface,
