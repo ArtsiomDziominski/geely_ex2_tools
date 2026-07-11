@@ -240,5 +240,46 @@
     <string name="ambient_light_restore_notification_title">Подсветка</string>
     <string name="ambient_light_restore_notification_text">Применение режима подсветки</string>
 
+    <string name="tool_avas_title">AVAS</string>
+    <string name="tool_avas_description">Отключение звука пешеходного оповещения (AVAS)</string>
+    <string name="avas_screen_title">AVAS</string>
+    <string name="avas_section_control">Управление</string>
+    <string name="avas_section_status">Статус</string>
+    <string name="avas_mute_title">Отключить AVAS</string>
+    <string name="avas_segment_on">Включить</string>
+    <string name="avas_segment_off">Отключить</string>
+    <string name="avas_mute_button">Отключить AVAS</string>
+    <string name="avas_unmute_button">Включить AVAS</string>
+    <string name="avas_mute_confirm_title">Отключить AVAS</string>
+    <string name="avas_mute_confirm_message">Вы уверены, что хотите отключить AVAS? Это функция безопасности автомобиля.</string>
+    <string name="avas_mute_confirm_yes">Да</string>
+    <string name="avas_mute_confirm_no">Нет</string>
+    <string name="avas_mute_summary_on">Звук пешеходного оповещения выключен; сохранится после перезагрузки</string>
+    <string name="avas_mute_summary_off">Полностью отключает AVAS / внешний динамик</string>
+    <string name="avas_header_muted">AVAS отключён</string>
+    <string name="avas_header_hint">Acoustic Vehicle Alerting System</string>
+    <string name="avas_current_title">Текущий режим</string>
+    <string name="avas_supported_title">Поддержка API</string>
+    <string name="avas_supported_yes">Да</string>
+    <string name="avas_supported_no">Нет / неизвестно</string>
+    <string name="avas_status_title">Состояние</string>
+    <string name="avas_source_title">Источник данных</string>
+    <string name="avas_mode_unavailable">Режим недоступен</string>
+    <string name="avas_mode_off">Выключен</string>
+    <string name="avas_mode_type_1">Тип 1</string>
+    <string name="avas_mode_type_2">Тип 2</string>
+    <string name="avas_mode_type_3">Тип 3</string>
+    <string name="avas_mode_unknown">Неизвестный режим (%1$d)</string>
+    <string name="avas_status_ok">Чтение успешно (%1$s)</string>
+    <string name="avas_status_ok_muted">Mute сохранён, чтение успешно (%1$s)</string>
+    <string name="avas_status_error">Ошибка чтения (%1$s)</string>
+    <string name="avas_status_write_error">Ошибка записи: %1$s</string>
+    <string name="avas_status_need_system">Нет прав на AVAS (нужна platform-сборка как у CentralEXAuto). Соберите scripts\\build-system-apk.ps1 и установите system APK.</string>
+    <string name="avas_write_error_unknown">неизвестная ошибка</string>
+    <string name="avas_source_empty">Нет отладочной информации</string>
+    <string name="avas_restore_channel">AVAS</string>
+    <string name="avas_restore_notification_title">AVAS</string>
+    <string name="avas_restore_notification_text">Восстановление mute после загрузки</string>
+
     <string name="nav_back">Назад</string>
 </resources>

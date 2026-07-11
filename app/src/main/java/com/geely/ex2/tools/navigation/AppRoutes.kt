@@ -10,4 +10,5 @@ object AppRoutes {
     const val BATTERY = "battery"
     const val DRIVING = "driving"
     const val AMBIENT_LIGHT = "ambient_light"
+    const val AVAS = "avas"
 }

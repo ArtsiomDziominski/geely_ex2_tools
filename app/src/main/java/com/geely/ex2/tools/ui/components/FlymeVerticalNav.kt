@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.VolumeOff
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.filled.Thermostat
@@ -81,6 +82,11 @@ val FlymeNavDestinations = listOf(
         route = AppRoutes.AMBIENT_LIGHT,
         labelRes = R.string.tool_ambient_light_title,
         icon = Icons.Filled.LightMode,
+    ),
+    FlymeNavDestination(
+        route = AppRoutes.AVAS,
+        labelRes = R.string.tool_avas_title,
+        icon = Icons.AutoMirrored.Filled.VolumeOff,
     ),
 )
 
