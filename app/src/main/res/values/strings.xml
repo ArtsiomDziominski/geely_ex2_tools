@@ -246,6 +246,8 @@
     <string name="avas_section_control">Управление</string>
     <string name="avas_section_status">Статус</string>
     <string name="avas_mute_title">Отключить AVAS</string>
+    <string name="avas_segment_on">Включить</string>
+    <string name="avas_segment_off">Отключить</string>
     <string name="avas_mute_button">Отключить AVAS</string>
     <string name="avas_unmute_button">Включить AVAS</string>
     <string name="avas_mute_confirm_title">Отключить AVAS</string>

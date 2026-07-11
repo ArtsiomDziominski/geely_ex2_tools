@@ -51,12 +51,14 @@ class AvasViewModel(application: Application) : AndroidViewModel(application) {
         stopPolling()
     }
 
-    fun onMuteButtonClick() {
+    fun onMuteSegmentSelected(index: Int) {
         if (_uiState.value.isChanging) return
-        if (_uiState.value.isMuted) {
-            applyMute(false)
-        } else {
+        val wantMuted = index == 1
+        if (wantMuted == _uiState.value.isMuted) return
+        if (wantMuted) {
             _uiState.update { it.copy(showMuteConfirm = true) }
+        } else {
+            applyMute(false)
         }
     }
 

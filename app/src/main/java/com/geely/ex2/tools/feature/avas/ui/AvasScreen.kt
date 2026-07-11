@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -34,6 +32,7 @@ import com.geely.ex2.tools.R
 import com.geely.ex2.tools.feature.avas.AvasViewModel
 import com.geely.ex2.tools.ui.components.FlymeSettingsInfoItem
 import com.geely.ex2.tools.ui.components.FlymeSettingsSection
+import com.geely.ex2.tools.ui.components.FlymeSettingsSegmentedItem
 import com.geely.ex2.tools.ui.components.GeelyTopAppBar
 import com.geely.ex2.tools.ui.components.isFlymeRailCompact
 import com.geely.ex2.tools.ui.theme.GeelyEx2ToolsTheme
@@ -47,6 +46,10 @@ fun AvasScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
+    val muteOptions = listOf(
+        stringResource(R.string.avas_segment_on),
+        stringResource(R.string.avas_segment_off),
+    )
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -106,44 +109,19 @@ fun AvasScreen(
             )
 
             FlymeSettingsSection(title = stringResource(R.string.avas_section_control)) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 14.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    Text(
-                        text = if (uiState.isMuted) {
-                            stringResource(R.string.avas_mute_summary_on)
-                        } else {
-                            stringResource(R.string.avas_mute_summary_off)
-                        },
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Button(
-                        onClick = viewModel::onMuteButtonClick,
-                        enabled = !uiState.isChanging,
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = if (uiState.isMuted) {
-                            ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                            )
-                        } else {
-                            ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.error,
-                            )
-                        },
-                    ) {
-                        Text(
-                            text = if (uiState.isMuted) {
-                                stringResource(R.string.avas_unmute_button)
-                            } else {
-                                stringResource(R.string.avas_mute_button)
-                            },
-                        )
-                    }
-                }
+                FlymeSettingsSegmentedItem(
+                    title = stringResource(R.string.avas_mute_title),
+                    summary = if (uiState.isMuted) {
+                        stringResource(R.string.avas_mute_summary_on)
+                    } else {
+                        stringResource(R.string.avas_mute_summary_off)
+                    },
+                    options = muteOptions,
+                    selectedIndex = if (uiState.isMuted) 1 else 0,
+                    onSelectedIndexChange = viewModel::onMuteSegmentSelected,
+                    enabled = !uiState.isChanging,
+                    showDivider = false,
+                )
             }
 
             FlymeSettingsSection(title = stringResource(R.string.avas_section_status)) {
