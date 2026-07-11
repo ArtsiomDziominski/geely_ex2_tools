@@ -36,11 +36,22 @@ object DrivingSettings {
         prefs(context).edit().putBoolean(KEY_REGEN_PERSIST_ENABLED, enabled).commit()
     }
 
-    fun getSavedRegenValue(context: Context): Int =
-        prefs(context).getInt(KEY_SAVED_REGEN_VALUE, VhalConstants.ENERGY_REGENERATION_LEVEL_MID)
+    fun getSavedRegenValue(context: Context): Int {
+        val raw = prefs(context).getInt(
+            KEY_SAVED_REGEN_VALUE,
+            VhalConstants.ENERGY_REGENERATION_LEVEL_MID,
+        )
+        val normalized = EnergyRegenerationValues.normalizeStoredValue(raw)
+        if (normalized != raw) {
+            setSavedRegenValue(context, normalized)
+        }
+        return normalized
+    }
 
     fun setSavedRegenValue(context: Context, levelValue: Int) {
-        prefs(context).edit().putInt(KEY_SAVED_REGEN_VALUE, levelValue).commit()
+        prefs(context).edit()
+            .putInt(KEY_SAVED_REGEN_VALUE, EnergyRegenerationValues.normalizeStoredValue(levelValue))
+            .commit()
     }
 
     fun hasAnyPersistEnabled(context: Context): Boolean =

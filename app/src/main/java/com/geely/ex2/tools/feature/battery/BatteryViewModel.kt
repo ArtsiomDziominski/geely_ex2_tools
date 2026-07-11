@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Locale
 import kotlin.math.roundToInt
 
 data class BatteryUiState(
@@ -27,6 +28,7 @@ data class BatteryUiState(
     val canStepWidgetRight: Boolean = true,
     val statusText: String = "",
     val latestSocText: String = "",
+    val latestTempText: String = "",
     val sourceText: String = "",
 )
 
@@ -43,7 +45,7 @@ class BatteryViewModel(application: Application) : AndroidViewModel(application)
     fun onResume() {
         refreshState()
         syncBackgroundWork("BatteryScreen resume")
-        restartPolling()
+        startPolling()
     }
 
     fun onPause() {
@@ -55,11 +57,9 @@ class BatteryViewModel(application: Application) : AndroidViewModel(application)
         repository.setEnabled(enabled)
         if (enabled) {
             syncBackgroundWork("UI battery enable")
-            restartPolling()
         } else {
             repository.stopStatusService("UI battery disable")
             repository.cancelStatusIcon()
-            stopPolling()
         }
         refreshState()
     }
@@ -102,18 +102,11 @@ class BatteryViewModel(application: Application) : AndroidViewModel(application)
         repository.notifyStatusIconIfEnabled(reason)
     }
 
-    private fun restartPolling() {
-        stopPolling()
-        if (repository.isEnabled()) {
-            startPolling()
-        }
-    }
-
     private fun startPolling() {
         pollJob?.cancel()
         pollJob = viewModelScope.launch {
             while (isActive) {
-                delay(VhalConstants.BATTERY_POLL_INTERVAL_MS)
+                delay(VhalConstants.BATTERY_UI_POLL_INTERVAL_MS)
                 refreshState()
             }
         }
@@ -127,37 +120,30 @@ class BatteryViewModel(application: Application) : AndroidViewModel(application)
     private fun refreshState() {
         refreshJob?.cancel()
         refreshJob = viewModelScope.launch {
-            val enabled = repository.isEnabled()
-            val sample = if (enabled) {
-                withContext(Dispatchers.IO) {
-                    repository.readBatterySoc()
-                }
-            } else {
-                null
+            val sample = withContext(Dispatchers.IO) {
+                repository.readBatterySample()
             }
+            val enabled = repository.isEnabled()
             val widgetRank = repository.getStatusIconRank()
-            val enabledAfter = repository.isEnabled()
 
             _uiState.update {
                 BatteryUiState(
-                    isEnabled = enabledAfter,
+                    isEnabled = enabled,
                     widgetRank = widgetRank,
                     canStepWidgetLeft = BatteryWidgetRank.canStepLeft(widgetRank),
                     canStepWidgetRight = BatteryWidgetRank.canStepRight(widgetRank),
-                    statusText = buildStatusText(enabledAfter, sample.takeIf { enabledAfter }),
-                    latestSocText = buildLatestSocText(enabledAfter, sample.takeIf { enabledAfter }),
-                    sourceText = buildSourceText(enabledAfter, sample.takeIf { enabledAfter }),
+                    statusText = buildStatusText(enabled, sample),
+                    latestSocText = buildLatestSocText(enabled, sample),
+                    latestTempText = buildLatestTempText(sample),
+                    sourceText = buildSourceText(sample),
                 )
             }
         }
     }
 
-    private fun buildStatusText(enabled: Boolean, sample: BatterySample?): String {
+    private fun buildStatusText(enabled: Boolean, sample: BatterySample): String {
         if (!enabled) {
             return appContext.getString(R.string.battery_status_disabled)
-        }
-        if (sample == null) {
-            return appContext.getString(R.string.battery_status_waiting)
         }
         return if (sample.isAvailable) {
             appContext.getString(R.string.battery_status_ok, sample.source)
@@ -166,20 +152,29 @@ class BatteryViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    private fun buildLatestSocText(enabled: Boolean, sample: BatterySample?): String {
+    private fun buildLatestSocText(enabled: Boolean, sample: BatterySample): String {
         if (!enabled) {
             return appContext.getString(R.string.battery_latest_disabled)
         }
-        if (sample?.isAvailable == true) {
+        if (sample.isAvailable) {
             return appContext.getString(R.string.battery_latest_value, sample.socPercent.roundToInt())
         }
         return appContext.getString(R.string.battery_latest_unavailable)
     }
 
-    private fun buildSourceText(enabled: Boolean, sample: BatterySample?): String {
-        if (!enabled || sample == null) {
-            return appContext.getString(R.string.battery_source_unavailable)
+    private fun buildLatestTempText(sample: BatterySample): String {
+        val temp = sample.tempCelsius
+        return if (temp != null) {
+            appContext.getString(
+                R.string.battery_temp_value,
+                String.format(Locale.US, "%.1f", temp),
+            )
+        } else {
+            appContext.getString(R.string.battery_temp_unavailable)
         }
+    }
+
+    private fun buildSourceText(sample: BatterySample): String {
         return sample.details.ifEmpty {
             appContext.getString(R.string.battery_source_empty)
         }

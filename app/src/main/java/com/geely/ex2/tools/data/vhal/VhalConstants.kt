@@ -18,6 +18,21 @@ object VhalConstants {
     /** android.car.VehiclePropertyIds.INFO_EV_BATTERY_CAPACITY */
     const val PROP_INFO_EV_BATTERY_CAPACITY = 0x11600106
 
+    /**
+     * Кандидаты OEM HV battery temp (CentralEXAuto `HV_BATTERY_TEMP_CANDIDATES`).
+     * Перебор до первого валидного значения.
+     */
+    val HV_BATTERY_TEMP_CANDIDATES: IntArray = intArrayOf(
+        0x2140A6AF, // 557885103
+        0x2140A6AA, // 557885098
+        0x2140A6B1, // 557885105
+        0x2140A6C0, // 557885120
+        0x2140A6C1, // 557885121
+    )
+
+    /** Areas для probe HV temp (как CentralEXAuto PROPERTY_AREAS). */
+    val HV_BATTERY_TEMP_AREAS: IntArray = intArrayOf(0, 1, 0x01000000)
+
     /** Flyme OEM: BCM_FUNC_LIGHT_ATMOSPHERE_LAMPS */
     const val PROP_BCM_FUNC_LIGHT_ATMOSPHERE_LAMPS = 0x21051000
 
@@ -37,13 +52,19 @@ object VhalConstants {
     const val DRIVE_MODE_SNOW = 0x22010109
     const val DRIVE_MODE_ADAPTIVE = 0x22010116
 
-    /** Flyme OEM: SETTING_FUNC_ENERGY_REGENERATION */
-    const val PROP_SETTING_FUNC_ENERGY_REGENERATION = 0x22020500
+    /**
+     * Flyme OEM: SETTING_FUNC_ENERGY_REGENERATION.
+     * AutoFuncId / CentralEXAuto: 537003264 = 0x20020500 (не 0x22020500).
+     */
+    const val PROP_SETTING_FUNC_ENERGY_REGENERATION = 0x20020500
 
     /** Flyme OEM regen levels (VALUE_ENERGY_REGENERATION_LEVEL_*) */
-    const val ENERGY_REGENERATION_LEVEL_LOW = 0x22020501
-    const val ENERGY_REGENERATION_LEVEL_MID = 0x22020502
-    const val ENERGY_REGENERATION_LEVEL_HIGH = 0x22020503
+    const val ENERGY_REGENERATION_LEVEL_LOW = 0x20020501
+    const val ENERGY_REGENERATION_LEVEL_MID = 0x20020502
+    const val ENERGY_REGENERATION_LEVEL_HIGH = 0x20020503
+
+    /** Areas для VHAL regen (CentralEXAuto REGEN_AREAS / REGEN_PROP_AREAS). */
+    val ENERGY_REGENERATION_AREAS: IntArray = intArrayOf(0, 1)
 
     /** ICarFunction.COMMON_VALUE_ON / COMMON_VALUE_OFF */
     const val COMMON_VALUE_ON = 1
@@ -72,6 +93,8 @@ object VhalConstants {
     const val STATUS_WIDGET_POLL_INTERVAL_MS = 100_000L
 
     const val BATTERY_POLL_INTERVAL_MS = STATUS_WIDGET_POLL_INTERVAL_MS
+    /** UI экрана Battery — SOC + temp */
+    const val BATTERY_UI_POLL_INTERVAL_MS = 3_000L
     const val TEMPERATURE_POLL_INTERVAL_MS = STATUS_WIDGET_POLL_INTERVAL_MS
 
     /** Спидометр в шторке Flyme — обновление раз в 3 секунды */

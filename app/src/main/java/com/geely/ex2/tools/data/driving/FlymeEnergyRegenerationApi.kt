@@ -51,6 +51,10 @@ object FlymeEnergyRegenerationApi {
         }
     }
 
+    /**
+     * Как Flyme Settings: `updateValueDelayWriter(AutoFuncId)`.
+     * Force — только с int id (как drive mode), не с AutoFuncId-объектом.
+     */
     fun writeLevelValue(context: Context, levelValue: Int): Boolean {
         if (!isAvailable(context)) {
             return false
@@ -58,25 +62,40 @@ object FlymeEnergyRegenerationApi {
         return try {
             ensureAutoFuncManager(context)
             val liveData = getRegenLiveData(context)
-            val update = liveData.javaClass.getMethod("updateFuncValueForce", Any::class.java)
-            update.invoke(liveData, levelValue)
-            Log.i(TAG, "Flyme regen updateFuncValueForce 0x${levelValue.toString(16)}")
-            true
+            val autoFuncValue = resolveLevelAutoFuncId(levelValue)
+            var wrote = false
+
+            // Settings path — основной для regen.
+            if (autoFuncValue != null &&
+                invokeUpdate(liveData, "updateValueDelayWriter", autoFuncValue)
+            ) {
+                Log.i(TAG, "Flyme regen updateValueDelayWriter AutoFuncId 0x${levelValue.toString(16)}")
+                wrote = true
+            }
+
+            // Как drive mode: Force(Integer), не AutoFuncId.
+            if (invokeUpdate(liveData, "updateFuncValueForce", Integer.valueOf(levelValue))) {
+                Log.i(TAG, "Flyme regen updateFuncValueForce int 0x${levelValue.toString(16)}")
+                wrote = true
+            }
+
+            if (!wrote && invokeUpdate(liveData, "updateFuncValue", Integer.valueOf(levelValue))) {
+                Log.i(TAG, "Flyme regen updateFuncValue int 0x${levelValue.toString(16)}")
+                wrote = true
+            }
+
+            wrote
         } catch (t: Throwable) {
-            Log.w(TAG, "Flyme regen force write failed for 0x${levelValue.toString(16)}", t)
-            writeLevelValueDelayed(context, levelValue)
+            Log.w(TAG, "Flyme regen write failed for 0x${levelValue.toString(16)}", t)
+            false
         }
     }
 
-    private fun writeLevelValueDelayed(context: Context, levelValue: Int): Boolean {
+    private fun invokeUpdate(liveData: Any, methodName: String, value: Any): Boolean {
         return try {
-            val liveData = getRegenLiveData(context)
-            val update = liveData.javaClass.getMethod("updateValueDelayWriter", Any::class.java)
-            update.invoke(liveData, levelValue)
-            Log.i(TAG, "Flyme regen updateValueDelayWriter 0x${levelValue.toString(16)}")
+            liveData.javaClass.getMethod(methodName, Any::class.java).invoke(liveData, value)
             true
-        } catch (t: Throwable) {
-            Log.w(TAG, "Flyme regen delayed write failed for 0x${levelValue.toString(16)}", t)
+        } catch (_: Throwable) {
             false
         }
     }
@@ -114,14 +133,54 @@ object FlymeEnergyRegenerationApi {
 
         val autoFuncIdClass = Class.forName("com.flyme.auto.api.AutoFuncId")
         val regenId = autoFuncIdClass.getField("SETTING_FUNC_ENERGY_REGENERATION").get(null)
-
         val liveDataClass = Class.forName("com.flyme.auto.api.data.EnumFuncLiveData")
-        val liveData = liveDataClass.getConstructor(autoFuncIdClass, Boolean::class.javaPrimitiveType)
-            .newInstance(regenId, false)
-        liveDataClass.getMethod("init").invoke(liveData)
 
+        val liveData = createRegenLiveData(liveDataClass, autoFuncIdClass, regenId)
         regenLiveData = liveData
         return liveData
+    }
+
+    private fun createRegenLiveData(
+        liveDataClass: Class<*>,
+        autoFuncIdClass: Class<*>,
+        regenId: Any?,
+    ): Any {
+        try {
+            val ctor = liveDataClass.getConstructor(
+                autoFuncIdClass,
+                Long::class.javaPrimitiveType,
+                Boolean::class.javaPrimitiveType,
+            )
+            val liveData = ctor.newInstance(regenId, 3000L, false)
+            invokeInit(liveDataClass, liveData)
+            return liveData
+        } catch (_: NoSuchMethodException) {
+        } catch (t: Throwable) {
+            Log.w(TAG, "Flyme regen 3-arg LiveData init failed, trying 2-arg", t)
+        }
+
+        val ctor = liveDataClass.getConstructor(autoFuncIdClass, Boolean::class.javaPrimitiveType)
+        val liveData = ctor.newInstance(regenId, false)
+        invokeInit(liveDataClass, liveData)
+        return liveData
+    }
+
+    private fun invokeInit(liveDataClass: Class<*>, liveData: Any) {
+        try {
+            liveDataClass.getMethod("init2").invoke(liveData)
+        } catch (_: NoSuchMethodException) {
+            liveDataClass.getMethod("init").invoke(liveData)
+        }
+    }
+
+    private fun resolveLevelAutoFuncId(levelValue: Int): Any? {
+        val fieldName = levelValueToAutoFuncName(levelValue) ?: return null
+        return try {
+            Class.forName("com.flyme.auto.api.AutoFuncId").getField(fieldName).get(null)
+        } catch (t: Throwable) {
+            Log.w(TAG, "Flyme regen AutoFuncId.$fieldName missing", t)
+            null
+        }
     }
 
     private fun readLiveDataFieldValue(liveData: Any, fieldName: String): Any? {

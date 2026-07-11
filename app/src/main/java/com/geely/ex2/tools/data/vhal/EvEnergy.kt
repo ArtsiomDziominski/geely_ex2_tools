@@ -32,4 +32,17 @@ object EvEnergy {
 
     fun batterySocPercent(sample: BatterySample): Float =
         if (sample.isAvailable) sample.socPercent else Float.NaN
+
+    /**
+     * Декод HV battery temp как в CentralEXAuto.readHvBatteryTemperature:
+     * [-40; 90] → °C; [-400; 900] → /10.
+     */
+    fun decodeHvBatteryTempCelsius(raw: Float): Float? {
+        if (!raw.isFinite()) return null
+        return when {
+            raw in -40f..90f -> raw
+            raw in -400f..900f -> raw / 10f
+            else -> null
+        }
+    }
 }

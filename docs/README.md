@@ -16,6 +16,7 @@
 | [flyme-wallpaperlauncher-apk.md](./flyme-wallpaperlauncher-apk.md) | Разбор APK `com.flyme.auto.wallpaperlauncher`: live wallpaper, Customize Provider, MIPC/Car3D |
 | [flyme-launcher-apk.md](./flyme-launcher-apk.md) | Разбор APK `com.flyme.auto.launcher` (Lib): HOME, Aicy Widget, applist, plugins, recent apps |
 | [centralexauto-apk.md](./centralexauto-apk.md) | Разбор APK `com.ex.auto` (CentralEXAuto): watchdog, AA/CarPlay, floaters, VHAL, GitHub updates |
+| [ca-fix-apk.md](./ca-fix-apk.md) | Разбор APK `com.njda.adapter` (`ca_fix.apk`): ConnAdaptor — Android Auto / CarPlay адаптер |
 
 ## Локальные артефакты
 
@@ -64,5 +65,8 @@
 | `.tmp/centralexauto.apk` | Оригинальный APK CentralEXAuto (опционально) |
 | `.tmp/centralexauto/` | Распакованный APK + badging/manifest |
 | `.tmp/centralexauto-jadx/` | JADX-декомпилят CentralEXAuto |
+| `.tmp/ca_fix.apk` | Оригинальный APK ConnAdaptor fix (опционально) |
+| `.tmp/ca-fix/` | Распакованный APK + badging/manifest |
+| `.tmp/ca-fix-jadx/` | JADX-декомпилят ConnAdaptor / ca_fix |
 
 Папка `.tmp/` в `.gitignore`.

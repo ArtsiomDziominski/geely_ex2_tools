@@ -317,7 +317,7 @@ flowchart TB
 
 | Function id | Связь с Geely EX2 Tools |
 |-------------|-------------------------|
-| `SETTING_FUNC_ENERGY_REGENERATION` | Тот же id, что в [flyme-settings-apk.md](./flyme-settings-apk.md) и `VhalConstants.PROP_SETTING_FUNC_ENERGY_REGENERATION` (`0x22020500`) |
+| `SETTING_FUNC_ENERGY_REGENERATION` | Тот же id, что в [flyme-settings-apk.md](./flyme-settings-apk.md) и `VhalConstants.PROP_SETTING_FUNC_ENERGY_REGENERATION` (`0x20020500` / `537003264`) |
 | `SETTING_FUNC_ENERGY_REGENERATION_SUPPORT_VALUE` | Поддерживаемые уровни regen |
 | `ENERGY_REGENERATION_LEVEL_*` | AUTO / LOW / MID / HIGH / OFF |
 
@@ -369,7 +369,7 @@ DTO: `EnergyBean`, `EnergySumBean` (`dayMileageSum`, `monthMileageSum`, `yearMil
 
 | Функция EX2 Tools | Пересечение с Energy APK |
 |-------------------|----------------------------|
-| **Кinetic recovery (regen)** | `SETTING_FUNC_ENERGY_REGENERATION` — тот же Adapt id; EX2 Tools пишет через `com.flyme.auto.api` / VHAL `0x22020500`, Energy — через свой `Li1/e` + `IWrapper` |
+| **Кinetic recovery (regen)** | `SETTING_FUNC_ENERGY_REGENERATION` — тот же Adapt id; EX2 Tools пишет через `com.flyme.auto.api` / VHAL `0x20020500`, Energy — через свой `Li1/e` + `IWrapper` |
 | Driving mode / AVAS / Ambient | Нет прямой зависимости; Energy не экспортирует публичный API кроме `ChargeStatusService` |
 | Статистика пробега | `TRIP_FUNC_*` — только в штатном UI Energy |
 

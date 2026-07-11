@@ -445,18 +445,20 @@ Hex property id часто **совпадает** с int, передаваемы
 
 ### 6.4 Рекуперация (energy recovery)
 
-| AutoFuncId | Property id | Hex |
-|------------|-------------|-----|
-| `SETTING_FUNC_ENERGY_REGENERATION` | kinetic recovery | `0x22020500` |
+| AutoFuncId | Property id (decimal) | Hex |
+|------------|----------------------|-----|
+| `SETTING_FUNC_ENERGY_REGENERATION` | `537003264` | `0x20020500` |
+
+> Важно: это **`0x20xxxxxx`**, не `0x22xxxxxx` (в отличие от `DM_FUNC_DRIVE_MODE_SELECT` = `0x22010100`). Совпадает с CentralEXAuto `PROP_ENERGY_REGEN`.
 
 **Значения (`VALUE_ENERGY_REGENERATION_LEVEL_*`):**
 
-| UI (DrivingFragment) | Hex | AutoFuncId |
-|----------------------|-----|------------|
-| Низкий | `0x22020501` | `VALUE_ENERGY_REGENERATION_LEVEL_LOW` |
-| Средний | `0x22020502` | `VALUE_ENERGY_REGENERATION_LEVEL_MID` |
-| Высокий | `0x22020503` | `VALUE_ENERGY_REGENERATION_LEVEL_HIGH` |
-| Авто (не на всех рынках) | `0x22020504` | `VALUE_ENERGY_REGENERATION_LEVEL_AUTO` |
+| UI (DrivingFragment) | Decimal | Hex | AutoFuncId |
+|----------------------|---------|-----|------------|
+| Низкий | `537003265` | `0x20020501` | `VALUE_ENERGY_REGENERATION_LEVEL_LOW` |
+| Средний | `537003266` | `0x20020502` | `VALUE_ENERGY_REGENERATION_LEVEL_MID` |
+| Высокий | `537003267` | `0x20020503` | `VALUE_ENERGY_REGENERATION_LEVEL_HIGH` |
+| Авто (не на всех рынках) | `537003268` | `0x20020504` | `VALUE_ENERGY_REGENERATION_LEVEL_AUTO` |
 
 **Где в APK:**
 
@@ -468,9 +470,9 @@ Hex property id часто **совпадает** с int, передаваемы
 
 **Чтение:** `energyRegeneration.mValue.getValue()` → `Integer` или `AutoFuncId.id`.
 
-**Запись в Settings APK:** `updateValueDelayWriter(AutoFuncId)` (debounce 3 с).
+**Запись в Settings APK:** `updateValueDelayWriter(AutoFuncId)` (debounce 3 с) — передаётся **объект** `AutoFuncId`, не int.
 
-**Запись в geely_ex2_tools:** как у режима вождения — `updateFuncValueForce(levelInt)` через `FlymeEnergyRegenerationApi.kt`; fallback — `updateValueDelayWriter`, если force недоступен. Конструктор LiveData: `(AutoFuncId, false)` + `init()`.
+**Запись в geely_ex2_tools:** VHAL `setIntProperty(0x20020500, area 0|1)` как CentralEXAuto (primary); затем Flyme `updateValueDelayWriter(AutoFuncId)` + `updateFuncValueForce(int)` с verify; eCarX fallback. Чтение regen тоже предпочитает VHAL.
 
 ### 6.5 Свойства VHAL, встречающиеся в контексте Settings / car UI
 

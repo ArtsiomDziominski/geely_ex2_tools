@@ -32,6 +32,16 @@ class BatteryRepository(private val context: Context) {
         BatteryStatusIconHelper.cancelStatusIcon(context)
     }
 
+    /** Чтение для UI экрана (SOC + temp), без зависимости от свитча шторки. */
+    fun readBatterySample(): BatterySample {
+        val reader = VhalBatteryReaderFactory.create(context)
+        return try {
+            reader.readBatterySoc()
+        } finally {
+            reader.close()
+        }
+    }
+
     fun readBatterySoc(): BatterySample {
         if (!BatterySettings.isEnabled(context)) {
             return BatterySample(
@@ -41,13 +51,7 @@ class BatteryRepository(private val context: Context) {
                 details = "",
             )
         }
-
-        val reader = VhalBatteryReaderFactory.create(context)
-        return try {
-            reader.readBatterySoc()
-        } finally {
-            reader.close()
-        }
+        return readBatterySample()
     }
 
     fun createReader(): VhalBatteryReader = VhalBatteryReaderFactory.create(context)

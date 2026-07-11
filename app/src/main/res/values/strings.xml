@@ -128,6 +128,9 @@
     <string name="battery_widget_position_step_right">Сдвинуть правее</string>
     <string name="battery_status_title">Состояние</string>
     <string name="battery_latest_title">Текущий заряд</string>
+    <string name="battery_temp_title">Температура батареи</string>
+    <string name="battery_temp_value">%1$s °C</string>
+    <string name="battery_temp_unavailable">Температура недоступна</string>
     <string name="battery_source_title">Источник данных</string>
     <string name="battery_header_off">Заряд отключён</string>
     <string name="battery_status_disabled">Отключено пользователем</string>

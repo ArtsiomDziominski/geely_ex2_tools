@@ -54,6 +54,8 @@ class CarPropertyBatteryVhalReader(context: Context) : VhalBatteryReader {
             nominalCapacityWh = nominalCapProbe.value.takeIf { nominalCapProbe.ok },
         )
 
+        val tempResult = readHvBatteryTemperature(debug)
+
         if (decoded != null) {
             val source = when {
                 oemPercent != null && oemPercent in 0f..100f && oemProbe.ok ->
@@ -71,6 +73,8 @@ class CarPropertyBatteryVhalReader(context: Context) : VhalBatteryReader {
                 isAvailable = true,
                 source = source,
                 details = debug.toString(),
+                tempCelsius = tempResult.tempCelsius,
+                tempSource = tempResult.source,
             )
         }
 
@@ -79,6 +83,8 @@ class CarPropertyBatteryVhalReader(context: Context) : VhalBatteryReader {
             isAvailable = false,
             source = "battery SOC unreadable",
             details = debug.toString(),
+            tempCelsius = tempResult.tempCelsius,
+            tempSource = tempResult.source,
         )
     }
 
@@ -117,6 +123,62 @@ class CarPropertyBatteryVhalReader(context: Context) : VhalBatteryReader {
     override fun close() {
         stopListening()
         bindings.close()
+    }
+
+    private data class TempProbe(
+        val tempCelsius: Float?,
+        val source: String,
+    )
+
+    private fun readHvBatteryTemperature(debug: StringBuilder): TempProbe {
+        for (propertyId in VhalConstants.HV_BATTERY_TEMP_CANDIDATES) {
+            for (areaId in VhalConstants.HV_BATTERY_TEMP_AREAS) {
+                val floatProbe = bindings.readFloatProperty(propertyId, areaId)
+                if (floatProbe.ok) {
+                    val decoded = EvEnergy.decodeHvBatteryTempCelsius(floatProbe.value)
+                    debug.append('\n').append(
+                        String.format(
+                            Locale.US,
+                            "HV_TEMP 0x%08X area=%d float=%.2f decoded=%s",
+                            propertyId,
+                            areaId,
+                            floatProbe.value,
+                            decoded?.let { String.format(Locale.US, "%.1f", it) } ?: "null",
+                        ),
+                    )
+                    if (decoded != null) {
+                        return TempProbe(
+                            tempCelsius = decoded,
+                            source = String.format(Locale.US, "0x%08X area=%d", propertyId, areaId),
+                        )
+                    }
+                }
+
+                val intProbe = bindings.readIntProperty(propertyId, areaId)
+                if (intProbe.ok) {
+                    val raw = intProbe.value.toFloat()
+                    val decoded = EvEnergy.decodeHvBatteryTempCelsius(raw)
+                    debug.append('\n').append(
+                        String.format(
+                            Locale.US,
+                            "HV_TEMP 0x%08X area=%d int=%d decoded=%s",
+                            propertyId,
+                            areaId,
+                            intProbe.value,
+                            decoded?.let { String.format(Locale.US, "%.1f", it) } ?: "null",
+                        ),
+                    )
+                    if (decoded != null) {
+                        return TempProbe(
+                            tempCelsius = decoded,
+                            source = String.format(Locale.US, "0x%08X area=%d", propertyId, areaId),
+                        )
+                    }
+                }
+            }
+        }
+        debug.append('\n').append("HV_TEMP: unavailable")
+        return TempProbe(tempCelsius = null, source = "unavailable")
     }
 
     private fun CarVhalBindings.FloatProbe.line(name: String): String {
