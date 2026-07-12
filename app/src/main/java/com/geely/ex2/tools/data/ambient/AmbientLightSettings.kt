@@ -12,9 +12,9 @@ object AmbientLightSettings {
     private const val KEY_END_HOUR = "end_hour"
     private const val KEY_END_MINUTE = "end_minute"
 
-    private const val DEFAULT_START_HOUR = 7
+    private const val DEFAULT_START_HOUR = 22
     private const val DEFAULT_START_MINUTE = 0
-    private const val DEFAULT_END_HOUR = 22
+    private const val DEFAULT_END_HOUR = 7
     private const val DEFAULT_END_MINUTE = 0
 
     @Volatile
