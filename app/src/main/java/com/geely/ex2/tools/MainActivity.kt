@@ -1,9 +1,9 @@
 package com.geely.ex2.tools
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -16,6 +16,8 @@ import com.geely.ex2.tools.feature.avas.ui.AvasScreen
 import com.geely.ex2.tools.feature.battery.ui.BatteryScreen
 import com.geely.ex2.tools.feature.driving.ui.DrivingScreen
 import com.geely.ex2.tools.feature.home.ui.EmptyStartScreen
+import com.geely.ex2.tools.feature.settings.ui.SettingsScreen
+import com.geely.ex2.tools.feature.sounds.ui.SoundsScreen
 import com.geely.ex2.tools.feature.speed.ui.SpeedScreen
 import com.geely.ex2.tools.feature.temperature.ui.TemperatureScreen
 import com.geely.ex2.tools.feature.wifi.ui.WifiScreen
@@ -24,7 +26,7 @@ import com.geely.ex2.tools.ui.components.FlymeAppShell
 import com.geely.ex2.tools.ui.theme.GeelyEx2Background
 import com.geely.ex2.tools.ui.theme.GeelyEx2ToolsTheme
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -116,6 +118,16 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(AppRoutes.AVAS) {
                                 AvasScreen(
+                                    onBack = { navController.popBackStack() },
+                                )
+                            }
+                            composable(AppRoutes.SOUNDS) {
+                                SoundsScreen(
+                                    onBack = { navController.popBackStack() },
+                                )
+                            }
+                            composable(AppRoutes.SETTINGS) {
+                                SettingsScreen(
                                     onBack = { navController.popBackStack() },
                                 )
                             }

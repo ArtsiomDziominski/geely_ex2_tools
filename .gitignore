@@ -39,6 +39,9 @@ build/
 *.jks
 *.keystore
 
+# Platform / signing keys (obtain locally — see docs/system-install.md)
+keys/
+
 # Log files
 *.log
 

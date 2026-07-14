@@ -9,5 +9,6 @@
         <permission name="android.car.permission.CAR_CONTROL_AUDIO_VOLUME" />
         <permission name="android.car.permission.CAR_CONTROL_AUDIO_SETTINGS" />
         <permission name="android.permission.WRITE_SECURE_SETTINGS" />
+        <permission name="android.permission.SHUTDOWN" />
     </privapp-permissions>
 </permissions>

@@ -20,12 +20,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.VolumeOff
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.filled.Thermostat
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.BatteryChargingFull
 import androidx.compose.material.icons.filled.Wifi
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -87,6 +89,16 @@ val FlymeNavDestinations = listOf(
         route = AppRoutes.AVAS,
         labelRes = R.string.tool_avas_title,
         icon = Icons.AutoMirrored.Filled.VolumeOff,
+    ),
+    FlymeNavDestination(
+        route = AppRoutes.SOUNDS,
+        labelRes = R.string.tool_sounds_title,
+        icon = Icons.AutoMirrored.Filled.VolumeUp,
+    ),
+    FlymeNavDestination(
+        route = AppRoutes.SETTINGS,
+        labelRes = R.string.tool_settings_title,
+        icon = Icons.Filled.Settings,
     ),
 )
 

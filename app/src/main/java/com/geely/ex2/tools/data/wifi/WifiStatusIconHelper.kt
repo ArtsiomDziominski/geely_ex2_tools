@@ -49,17 +49,6 @@ object WifiStatusIconHelper {
             return
         }
 
-        if (!WifiAutoEnableController.isWifiEnabledOrEnabling(context)) {
-            if (WifiAutoEnableController.isAutoEnableEnabled(context) &&
-                WifiAutoEnableController.getWifiState(context) == WifiManager.WIFI_STATE_DISABLING
-            ) {
-                Log.d(WifiAutoEnableController.TAG, "Wi-Fi disabling, keep icon until stable: $reason")
-                return
-            }
-            hideStatusIcon(context, notificationManager, reason)
-            return
-        }
-
         val iconRank = rank ?: WifiSettings.getStatusIconRank(context)
         val previousRank = lastNotifiedRank
         if (previousRank != null && previousRank != iconRank) {
@@ -72,22 +61,6 @@ object WifiStatusIconHelper {
         notificationManager.notify(NOTIFICATION_ID, notification)
         lastNotifiedRank = iconRank
         Log.i(WifiAutoEnableController.TAG, "Wi-Fi status icon shown (connected=$isConnected, rank=$iconRank): $reason")
-    }
-
-    private fun hideStatusIcon(
-        context: Context,
-        notificationManager: NotificationManager,
-        reason: String,
-    ) {
-        val notification = buildStatusIconNotification(
-            context = context,
-            hide = true,
-            rank = WifiSettings.getStatusIconRank(context),
-        )
-        notificationManager.notify(NOTIFICATION_ID, notification)
-        notificationManager.cancel(NOTIFICATION_ID)
-        lastNotifiedRank = null
-        Log.i(WifiAutoEnableController.TAG, "Wi-Fi status icon hidden: $reason")
     }
 
     fun cancelStatusIcon(context: Context) {
@@ -132,8 +105,7 @@ object WifiStatusIconHelper {
     private fun buildStatusIconNotification(context: Context, hide: Boolean, rank: Int): Notification {
         ensureStatusIconChannel(context)
 
-        val isConnected = isWifiConnectedToNetwork(context)
-        val iconResId = getWifiIconResId(context, isConnected)
+        val iconResId = getWifiIconResId(context)
         val wifiIcon = Icon.createWithResource(context, iconResId)
 
         val intent = Intent(Settings.ACTION_WIFI_SETTINGS).apply {
@@ -172,7 +144,7 @@ object WifiStatusIconHelper {
         notification.extras.putBoolean(FLAG_STATUS_ICON_HIDE, hide)
         notification.extras.putInt(FLAG_STATUS_ICON_RANK, rank)
         notification.extras.putInt(FLAG_STATUS_ICON_SPACE_X, 1)
-        notification.extras.putBoolean(FLAG_STATUS_ICON_IS_PICK_ON, !hide && isConnected)
+        notification.extras.putBoolean(FLAG_STATUS_ICON_IS_PICK_ON, false)
         notification.extras.putInt(FLAG_STATUS_ICON_SPECIFIC_WIDTH, 0)
 
         return notification
@@ -244,37 +216,34 @@ object WifiStatusIconHelper {
         return wifiInfo.supplicantState == SupplicantState.COMPLETED
     }
 
-    private fun getWifiIconResId(context: Context, isConnected: Boolean): Int {
+    private fun getWifiIconResId(context: Context): Int {
         val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager
 
         if (wifiManager == null) {
-            Log.w(WifiAutoEnableController.TAG, "WifiManager is null, use Wi-Fi level 0 icon")
-            return R.drawable.ic_wifi_0
+            Log.w(WifiAutoEnableController.TAG, "WifiManager is null, use Wi-Fi off icon")
+            return R.drawable.ic_wifi_off
         }
 
         if (wifiManager.wifiState != WifiManager.WIFI_STATE_ENABLED) {
-            Log.i(WifiAutoEnableController.TAG, "Wi-Fi disabled, use Wi-Fi level 0 icon")
-            return R.drawable.ic_wifi_0
+            Log.i(WifiAutoEnableController.TAG, "Wi-Fi is not enabled, use Wi-Fi off icon")
+            return R.drawable.ic_wifi_off
         }
 
-        if (!isConnected) {
-            Log.i(
-                WifiAutoEnableController.TAG,
-                "Wi-Fi enabled but not connected, use dimmed full icon",
-            )
-            return R.drawable.ic_wifi_disconnected
+        if (!isWifiConnectedToNetwork(context)) {
+            Log.i(WifiAutoEnableController.TAG, "Wi-Fi enabled but not connected, use no connection icon")
+            return R.drawable.ic_wifi_no_connection
         }
 
         val wifiInfo = wifiManager.connectionInfo
         if (wifiInfo == null) {
-            Log.i(WifiAutoEnableController.TAG, "WifiInfo is null, use Wi-Fi level 0 icon")
-            return R.drawable.ic_wifi_0
+            Log.i(WifiAutoEnableController.TAG, "WifiInfo is null, use Wi-Fi level 4 icon")
+            return R.drawable.ic_wifi_4
         }
 
         val rssi = wifiInfo.rssi
-        if (rssi <= -100) {
-            Log.i(WifiAutoEnableController.TAG, "Wi-Fi RSSI invalid: $rssi, use Wi-Fi level 0 icon")
-            return R.drawable.ic_wifi_0
+        if (rssi <= -100 || rssi >= 0) {
+            Log.i(WifiAutoEnableController.TAG, "Wi-Fi RSSI invalid: $rssi, use no connection icon")
+            return R.drawable.ic_wifi_no_connection
         }
 
         val level = WifiManager.calculateSignalLevel(rssi, 5)
