@@ -14,7 +14,7 @@ object SpeedSettings {
     fun isEnabled(context: Context): Boolean = prefs(context).getBoolean(KEY_ENABLED, false)
 
     fun setEnabled(context: Context, enabled: Boolean) {
-        prefs(context).edit().putBoolean(KEY_ENABLED, enabled).commit()
+        prefs(context).edit().putBoolean(KEY_ENABLED, enabled).apply()
     }
 
     fun getStatusIconRank(context: Context): Int {
@@ -26,7 +26,7 @@ object SpeedSettings {
     fun setStatusIconRank(context: Context, rank: Int) {
         prefs(context).edit()
             .putInt(KEY_STATUS_ICON_RANK, SpeedWidgetRank.clamp(rank))
-            .commit()
+            .apply()
     }
 
     fun stepStatusIconRank(context: Context, delta: Int): Int {

@@ -17,7 +17,7 @@ import com.geely.ex2.tools.navigation.AppRoutes
 import kotlin.math.roundToInt
 
 object BatteryAppWidgetHelper {
-    fun updateAll(context: Context, reason: String) {
+    fun updateAll(context: Context, reason: String, sample: BatterySample? = null) {
         val appContext = context.applicationContext
         val manager = AppWidgetManager.getInstance(appContext) ?: return
         val componentName = ComponentName(appContext, BatteryAppWidgetProvider::class.java)
@@ -26,10 +26,12 @@ object BatteryAppWidgetHelper {
             return
         }
 
-        val sample = readBatterySoc(appContext)
-        val views = buildRemoteViews(appContext, sample)
+        val batterySample = sample
+            ?: BatterySampleStore.sample.value
+            ?: readBatterySoc(appContext)
+        val views = buildRemoteViews(appContext, batterySample)
         manager.updateAppWidget(componentName, views)
-        Log.i(TAG, "Battery app widget updated ($reason): ${formatPercent(appContext, sample)}")
+        Log.i(TAG, "Battery app widget updated ($reason): ${formatPercent(appContext, batterySample)}")
     }
 
     fun update(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {

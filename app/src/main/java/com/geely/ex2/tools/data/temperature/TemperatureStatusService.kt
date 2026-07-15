@@ -92,6 +92,7 @@ class TemperatureStatusService : Service() {
                 this@TemperatureStatusService,
                 result,
                 reason,
+                force = reason != "periodic",
             )
         }
     }

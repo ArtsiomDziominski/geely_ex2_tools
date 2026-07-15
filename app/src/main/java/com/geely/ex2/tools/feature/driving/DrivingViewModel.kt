@@ -56,8 +56,6 @@ class DrivingViewModel(application: Application) : AndroidViewModel(application)
     private var refreshJob: Job? = null
 
     fun onResume() {
-        repository.restoreSavedModeIfNeeded("DrivingScreen resume")
-        repository.restoreSavedRegenIfNeeded("DrivingScreen resume")
         refreshState()
         startPolling()
     }

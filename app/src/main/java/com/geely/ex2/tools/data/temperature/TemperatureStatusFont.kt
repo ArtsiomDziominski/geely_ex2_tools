@@ -33,6 +33,11 @@ object TemperatureStatusFont {
         return resolved
     }
 
+    /** Прогрев шрифта на IO при старте приложения — без disk I/O на первом notify. */
+    fun warmUp(context: Context) {
+        getStatusIconTypeface(context.applicationContext)
+    }
+
     fun invalidateCache() {
         cachedTypeface.set(null)
     }

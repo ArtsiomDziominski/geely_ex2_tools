@@ -41,7 +41,7 @@ object TemperatureSettings {
     fun setStatusIconRank(context: Context, rank: Int) {
         prefs(context).edit()
             .putInt(KEY_STATUS_ICON_RANK, TemperatureWidgetRank.clamp(rank))
-            .commit()
+            .apply()
     }
 
     fun stepStatusIconRank(context: Context, delta: Int): Int {

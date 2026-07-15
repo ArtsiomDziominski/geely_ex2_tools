@@ -2,8 +2,7 @@ package com.geely.ex2.tools.data.battery
 
 import android.content.Context
 import com.geely.ex2.tools.data.vhal.BatterySample
-import com.geely.ex2.tools.data.vhal.VhalBatteryReader
-import com.geely.ex2.tools.data.vhal.VhalBatteryReaderFactory
+import kotlinx.coroutines.flow.StateFlow
 
 class BatteryRepository(private val context: Context) {
     fun isEnabled(): Boolean = BatterySettings.isEnabled(context)
@@ -30,29 +29,10 @@ class BatteryRepository(private val context: Context) {
 
     fun cancelStatusIcon() {
         BatteryStatusIconHelper.cancelStatusIcon(context)
+        BatterySampleStore.clear()
     }
 
-    /** Чтение для UI экрана (SOC + temp), без зависимости от свитча шторки. */
-    fun readBatterySample(): BatterySample {
-        val reader = VhalBatteryReaderFactory.create(context)
-        return try {
-            reader.readBatterySoc()
-        } finally {
-            reader.close()
-        }
-    }
+    fun observeLatestSample(): StateFlow<BatterySample?> = BatterySampleStore.sample
 
-    fun readBatterySoc(): BatterySample {
-        if (!BatterySettings.isEnabled(context)) {
-            return BatterySample(
-                socPercent = 0f,
-                isAvailable = false,
-                source = "disabled",
-                details = "",
-            )
-        }
-        return readBatterySample()
-    }
-
-    fun createReader(): VhalBatteryReader = VhalBatteryReaderFactory.create(context)
+    fun latestSample(): BatterySample? = BatterySampleStore.sample.value
 }

@@ -43,7 +43,12 @@ class SoundsViewModel(application: Application) : AndroidViewModel(application) 
     private var refreshJob: Job? = null
 
     fun onResume() {
-        refreshState()
+        val hasCatalog = _uiState.value.catalog.options.isNotEmpty()
+        if (hasCatalog) {
+            refreshStatusOnly()
+        } else {
+            refreshState()
+        }
     }
 
     fun onSoundSelected(option: CarLockSoundOption) {
@@ -126,6 +131,29 @@ class SoundsViewModel(application: Application) : AndroidViewModel(application) 
         } catch (_: SecurityException) {
             _uiState.update {
                 it.copy(statusText = appContext.getString(R.string.sounds_error_reboot))
+            }
+        }
+    }
+
+    private fun refreshStatusOnly() {
+        refreshJob?.cancel()
+        refreshJob = viewModelScope.launch {
+            val status = withContext(Dispatchers.IO) {
+                repository.readStatus()
+            }
+            _uiState.update {
+                val catalog = it.catalog
+                val base = buildUiState(status, catalog)
+                base.copy(
+                    isChanging = it.isChanging,
+                    isImporting = it.isImporting,
+                    showRebootDialog = it.showRebootDialog,
+                    statusText = if (it.isChanging || it.isImporting) {
+                        it.statusText
+                    } else {
+                        base.statusText
+                    },
+                )
             }
         }
     }

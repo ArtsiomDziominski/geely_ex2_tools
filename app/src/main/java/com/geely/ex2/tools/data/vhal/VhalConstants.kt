@@ -57,7 +57,8 @@ object VhalConstants {
 
     const val CAR_MANAGER_PROPERTY = "property"
 
-    const val POLL_INTERVAL_MS = 1_000L
+    /** UI экрана Wi‑Fi — лёгкий refresh состояния (иконку обновляет WifiStatusService) */
+    const val WIFI_UI_POLL_INTERVAL_MS = 5_000L
 
     /** UI экрана Driving — реже poll, ECU не успевает отвечать за 1 сек после write */
     const val DRIVING_UI_POLL_INTERVAL_MS = 3_000L
@@ -78,8 +79,6 @@ object VhalConstants {
     const val STATUS_WIDGET_POLL_INTERVAL_MS = 100_000L
 
     const val BATTERY_POLL_INTERVAL_MS = STATUS_WIDGET_POLL_INTERVAL_MS
-    /** UI экрана Battery — SOC */
-    const val BATTERY_UI_POLL_INTERVAL_MS = 3_000L
     const val TEMPERATURE_POLL_INTERVAL_MS = STATUS_WIDGET_POLL_INTERVAL_MS
 
     /** Спидометр в шторке Flyme — обновление раз в 3 секунды */

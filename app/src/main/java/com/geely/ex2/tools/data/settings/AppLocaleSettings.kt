@@ -36,7 +36,7 @@ object AppLocaleSettings {
     fun set(context: Context, locale: AppLocale) {
         prefs(context).edit()
             .putString(KEY_LOCALE, locale.storageValue)
-            .commit()
+            .apply()
     }
 
     private fun prefs(context: Context): SharedPreferences {

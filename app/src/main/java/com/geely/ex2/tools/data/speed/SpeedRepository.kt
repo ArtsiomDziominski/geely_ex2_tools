@@ -2,8 +2,7 @@ package com.geely.ex2.tools.data.speed
 
 import android.content.Context
 import com.geely.ex2.tools.data.vhal.SpeedSample
-import com.geely.ex2.tools.data.vhal.VhalSpeedReader
-import com.geely.ex2.tools.data.vhal.VhalSpeedReaderFactory
+import kotlinx.coroutines.flow.StateFlow
 
 class SpeedRepository(private val context: Context) {
     fun isEnabled(): Boolean = SpeedSettings.isEnabled(context)
@@ -30,25 +29,10 @@ class SpeedRepository(private val context: Context) {
 
     fun cancelStatusIcon() {
         SpeedStatusIconHelper.cancelStatusIcon(context)
+        SpeedSampleStore.clear()
     }
 
-    fun readSpeed(): SpeedSample {
-        if (!SpeedSettings.isEnabled(context)) {
-            return SpeedSample(
-                speedKmh = 0f,
-                isAvailable = false,
-                source = "disabled",
-                details = "",
-            )
-        }
+    fun observeLatestSample(): StateFlow<SpeedSample?> = SpeedSampleStore.sample
 
-        val reader = VhalSpeedReaderFactory.create(context)
-        return try {
-            reader.readSpeed()
-        } finally {
-            reader.close()
-        }
-    }
-
-    fun createReader(): VhalSpeedReader = VhalSpeedReaderFactory.create(context)
+    fun latestSample(): SpeedSample? = SpeedSampleStore.sample.value
 }

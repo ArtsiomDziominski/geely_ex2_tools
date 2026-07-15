@@ -57,18 +57,20 @@ class AmbientLightViewModel(application: Application) : AndroidViewModel(applica
 
     private var pollJob: Job? = null
     private var refreshJob: Job? = null
+    private var resumeJob: Job? = null
 
     fun onResume() {
-        viewModelScope.launch {
+        resumeJob?.cancel()
+        resumeJob = viewModelScope.launch {
             syncControlModeFromVehicleIfNeeded()
             refreshState()
             startPolling()
-            AmbientLightScheduleController.syncBackgroundWork(appContext, "AmbientLightScreen resume")
-            AmbientLightAppStarter.startRestoreServiceIfEnabled(appContext, "AmbientLightScreen resume")
         }
     }
 
     fun onPause() {
+        resumeJob?.cancel()
+        resumeJob = null
         stopPolling()
     }
 

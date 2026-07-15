@@ -40,9 +40,6 @@ class AvasViewModel(application: Application) : AndroidViewModel(application) {
     private var refreshJob: Job? = null
 
     fun onResume() {
-        if (repository.isMutedSaved()) {
-            repository.restoreMuteIfNeeded("AvasScreen resume")
-        }
         refreshState()
         startPolling()
     }

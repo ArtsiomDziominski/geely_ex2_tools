@@ -29,6 +29,12 @@ object SpeedStatusIconHelper {
     @Volatile
     private var lastNotifiedRank: Int? = null
 
+    @Volatile
+    private var lastDisplayKey: String? = null
+
+    @Volatile
+    private var lastIconAsset: SpeedIconAsset? = null
+
     private const val STATUS_CHANNEL_ID = "geely_speed_status_icon"
     private const val SERVICE_CHANNEL_ID = "geely_speed_service"
 
@@ -74,6 +80,7 @@ object SpeedStatusIconHelper {
         sample: SpeedSample?,
         reason: String,
         rank: Int = SpeedSettings.getStatusIconRank(context),
+        force: Boolean = false,
     ) {
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
@@ -88,6 +95,13 @@ object SpeedStatusIconHelper {
             Log.i(TAG, "Speed status icon reposition: rank $previousRank -> $rank ($reason)")
         }
 
+        val key = displayKey(sample)
+        val cachedAsset = lastIconAsset
+        if (!force && key == lastDisplayKey && rank == lastNotifiedRank && cachedAsset != null) {
+            Log.d(TAG, "Speed status icon unchanged, skip: $reason")
+            return
+        }
+
         ensureChannel(
             context = context,
             channelId = STATUS_CHANNEL_ID,
@@ -95,7 +109,14 @@ object SpeedStatusIconHelper {
             importance = NotificationManager.IMPORTANCE_LOW,
         )
 
-        val iconAsset = createSpeedIcon(context, sample)
+        val iconAsset = if (!force && key == lastDisplayKey && cachedAsset != null) {
+            cachedAsset
+        } else {
+            createSpeedIcon(context, sample).also {
+                lastIconAsset = it
+                lastDisplayKey = key
+            }
+        }
         val icon = iconAsset.icon
         val text = if (sample?.isAvailable == true) {
             context.getString(R.string.speed_status_icon_text_available, sample.speedKmh.roundToInt())
@@ -142,12 +163,22 @@ object SpeedStatusIconHelper {
             context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
         notificationManager?.cancel(STATUS_NOTIFICATION_ID)
         lastNotifiedRank = null
+        lastDisplayKey = null
+        lastIconAsset = null
     }
 
     private data class SpeedIconAsset(
         val icon: Icon,
         val widthPx: Int,
     )
+
+    private fun displayKey(sample: SpeedSample?): String {
+        return if (sample?.isAvailable == true) {
+            sample.speedKmh.roundToInt().toString()
+        } else {
+            "?"
+        }
+    }
 
     private fun createSpeedIcon(context: Context, sample: SpeedSample?): SpeedIconAsset {
         val numberText = if (sample?.isAvailable == true) {

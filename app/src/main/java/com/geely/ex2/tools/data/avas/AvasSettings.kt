@@ -13,7 +13,7 @@ object AvasSettings {
         prefs(context).getBoolean(KEY_MUTED, false)
 
     fun setMutedSaved(context: Context, muted: Boolean) {
-        prefs(context).edit().putBoolean(KEY_MUTED, muted).commit()
+        prefs(context).edit().putBoolean(KEY_MUTED, muted).apply()
     }
 
     fun getLastActiveMode(context: Context): Int {
@@ -23,7 +23,7 @@ object AvasSettings {
 
     fun setLastActiveMode(context: Context, mode: Int) {
         if (mode <= AvasConstants.MODE_MUTED) return
-        prefs(context).edit().putInt(KEY_LAST_ACTIVE_MODE, mode).commit()
+        prefs(context).edit().putInt(KEY_LAST_ACTIVE_MODE, mode).apply()
     }
 
     private fun prefs(context: Context): SharedPreferences {

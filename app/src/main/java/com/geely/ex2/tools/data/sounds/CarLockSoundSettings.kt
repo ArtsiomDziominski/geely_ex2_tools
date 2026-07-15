@@ -28,14 +28,14 @@ object CarLockSoundSettings {
         prefs(context).edit()
             .putString(KEY_SELECTED_ID, id)
             .putString(KEY_SELECTED_NAME, name)
-            .commit()
+            .apply()
     }
 
     fun clearSelected(context: Context) {
         prefs(context).edit()
             .remove(KEY_SELECTED_ID)
             .remove(KEY_SELECTED_NAME)
-            .commit()
+            .apply()
         selectedFile(context).delete()
     }
 

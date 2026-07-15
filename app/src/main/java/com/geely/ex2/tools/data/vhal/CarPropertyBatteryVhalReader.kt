@@ -1,29 +1,10 @@
 package com.geely.ex2.tools.data.vhal
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import java.util.Locale
 
 class CarPropertyBatteryVhalReader(context: Context) : VhalBatteryReader {
     private val bindings = CarVhalBindings(context)
-    private val handler = Handler(Looper.getMainLooper())
-    private var onUpdate: ((BatterySample) -> Unit)? = null
-    private var shouldContinue: () -> Boolean = { true }
-    private var isListening = false
-
-    private val pollRunnable = object : Runnable {
-        override fun run() {
-            if (!isListening) return
-            if (!shouldContinue()) {
-                handler.removeCallbacks(this)
-                return
-            }
-            onUpdate?.invoke(readBatterySoc())
-            handler.postDelayed(this, VhalConstants.BATTERY_POLL_INTERVAL_MS)
-        }
-    }
 
     override fun readBatterySoc(): BatterySample {
         val debug = StringBuilder()
@@ -82,40 +63,7 @@ class CarPropertyBatteryVhalReader(context: Context) : VhalBatteryReader {
         )
     }
 
-    override fun startListening(
-        onUpdate: (BatterySample) -> Unit,
-        shouldContinue: () -> Boolean,
-    ) {
-        if (isListening) {
-            stopListening()
-        }
-
-        this.onUpdate = onUpdate
-        this.shouldContinue = shouldContinue
-        isListening = true
-
-        if (!bindings.ensureConnected(StringBuilder())) {
-            Log.w(TAG, "Battery listener started without Car connection")
-        }
-
-        if (shouldContinue()) {
-            onUpdate(readBatterySoc())
-        }
-        handler.removeCallbacks(pollRunnable)
-        handler.postDelayed(pollRunnable, VhalConstants.BATTERY_POLL_INTERVAL_MS)
-        Log.i(TAG, "Battery poll started, interval=${VhalConstants.BATTERY_POLL_INTERVAL_MS}ms")
-    }
-
-    override fun stopListening() {
-        isListening = false
-        handler.removeCallbacks(pollRunnable)
-        onUpdate = null
-        shouldContinue = { true }
-        Log.i(TAG, "Battery listener stopped")
-    }
-
     override fun close() {
-        stopListening()
         bindings.close()
     }
 
@@ -125,9 +73,5 @@ class CarPropertyBatteryVhalReader(context: Context) : VhalBatteryReader {
         } else {
             String.format(Locale.US, "%s 0x%08X: ERROR %s", name, propertyId, error ?: "")
         }
-    }
-
-    companion object {
-        private const val TAG = "GeelyToolsBattery"
     }
 }

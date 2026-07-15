@@ -6,11 +6,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.geely.ex2.tools.feature.ambient.ui.AmbientLightScreen
 import com.geely.ex2.tools.feature.avas.ui.AvasScreen
 import com.geely.ex2.tools.feature.battery.ui.BatteryScreen
@@ -32,105 +31,31 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContent {
             GeelyEx2ToolsTheme {
-                val navController = rememberNavController()
-                // val startRoute = intent?.getStringExtra(BatteryAppWidgetHelper.EXTRA_START_ROUTE)
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentRoute = navBackStackEntry?.destination?.route
-
-                // LaunchedEffect(startRoute) {
-                //     if (!startRoute.isNullOrBlank() && startRoute != AppRoutes.HOME) {
-                //         navController.navigate(startRoute) {
-                //             launchSingleTop = true
-                //         }
-                //         intent?.removeExtra(BatteryAppWidgetHelper.EXTRA_START_ROUTE)
-                //     }
-                // }
+                var selectedRoute by rememberSaveable { mutableStateOf(AppRoutes.NONE) }
+                val clearSelection = { selectedRoute = AppRoutes.NONE }
 
                 GeelyEx2Background(modifier = Modifier.fillMaxSize()) {
                     FlymeAppShell(
-                        currentRoute = currentRoute,
+                        currentRoute = selectedRoute,
                         onDestinationSelected = { route ->
-                            if (route == currentRoute) return@FlymeAppShell
-                            navController.navigate(route) {
-                                // popUpTo(AppRoutes.HOME) {
-                                //     saveState = true
-                                //     inclusive = route == AppRoutes.HOME
-                                // }
-                                popUpTo(AppRoutes.NONE) {
-                                    inclusive = false
-                                }
-                                launchSingleTop = true
-                                restoreState = true
+                            if (route != selectedRoute) {
+                                selectedRoute = route
                             }
                         },
-                        onBack = {
-                            // if (currentRoute == AppRoutes.HOME) return@FlymeAppShell
-                            // navController.popBackStack(AppRoutes.HOME, inclusive = false)
-                        },
+                        onBack = clearSelection,
                     ) {
-                        NavHost(
-                            navController = navController,
-                            startDestination = AppRoutes.NONE,
-                            modifier = Modifier.fillMaxSize(),
-                        ) {
-                            composable(AppRoutes.NONE) {
-                                EmptyStartScreen()
-                            }
-                            // composable(AppRoutes.HOME) {
-                            //     HomeScreen(
-                            //         onToolClick = { route ->
-                            //             navController.navigate(route) {
-                            //                 launchSingleTop = true
-                            //                 restoreState = true
-                            //             }
-                            //         },
-                            //     )
-                            // }
-                            composable(AppRoutes.WIFI) {
-                                WifiScreen(
-                                    onBack = { navController.popBackStack() },
-                                )
-                            }
-                            composable(AppRoutes.TEMPERATURE) {
-                                TemperatureScreen(
-                                    onBack = { navController.popBackStack() },
-                                )
-                            }
-                            composable(AppRoutes.SPEED) {
-                                SpeedScreen(
-                                    onBack = { navController.popBackStack() },
-                                )
-                            }
-                            composable(AppRoutes.BATTERY) {
-                                BatteryScreen(
-                                    onBack = { navController.popBackStack() },
-                                )
-                            }
-                            composable(AppRoutes.DRIVING) {
-                                DrivingScreen(
-                                    onBack = { navController.popBackStack() },
-                                )
-                            }
-                            composable(AppRoutes.AMBIENT_LIGHT) {
-                                AmbientLightScreen(
-                                    onBack = { navController.popBackStack() },
-                                )
-                            }
-                            composable(AppRoutes.AVAS) {
-                                AvasScreen(
-                                    onBack = { navController.popBackStack() },
-                                )
-                            }
-                            composable(AppRoutes.SOUNDS) {
-                                SoundsScreen(
-                                    onBack = { navController.popBackStack() },
-                                )
-                            }
-                            composable(AppRoutes.SETTINGS) {
-                                SettingsScreen(
-                                    onBack = { navController.popBackStack() },
-                                )
-                            }
+                        when (selectedRoute) {
+                            AppRoutes.NONE -> EmptyStartScreen()
+                            AppRoutes.WIFI -> WifiScreen(onBack = clearSelection)
+                            AppRoutes.TEMPERATURE -> TemperatureScreen(onBack = clearSelection)
+                            AppRoutes.SPEED -> SpeedScreen(onBack = clearSelection)
+                            AppRoutes.BATTERY -> BatteryScreen(onBack = clearSelection)
+                            AppRoutes.DRIVING -> DrivingScreen(onBack = clearSelection)
+                            AppRoutes.AMBIENT_LIGHT -> AmbientLightScreen(onBack = clearSelection)
+                            AppRoutes.AVAS -> AvasScreen(onBack = clearSelection)
+                            AppRoutes.SOUNDS -> SoundsScreen(onBack = clearSelection)
+                            AppRoutes.SETTINGS -> SettingsScreen(onBack = clearSelection)
+                            else -> EmptyStartScreen()
                         }
                     }
                 }

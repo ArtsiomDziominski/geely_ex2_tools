@@ -10,12 +10,5 @@ data class BatterySample(
 interface VhalBatteryReader {
     fun readBatterySoc(): BatterySample
 
-    fun startListening(
-        onUpdate: (BatterySample) -> Unit,
-        shouldContinue: () -> Boolean = { true },
-    )
-
-    fun stopListening()
-
     fun close()
 }

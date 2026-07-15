@@ -2,16 +2,20 @@ package com.geely.ex2.tools.feature.sounds.ui
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.AlertDialog
@@ -23,21 +27,20 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.geely.ex2.tools.R
+import com.geely.ex2.tools.data.sounds.CarLockSoundCatalog
 import com.geely.ex2.tools.data.sounds.CarLockSoundOption
 import com.geely.ex2.tools.data.sounds.CarLockSoundPaths
 import com.geely.ex2.tools.data.sounds.CarLockSoundSource
@@ -47,8 +50,11 @@ import com.geely.ex2.tools.ui.components.FlymeSettingsSection
 import com.geely.ex2.tools.ui.components.FlymeSettingsSegmentedItem
 import com.geely.ex2.tools.ui.components.FlymeSettingsValueItem
 import com.geely.ex2.tools.ui.components.GeelyTopAppBar
+import com.geely.ex2.tools.ui.components.TabVisibilityEffect
 import com.geely.ex2.tools.ui.components.isFlymeRailCompact
 import com.geely.ex2.tools.ui.theme.GeelyEx2ToolsTheme
+
+private val SoundGroupCorner = 16.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,7 +64,6 @@ fun SoundsScreen(
     viewModel: SoundsViewModel = viewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val lifecycleOwner = LocalLifecycleOwner.current
     val segmentOptions = listOf(
         stringResource(R.string.sounds_segment_off),
         stringResource(R.string.sounds_segment_on),
@@ -68,17 +73,7 @@ fun SoundsScreen(
         contract = ActivityResultContracts.OpenDocument(),
     ) { uri -> viewModel.onSoundPicked(uri) }
 
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                viewModel.onResume()
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
+    TabVisibilityEffect(onVisible = viewModel::onResume)
 
     if (uiState.showRebootDialog) {
         AlertDialog(
@@ -108,138 +103,199 @@ fun SoundsScreen(
             )
         },
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
+                .padding(horizontal = 16.dp),
+            contentPadding = PaddingValues(top = 8.dp, bottom = 24.dp),
         ) {
-            SoundsStatusHeader(
-                isInstalled = uiState.isInstalled,
-                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
-            )
+            item(key = "header") {
+                SoundsStatusHeader(
+                    isInstalled = uiState.isInstalled,
+                    modifier = Modifier.padding(bottom = 20.dp),
+                )
+            }
 
-            SoundsCatalogSection(
+            soundsCatalogItems(
                 catalog = uiState.catalog,
                 selectedSoundId = uiState.selectedSoundId,
                 enabled = !uiState.isImporting && !uiState.isChanging,
                 onSoundSelected = viewModel::onSoundSelected,
             )
 
-            FlymeSettingsSection(title = stringResource(R.string.sounds_section_carlock)) {
-                FlymeSettingsValueItem(
-                    title = stringResource(R.string.sounds_pick_other_title),
-                    value = stringResource(R.string.sounds_pick_other_summary),
-                    onClick = { pickSoundLauncher.launch(arrayOf("audio/*")) },
-                    enabled = !uiState.isImporting && !uiState.isChanging,
-                    showDivider = true,
-                )
-                FlymeSettingsSegmentedItem(
-                    title = stringResource(R.string.sounds_carlock_title),
-                    summary = if (uiState.isInstalled) {
-                        stringResource(R.string.sounds_carlock_summary_on)
-                    } else {
-                        stringResource(R.string.sounds_carlock_summary_off)
-                    },
-                    options = segmentOptions,
-                    selectedIndex = if (uiState.isInstalled) 1 else 0,
-                    onSelectedIndexChange = viewModel::onCarLockSegmentSelected,
-                    enabled = !uiState.isChanging &&
-                        !uiState.isImporting &&
-                        uiState.isSystemUid &&
-                        (uiState.isInstalled || uiState.hasSource),
-                    showDivider = false,
-                )
+            item(key = "carlock") {
+                FlymeSettingsSection(
+                    title = stringResource(R.string.sounds_section_carlock),
+                    modifier = Modifier.padding(top = 20.dp),
+                ) {
+                    FlymeSettingsValueItem(
+                        title = stringResource(R.string.sounds_pick_other_title),
+                        value = stringResource(R.string.sounds_pick_other_summary),
+                        onClick = { pickSoundLauncher.launch(arrayOf("audio/*")) },
+                        enabled = !uiState.isImporting && !uiState.isChanging,
+                        showDivider = true,
+                    )
+                    FlymeSettingsSegmentedItem(
+                        title = stringResource(R.string.sounds_carlock_title),
+                        summary = if (uiState.isInstalled) {
+                            stringResource(R.string.sounds_carlock_summary_on)
+                        } else {
+                            stringResource(R.string.sounds_carlock_summary_off)
+                        },
+                        options = segmentOptions,
+                        selectedIndex = if (uiState.isInstalled) 1 else 0,
+                        onSelectedIndexChange = viewModel::onCarLockSegmentSelected,
+                        enabled = !uiState.isChanging &&
+                            !uiState.isImporting &&
+                            uiState.isSystemUid &&
+                            (uiState.isInstalled || uiState.hasSource),
+                        showDivider = false,
+                    )
+                }
             }
 
-            FlymeSettingsSection(title = stringResource(R.string.sounds_section_status)) {
-                FlymeSettingsInfoItem(
-                    title = stringResource(R.string.sounds_target_title),
-                    summary = CarLockSoundPaths.TARGET_FILE,
-                )
-                FlymeSettingsInfoItem(
-                    title = stringResource(R.string.sounds_source_title),
-                    summary = uiState.sourceDisplayName
-                        ?: stringResource(R.string.sounds_pick_not_selected),
-                )
-                FlymeSettingsInfoItem(
-                    title = stringResource(R.string.sounds_status_title),
-                    summary = uiState.statusText,
-                )
+            item(key = "status") {
+                FlymeSettingsSection(
+                    title = stringResource(R.string.sounds_section_status),
+                    modifier = Modifier.padding(top = 20.dp),
+                ) {
+                    FlymeSettingsInfoItem(
+                        title = stringResource(R.string.sounds_target_title),
+                        summary = CarLockSoundPaths.TARGET_FILE,
+                    )
+                    FlymeSettingsInfoItem(
+                        title = stringResource(R.string.sounds_source_title),
+                        summary = uiState.sourceDisplayName
+                            ?: stringResource(R.string.sounds_pick_not_selected),
+                    )
+                    FlymeSettingsInfoItem(
+                        title = stringResource(R.string.sounds_status_title),
+                        summary = uiState.statusText,
+                    )
+                }
             }
         }
     }
 }
 
-@Composable
-private fun SoundsCatalogSection(
-    catalog: com.geely.ex2.tools.data.sounds.CarLockSoundCatalog,
+private fun LazyListScope.soundsCatalogItems(
+    catalog: CarLockSoundCatalog,
     selectedSoundId: String?,
     enabled: Boolean,
     onSoundSelected: (CarLockSoundOption) -> Unit,
 ) {
     if (catalog.options.isEmpty()) {
-        FlymeSettingsSection(title = stringResource(R.string.sounds_section_pick)) {
-            FlymeSettingsInfoItem(
-                title = stringResource(R.string.sounds_catalog_empty),
-                summary = stringResource(R.string.sounds_catalog_empty_hint),
-            )
+        item(key = "catalog_empty") {
+            FlymeSettingsSection(
+                title = stringResource(R.string.sounds_section_pick),
+                modifier = Modifier.padding(bottom = 0.dp),
+            ) {
+                FlymeSettingsInfoItem(
+                    title = stringResource(R.string.sounds_catalog_empty),
+                    summary = stringResource(R.string.sounds_catalog_empty_hint),
+                )
+            }
         }
         return
     }
 
+    var isFirstGroup = true
+
+    fun nextTopPadding(): Dp {
+        val padding = if (isFirstGroup) 0.dp else 20.dp
+        isFirstGroup = false
+        return padding
+    }
+
     if (catalog.downloadOptions.isNotEmpty()) {
-        SoundGroupSection(
-            title = stringResource(R.string.sounds_section_download),
+        soundGroupItems(
+            groupKey = "download",
+            titleRes = R.string.sounds_section_download,
             options = catalog.downloadOptions,
             selectedSoundId = selectedSoundId,
             enabled = enabled,
             onSoundSelected = onSoundSelected,
+            topPadding = nextTopPadding(),
         )
     }
 
     if (catalog.vendorOptions.isNotEmpty()) {
-        SoundGroupSection(
-            title = stringResource(R.string.sounds_section_vendor),
+        soundGroupItems(
+            groupKey = "vendor",
+            titleRes = R.string.sounds_section_vendor,
             options = catalog.vendorOptions,
             selectedSoundId = selectedSoundId,
             enabled = enabled,
             onSoundSelected = onSoundSelected,
+            topPadding = nextTopPadding(),
         )
     }
 
     if (catalog.assetOptions.isNotEmpty()) {
-        SoundGroupSection(
-            title = stringResource(R.string.sounds_section_assets),
+        soundGroupItems(
+            groupKey = "assets",
+            titleRes = R.string.sounds_section_assets,
             options = catalog.assetOptions,
             selectedSoundId = selectedSoundId,
             enabled = enabled,
             onSoundSelected = onSoundSelected,
+            topPadding = nextTopPadding(),
         )
     }
 }
 
-@Composable
-private fun SoundGroupSection(
-    title: String,
+private fun LazyListScope.soundGroupItems(
+    groupKey: String,
+    titleRes: Int,
     options: List<CarLockSoundOption>,
     selectedSoundId: String?,
     enabled: Boolean,
     onSoundSelected: (CarLockSoundOption) -> Unit,
+    topPadding: Dp,
 ) {
-    FlymeSettingsSection(title = title) {
-        options.forEachIndexed { index, option ->
-            SoundOptionRow(
-                title = option.displayName,
-                subtitle = soundSourceLabel(option.source),
-                selected = selectedSoundId == option.id,
-                enabled = enabled,
-                onClick = { onSoundSelected(option) },
-                showDivider = index < options.lastIndex,
+    item(key = "${groupKey}_title") {
+        Text(
+            text = stringResource(titleRes),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(
+                start = 4.dp,
+                top = topPadding,
+                bottom = 8.dp,
+            ),
+        )
+    }
+
+    itemsIndexed(
+        items = options,
+        key = { _, option -> option.id },
+    ) { index, option ->
+        val shape = when {
+            options.size == 1 -> RoundedCornerShape(SoundGroupCorner)
+            index == 0 -> RoundedCornerShape(
+                topStart = SoundGroupCorner,
+                topEnd = SoundGroupCorner,
             )
+            index == options.lastIndex -> RoundedCornerShape(
+                bottomStart = SoundGroupCorner,
+                bottomEnd = SoundGroupCorner,
+            )
+            else -> RoundedCornerShape(0.dp)
         }
+
+        SoundOptionRow(
+            title = option.displayName,
+            subtitle = soundSourceLabel(option.source),
+            selected = selectedSoundId == option.id,
+            enabled = enabled,
+            onClick = { onSoundSelected(option) },
+            showDivider = index < options.lastIndex,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(shape)
+                .background(MaterialTheme.colorScheme.surface),
+        )
     }
 }
 
@@ -258,8 +314,9 @@ private fun SoundOptionRow(
     enabled: Boolean,
     onClick: () -> Unit,
     showDivider: Boolean,
+    modifier: Modifier = Modifier,
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()

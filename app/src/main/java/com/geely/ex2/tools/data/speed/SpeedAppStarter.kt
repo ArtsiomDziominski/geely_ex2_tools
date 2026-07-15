@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import com.geely.ex2.tools.data.vhal.CarPropertyIo
+import com.geely.ex2.tools.data.vhal.SpeedSample
 import com.geely.ex2.tools.data.vhal.VhalSpeedReaderFactory
 
 object SpeedAppStarter {
@@ -14,6 +15,7 @@ object SpeedAppStarter {
             Log.i(TAG, "Speed service not started, disabled: $reason")
             stopService(appContext, reason)
             SpeedStatusIconHelper.cancelStatusIcon(appContext)
+            SpeedSampleStore.clear()
             return
         }
         startService(appContext, reason)
@@ -23,16 +25,17 @@ object SpeedAppStarter {
         val appContext = context.applicationContext
         if (!SpeedSettings.isEnabled(appContext)) {
             SpeedStatusIconHelper.cancelStatusIcon(appContext)
+            SpeedSampleStore.clear()
             return
         }
 
         val iconRank = rank ?: SpeedSettings.getStatusIconRank(appContext)
         CarPropertyIo.execute {
-            val reader = VhalSpeedReaderFactory.create(appContext)
-            val sample = try {
-                reader.readSpeed()
-            } finally {
-                reader.close()
+            // Rank-only: reuse store. Start/resume: always re-read so UI is not stale.
+            val sample = if (rank != null) {
+                SpeedSampleStore.sample.value ?: readAndPublish(appContext)
+            } else {
+                readAndPublish(appContext)
             }
             SpeedStatusIconHelper.notifySpeed(
                 context = appContext,
@@ -49,9 +52,18 @@ object SpeedAppStarter {
         val intent = Intent(appContext, SpeedStatusService::class.java).apply {
             putExtra(SpeedStatusService.EXTRA_REASON, reason)
         }
-        // Wake running service so onStartCommand stops VHAL listener immediately.
+        // Wake running service so onStartCommand stops polling immediately.
         appContext.startService(intent)
         appContext.stopService(intent)
+    }
+
+    private fun readAndPublish(appContext: Context): SpeedSample {
+        val reader = VhalSpeedReaderFactory.create(appContext)
+        return try {
+            reader.readSpeed()
+        } finally {
+            reader.close()
+        }.also { SpeedSampleStore.publish(it) }
     }
 
     private fun startService(context: Context, reason: String) {

@@ -27,6 +27,12 @@ object TemperatureStatusIconHelper {
     @Volatile
     private var lastNotifiedRank: Int? = null
 
+    @Volatile
+    private var lastDisplayKey: String? = null
+
+    @Volatile
+    private var lastIconAsset: TemperatureIconAsset? = null
+
     private const val STATUS_CHANNEL_ID = "geely_temperature_status_icon"
     private const val SERVICE_CHANNEL_ID = "geely_temperature_service"
 
@@ -72,6 +78,7 @@ object TemperatureStatusIconHelper {
         result: TemperatureReader.Result?,
         reason: String,
         rank: Int = TemperatureSettings.getStatusIconRank(context),
+        force: Boolean = false,
     ) {
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
@@ -86,6 +93,13 @@ object TemperatureStatusIconHelper {
             Log.i(TAG, "Temperature status icon reposition: rank $previousRank -> $rank ($reason)")
         }
 
+        val key = displayKey(result)
+        val cachedAsset = lastIconAsset
+        if (!force && key == lastDisplayKey && rank == lastNotifiedRank && cachedAsset != null) {
+            Log.d(TAG, "Temperature status icon unchanged, skip: $reason")
+            return
+        }
+
         ensureChannel(
             context = context,
             channelId = STATUS_CHANNEL_ID,
@@ -93,7 +107,14 @@ object TemperatureStatusIconHelper {
             importance = NotificationManager.IMPORTANCE_LOW,
         )
 
-        val iconAsset = createTemperatureIcon(context, result)
+        val iconAsset = if (!force && key == lastDisplayKey && cachedAsset != null) {
+            cachedAsset
+        } else {
+            createTemperatureIcon(context, result).also {
+                lastIconAsset = it
+                lastDisplayKey = key
+            }
+        }
         val icon = iconAsset.icon
         val text = if (result?.ok == true) {
             context.getString(R.string.temperature_status_icon_text_available, result.value.roundToInt())
@@ -140,12 +161,22 @@ object TemperatureStatusIconHelper {
             context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
         notificationManager?.cancel(STATUS_NOTIFICATION_ID)
         lastNotifiedRank = null
+        lastDisplayKey = null
+        lastIconAsset = null
     }
 
     private data class TemperatureIconAsset(
         val icon: Icon,
         val widthPx: Int,
     )
+
+    private fun displayKey(result: TemperatureReader.Result?): String {
+        return if (result != null && result.ok) {
+            result.value.roundToInt().toString()
+        } else {
+            "?"
+        }
+    }
 
     private fun createTemperatureIcon(context: Context, result: TemperatureReader.Result?): TemperatureIconAsset {
         val hasDegreeSymbol: Boolean

@@ -8,6 +8,7 @@ import com.geely.ex2.tools.data.shell.SystemShell
 import java.io.File
 import java.io.IOException
 import java.security.MessageDigest
+import java.util.concurrent.ConcurrentHashMap
 
 object CarLockSoundPaths {
     const val CARLOCK_DIR = "/vendor/etc/carlock"
@@ -354,9 +355,31 @@ class CarLockSoundRepository(
                 input.copyTo(output)
             }
         }
+        invalidateHashCache(to)
     }
 
     private fun sha256(file: File): String {
+        val size = file.length()
+        val lastModified = file.lastModified()
+        val path = file.absolutePath
+        val cached = hashCache[path]
+        if (cached != null &&
+            cached.size == size &&
+            cached.lastModified == lastModified
+        ) {
+            return cached.hash
+        }
+
+        val hash = computeSha256(file)
+        hashCache[path] = HashCacheEntry(
+            size = size,
+            lastModified = lastModified,
+            hash = hash,
+        )
+        return hash
+    }
+
+    private fun computeSha256(file: File): String {
         val digest = MessageDigest.getInstance("SHA-256")
         file.inputStream().use { input ->
             val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
@@ -367,5 +390,19 @@ class CarLockSoundRepository(
             }
         }
         return digest.digest().joinToString("") { "%02x".format(it) }
+    }
+
+    private fun invalidateHashCache(file: File) {
+        hashCache.remove(file.absolutePath)
+    }
+
+    private data class HashCacheEntry(
+        val size: Long,
+        val lastModified: Long,
+        val hash: String,
+    )
+
+    companion object {
+        private val hashCache = ConcurrentHashMap<String, HashCacheEntry>()
     }
 }

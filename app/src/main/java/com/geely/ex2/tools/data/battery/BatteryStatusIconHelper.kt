@@ -29,6 +29,12 @@ object BatteryStatusIconHelper {
     @Volatile
     private var lastNotifiedRank: Int? = null
 
+    @Volatile
+    private var lastDisplayKey: String? = null
+
+    @Volatile
+    private var lastIconAsset: BatteryIconAsset? = null
+
     private const val STATUS_CHANNEL_ID = "geely_battery_status_icon"
     private const val SERVICE_CHANNEL_ID = "geely_battery_service"
 
@@ -74,6 +80,7 @@ object BatteryStatusIconHelper {
         sample: BatterySample?,
         reason: String,
         rank: Int = BatterySettings.getStatusIconRank(context),
+        force: Boolean = false,
     ) {
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
@@ -88,6 +95,13 @@ object BatteryStatusIconHelper {
             Log.i(TAG, "Battery status icon reposition: rank $previousRank -> $rank ($reason)")
         }
 
+        val key = displayKey(sample)
+        val cachedAsset = lastIconAsset
+        if (!force && key == lastDisplayKey && rank == lastNotifiedRank && cachedAsset != null) {
+            Log.d(TAG, "Battery status icon unchanged, skip: $reason")
+            return
+        }
+
         ensureChannel(
             context = context,
             channelId = STATUS_CHANNEL_ID,
@@ -95,7 +109,14 @@ object BatteryStatusIconHelper {
             importance = NotificationManager.IMPORTANCE_LOW,
         )
 
-        val iconAsset = createBatteryIcon(context, sample)
+        val iconAsset = if (!force && key == lastDisplayKey && cachedAsset != null) {
+            cachedAsset
+        } else {
+            createBatteryIcon(context, sample).also {
+                lastIconAsset = it
+                lastDisplayKey = key
+            }
+        }
         val icon = iconAsset.icon
         val text = if (sample?.isAvailable == true) {
             context.getString(R.string.battery_status_icon_text_available, sample.socPercent.roundToInt())
@@ -142,12 +163,22 @@ object BatteryStatusIconHelper {
             context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
         notificationManager?.cancel(STATUS_NOTIFICATION_ID)
         lastNotifiedRank = null
+        lastDisplayKey = null
+        lastIconAsset = null
     }
 
     private data class BatteryIconAsset(
         val icon: Icon,
         val widthPx: Int,
     )
+
+    private fun displayKey(sample: BatterySample?): String {
+        return if (sample?.isAvailable == true) {
+            "${sample.socPercent.roundToInt()}%"
+        } else {
+            "?%"
+        }
+    }
 
     private fun createBatteryIcon(context: Context, sample: BatterySample?): BatteryIconAsset {
         val numberText = if (sample?.isAvailable == true) {

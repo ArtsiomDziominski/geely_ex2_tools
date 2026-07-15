@@ -36,13 +36,13 @@ object AmbientLightSettings {
         clearLegacyControlMode(context)
         when (mode) {
             AmbientLightControlMode.AUTO -> {
-                prefs(context).edit().putBoolean(KEY_AUTO_ENABLED, true).commit()
+                prefs(context).edit().putBoolean(KEY_AUTO_ENABLED, true).apply()
                 sessionMode = null
             }
             AmbientLightControlMode.OFF,
             AmbientLightControlMode.ON,
             -> {
-                prefs(context).edit().putBoolean(KEY_AUTO_ENABLED, false).commit()
+                prefs(context).edit().putBoolean(KEY_AUTO_ENABLED, false).apply()
                 sessionMode = mode
             }
         }
@@ -76,14 +76,14 @@ object AmbientLightSettings {
         prefs(context).edit()
             .putInt(KEY_START_HOUR, hour.coerceIn(0, 23))
             .putInt(KEY_START_MINUTE, minute.coerceIn(0, 59))
-            .commit()
+            .apply()
     }
 
     fun setEndTime(context: Context, hour: Int, minute: Int) {
         prefs(context).edit()
             .putInt(KEY_END_HOUR, hour.coerceIn(0, 23))
             .putInt(KEY_END_MINUTE, minute.coerceIn(0, 59))
-            .commit()
+            .apply()
     }
 
     private fun clearLegacyControlMode(context: Context) {

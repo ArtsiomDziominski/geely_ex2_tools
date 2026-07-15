@@ -41,7 +41,6 @@ class TemperatureViewModel(application: Application) : AndroidViewModel(applicat
 
     fun onResume() {
         refreshState()
-        syncBackgroundWork("TemperatureScreen resume")
         restartPolling()
     }
 

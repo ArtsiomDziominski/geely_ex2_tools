@@ -16,14 +16,14 @@ object DrivingSettings {
         prefs(context).getBoolean(KEY_PERSIST_ENABLED, true)
 
     fun setPersistEnabled(context: Context, enabled: Boolean) {
-        prefs(context).edit().putBoolean(KEY_PERSIST_ENABLED, enabled).commit()
+        prefs(context).edit().putBoolean(KEY_PERSIST_ENABLED, enabled).apply()
     }
 
     fun getSavedModeValue(context: Context): Int =
         prefs(context).getInt(KEY_SAVED_MODE_VALUE, VhalConstants.DRIVE_MODE_COMFORT)
 
     fun setSavedModeValue(context: Context, modeValue: Int) {
-        prefs(context).edit().putInt(KEY_SAVED_MODE_VALUE, modeValue).commit()
+        prefs(context).edit().putInt(KEY_SAVED_MODE_VALUE, modeValue).apply()
     }
 
     fun hasSavedMode(context: Context): Boolean =
@@ -33,7 +33,7 @@ object DrivingSettings {
         prefs(context).getBoolean(KEY_REGEN_PERSIST_ENABLED, false)
 
     fun setRegenPersistEnabled(context: Context, enabled: Boolean) {
-        prefs(context).edit().putBoolean(KEY_REGEN_PERSIST_ENABLED, enabled).commit()
+        prefs(context).edit().putBoolean(KEY_REGEN_PERSIST_ENABLED, enabled).apply()
     }
 
     fun getSavedRegenValue(context: Context): Int {
@@ -51,7 +51,7 @@ object DrivingSettings {
     fun setSavedRegenValue(context: Context, levelValue: Int) {
         prefs(context).edit()
             .putInt(KEY_SAVED_REGEN_VALUE, EnergyRegenerationValues.normalizeStoredValue(levelValue))
-            .commit()
+            .apply()
     }
 
     fun hasAnyPersistEnabled(context: Context): Boolean =

@@ -10,12 +10,5 @@ data class SpeedSample(
 interface VhalSpeedReader {
     fun readSpeed(): SpeedSample
 
-    fun startListening(
-        onUpdate: (SpeedSample) -> Unit,
-        shouldContinue: () -> Boolean = { true },
-    )
-
-    fun stopListening()
-
     fun close()
 }

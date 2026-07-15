@@ -36,7 +36,6 @@ class WifiViewModel(application: Application) : AndroidViewModel(application) {
 
     fun onResume() {
         refreshState()
-        syncBackgroundWork("WifiScreen resume")
         restartPolling()
     }
 
@@ -137,9 +136,8 @@ class WifiViewModel(application: Application) : AndroidViewModel(application) {
         pollJob?.cancel()
         pollJob = viewModelScope.launch {
             while (isActive) {
-                delay(VhalConstants.POLL_INTERVAL_MS)
+                delay(VhalConstants.WIFI_UI_POLL_INTERVAL_MS)
                 refreshState()
-                repository.notifyStatusIcon("UI poll")
             }
         }
     }
