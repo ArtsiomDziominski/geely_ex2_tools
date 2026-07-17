@@ -4,11 +4,7 @@ import android.app.Application
 import android.text.format.Formatter
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.geely.ex2.tools.R
-import com.geely.ex2.tools.data.sound.LockSoundRepository
 import com.geely.ex2.tools.data.system.SystemMemoryReader
-import com.geely.ex2.tools.data.vhal.LockSoundSample
-import com.geely.ex2.tools.data.vhal.VhalConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -27,45 +23,30 @@ data class SystemUiState(
     val usedLabel: String = "",
     val totalLabel: String = "",
     val availLabel: String = "",
-    val lockSoundEnabled: Boolean = false,
-    val lockSoundAvailable: Boolean = false,
-    val lockSoundWritable: Boolean = true,
-    val lockSoundChanging: Boolean = false,
-    val lockSoundStatusText: String = "",
 )
 
 class SystemViewModel(application: Application) : AndroidViewModel(application) {
     private val appContext = application.applicationContext
-    private val lockSoundRepository = LockSoundRepository(appContext)
 
     private val _uiState = MutableStateFlow(SystemUiState())
     val uiState: StateFlow<SystemUiState> = _uiState.asStateFlow()
 
     private var refreshJob: Job? = null
-    private var lockSoundPollJob: Job? = null
-    private var lockSoundRefreshJob: Job? = null
 
     /** One delayed read after opening the tab; cancelled when the tab is left. */
     fun onResume() {
-        if (refreshJob?.isActive == true) {
-            startLockSoundPolling()
-            refreshLockSound()
-            return
-        }
+        if (refreshJob?.isActive == true) return
         refreshJob = viewModelScope.launch {
             delay(TAB_REFRESH_DELAY_MS)
             if (isActive) {
                 refreshMemory()
             }
         }
-        refreshLockSound()
-        startLockSoundPolling()
     }
 
     fun onPause() {
         refreshJob?.cancel()
         refreshJob = null
-        stopLockSoundPolling()
     }
 
     /** Immediate read from the refresh button. */
@@ -76,91 +57,9 @@ class SystemViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    fun onLockSoundCheckedChange(enabled: Boolean) {
-        if (enabled == _uiState.value.lockSoundEnabled || _uiState.value.lockSoundChanging) {
-            return
-        }
-
-        _uiState.update {
-            it.copy(
-                lockSoundEnabled = enabled,
-                lockSoundChanging = true,
-                lockSoundWritable = false,
-            )
-        }
-
-        viewModelScope.launch {
-            val write = withContext(Dispatchers.IO) {
-                lockSoundRepository.setLockSoundEnabled(enabled)
-            }
-            if (!write.ok) {
-                _uiState.update {
-                    it.copy(
-                        lockSoundChanging = false,
-                        lockSoundStatusText = appContext.getString(
-                            R.string.system_lock_sound_status_write_error,
-                            write.error ?: appContext.getString(R.string.system_lock_sound_write_error_unknown),
-                        ),
-                    )
-                }
-                refreshLockSound()
-                return@launch
-            }
-
-            refreshLockSound()
-        }
-    }
-
     override fun onCleared() {
         onPause()
-        lockSoundRefreshJob?.cancel()
         super.onCleared()
-    }
-
-    private fun startLockSoundPolling() {
-        lockSoundPollJob?.cancel()
-        lockSoundPollJob = viewModelScope.launch {
-            while (isActive) {
-                delay(VhalConstants.LOCK_SOUND_UI_POLL_INTERVAL_MS)
-                refreshLockSound()
-            }
-        }
-    }
-
-    private fun stopLockSoundPolling() {
-        lockSoundPollJob?.cancel()
-        lockSoundPollJob = null
-        lockSoundRefreshJob?.cancel()
-        lockSoundRefreshJob = null
-    }
-
-    private fun refreshLockSound() {
-        lockSoundRefreshJob?.cancel()
-        lockSoundRefreshJob = viewModelScope.launch {
-            val sample = withContext(Dispatchers.IO) {
-                lockSoundRepository.readLockSound()
-            }
-            _uiState.update { current ->
-                buildLockSoundState(current, sample)
-            }
-        }
-    }
-
-    private fun buildLockSoundState(current: SystemUiState, sample: LockSoundSample): SystemUiState {
-        return current.copy(
-            lockSoundEnabled = sample.isEnabled,
-            lockSoundAvailable = sample.isAvailable,
-            lockSoundChanging = false,
-            lockSoundWritable = sample.isAvailable && !current.lockSoundChanging,
-            lockSoundStatusText = buildLockSoundStatusText(sample),
-        )
-    }
-
-    private fun buildLockSoundStatusText(sample: LockSoundSample): String {
-        if (!sample.isAvailable) {
-            return appContext.getString(R.string.system_lock_sound_status_error, sample.source)
-        }
-        return appContext.getString(R.string.system_lock_sound_status_ok, sample.source)
     }
 
     private suspend fun refreshMemory() {

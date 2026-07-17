@@ -11,6 +11,7 @@ object AppRoutes {
     const val DRIVING = "driving"
     const val AMBIENT_LIGHT = "ambient_light"
     const val AVAS = "avas"
+    const val SOUND = "sound"
     const val SYSTEM = "system"
     const val SETTINGS = "settings"
 }
