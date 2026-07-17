@@ -33,13 +33,20 @@ class WifiViewModel(application: Application) : AndroidViewModel(application) {
     val uiState: StateFlow<WifiUiState> = _uiState.asStateFlow()
 
     private var pollJob: Job? = null
+    private var resumeJob: Job? = null
 
     fun onResume() {
-        refreshState()
-        restartPolling()
+        resumeJob?.cancel()
+        resumeJob = viewModelScope.launch {
+            refreshState()
+            if (!isActive) return@launch
+            restartPolling()
+        }
     }
 
     fun onPause() {
+        resumeJob?.cancel()
+        resumeJob = null
         stopPolling()
     }
 

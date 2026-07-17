@@ -23,6 +23,7 @@ import com.geely.ex2.tools.feature.temperature.ui.TemperatureScreen
 import com.geely.ex2.tools.feature.wifi.ui.WifiScreen
 import com.geely.ex2.tools.navigation.AppRoutes
 import com.geely.ex2.tools.ui.components.FlymeAppShell
+import com.geely.ex2.tools.ui.components.KeepAliveTabHost
 import com.geely.ex2.tools.ui.theme.GeelyEx2Background
 import com.geely.ex2.tools.ui.theme.GeelyEx2ToolsTheme
 
@@ -45,19 +46,21 @@ class MainActivity : AppCompatActivity() {
                         },
                         onBack = clearSelection,
                     ) {
-                        when (selectedRoute) {
-                            AppRoutes.NONE -> EmptyStartScreen()
-                            AppRoutes.WIFI -> WifiScreen(onBack = clearSelection)
-                            AppRoutes.TEMPERATURE -> TemperatureScreen(onBack = clearSelection)
-                            AppRoutes.SPEED -> SpeedScreen(onBack = clearSelection)
-                            AppRoutes.BATTERY -> BatteryScreen(onBack = clearSelection)
-                            AppRoutes.DRIVING -> DrivingScreen(onBack = clearSelection)
-                            AppRoutes.AMBIENT_LIGHT -> AmbientLightScreen(onBack = clearSelection)
-                            AppRoutes.AVAS -> AvasScreen(onBack = clearSelection)
-                            AppRoutes.SOUND -> SoundScreen(onBack = clearSelection)
-                            AppRoutes.SYSTEM -> SystemScreen(onBack = clearSelection)
-                            AppRoutes.SETTINGS -> SettingsScreen(onBack = clearSelection)
-                            else -> EmptyStartScreen()
+                        KeepAliveTabHost(selectedRoute = selectedRoute) { route ->
+                            when (route) {
+                                AppRoutes.NONE -> EmptyStartScreen()
+                                AppRoutes.WIFI -> WifiScreen(onBack = clearSelection)
+                                AppRoutes.TEMPERATURE -> TemperatureScreen(onBack = clearSelection)
+                                AppRoutes.SPEED -> SpeedScreen(onBack = clearSelection)
+                                AppRoutes.BATTERY -> BatteryScreen(onBack = clearSelection)
+                                AppRoutes.DRIVING -> DrivingScreen(onBack = clearSelection)
+                                AppRoutes.AMBIENT_LIGHT -> AmbientLightScreen(onBack = clearSelection)
+                                AppRoutes.AVAS -> AvasScreen(onBack = clearSelection)
+                                AppRoutes.SOUND -> SoundScreen(onBack = clearSelection)
+                                AppRoutes.SYSTEM -> SystemScreen(onBack = clearSelection)
+                                AppRoutes.SETTINGS -> SettingsScreen(onBack = clearSelection)
+                                else -> EmptyStartScreen()
+                            }
                         }
                     }
                 }

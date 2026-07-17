@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -33,13 +34,20 @@ class BatteryViewModel(application: Application) : AndroidViewModel(application)
     val uiState: StateFlow<BatteryUiState> = _uiState.asStateFlow()
 
     private var sampleJob: Job? = null
+    private var resumeJob: Job? = null
 
     fun onResume() {
-        refreshSettings()
-        startObservingSample()
+        resumeJob?.cancel()
+        resumeJob = viewModelScope.launch {
+            refreshSettings()
+            if (!isActive) return@launch
+            startObservingSample()
+        }
     }
 
     fun onPause() {
+        resumeJob?.cancel()
+        resumeJob = null
         stopObservingSample()
     }
 
