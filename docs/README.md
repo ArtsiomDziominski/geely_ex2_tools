@@ -17,6 +17,7 @@
 | [flyme-launcher-apk.md](./flyme-launcher-apk.md) | Разбор APK `com.flyme.auto.launcher` (Lib): HOME, Aicy Widget, applist, plugins, recent apps |
 | [centralexauto-apk.md](./centralexauto-apk.md) | Разбор APK `com.ex.auto` (CentralEXAuto): watchdog, AA/CarPlay, floaters, VHAL, GitHub updates |
 | [ca-fix-apk.md](./ca-fix-apk.md) | Разбор APK `com.njda.adapter` (`ca_fix.apk`): ConnAdaptor — Android Auto / CarPlay адаптер |
+| [android-storagemanager-apk.md](./android-storagemanager-apk.md) | Разбор APK `com.android.storagemanager` (Storage Manager v9): Deletion Helper, ASM job, notifications |
 
 ## Локальные артефакты
 
@@ -68,5 +69,10 @@
 | `.tmp/ca_fix.apk` | Оригинальный APK ConnAdaptor fix (опционально) |
 | `.tmp/ca-fix/` | Распакованный APK + badging/manifest |
 | `.tmp/ca-fix-jadx/` | JADX-декомпилят ConnAdaptor / ca_fix |
+| `.tmp/storagemanager/storagemanager.apk` | Оригинальный APK Storage Manager v9 |
+| `.tmp/storagemanager/apk/` | Распакованный `com.android.storagemanager` |
+| `.tmp/storagemanager/jadx/` | JADX-декомпилят Storage Manager |
+| `.tmp/storagemanager/badging.txt` | `aapt dump badging` |
+| `.tmp/storagemanager/manifest.txt` | `aapt dump xmltree` манифест |
 
 Папка `.tmp/` в `.gitignore`.

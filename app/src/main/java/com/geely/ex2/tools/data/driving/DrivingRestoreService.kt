@@ -11,11 +11,25 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import com.geely.ex2.tools.R
+import com.geely.ex2.tools.data.vhal.VhalConstants
 import java.util.concurrent.atomic.AtomicInteger
 
 class DrivingRestoreService : Service() {
     private val mainHandler = Handler(Looper.getMainLooper())
     private val pendingRestores = AtomicInteger(0)
+    private var tickReason = "service start"
+
+    private val syncRunnable = object : Runnable {
+        override fun run() {
+            if (!DrivingSettings.hasAnyPersistEnabled(this@DrivingRestoreService)) {
+                Log.i(TAG, "Driving sync stopping, persist disabled")
+                finishService()
+                return
+            }
+            DrivingPersistSyncController.syncFromCarIfNeeded(this@DrivingRestoreService, tickReason)
+            mainHandler.postDelayed(this, VhalConstants.DRIVING_PERSIST_SYNC_INTERVAL_MS)
+        }
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -25,12 +39,12 @@ class DrivingRestoreService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val reason = intent?.getStringExtra(EXTRA_REASON) ?: "service start"
+        tickReason = intent?.getStringExtra(EXTRA_REASON) ?: "service start"
         val restoreMode = DrivingSettings.isPersistEnabled(this)
         val restoreRegen = DrivingSettings.isRegenPersistEnabled(this)
 
         if (!restoreMode && !restoreRegen) {
-            Log.i(TAG, "Driving restore skipped, persist disabled: $reason")
+            Log.i(TAG, "Driving restore skipped, persist disabled: $tickReason")
             finishService()
             return START_NOT_STICKY
         }
@@ -41,26 +55,27 @@ class DrivingRestoreService : Service() {
         pendingRestores.addAndGet(scheduled)
 
         if (restoreMode) {
-            DrivingModeController.restoreDrivingModeIfNeeded(this, reason) {
+            DrivingModeController.restoreDrivingModeIfNeeded(this, tickReason) {
                 onRestoreFinished()
             }
         }
         if (restoreRegen) {
-            EnergyRegenController.restoreEnergyRegenerationIfNeeded(this, reason) {
+            EnergyRegenController.restoreEnergyRegenerationIfNeeded(this, tickReason) {
                 onRestoreFinished()
             }
         }
-        return START_NOT_STICKY
+
+        mainHandler.removeCallbacks(syncRunnable)
+        mainHandler.postDelayed(syncRunnable, VhalConstants.DRIVING_PERSIST_SYNC_INTERVAL_MS)
+        return START_STICKY
     }
 
     private fun onRestoreFinished() {
-        if (pendingRestores.decrementAndGet() <= 0) {
-            pendingRestores.set(0)
-            mainHandler.post { finishService() }
-        }
+        pendingRestores.decrementAndGet()
     }
 
     override fun onDestroy() {
+        mainHandler.removeCallbacks(syncRunnable)
         Log.i(TAG, "Driving restore service destroyed")
         super.onDestroy()
     }
@@ -68,6 +83,7 @@ class DrivingRestoreService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     private fun finishService() {
+        mainHandler.removeCallbacks(syncRunnable)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             stopForeground(STOP_FOREGROUND_REMOVE)
         } else {

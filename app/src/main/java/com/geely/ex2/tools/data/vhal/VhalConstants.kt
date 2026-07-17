@@ -75,6 +75,9 @@ object VhalConstants {
     const val DRIVING_RESTORE_VERIFY_BASE_MS = 800L
     const val DRIVING_RESTORE_VERIFY_STEP_MS = 800L
 
+    /** Фоновая синхронизация сохранённых режимов вождения/рекуперации с машиной */
+    const val DRIVING_PERSIST_SYNC_INTERVAL_MS = 60_000L
+
     /** Интервал опроса виджетов в шторке (батарея, температура) */
     const val STATUS_WIDGET_POLL_INTERVAL_MS = 100_000L
 
