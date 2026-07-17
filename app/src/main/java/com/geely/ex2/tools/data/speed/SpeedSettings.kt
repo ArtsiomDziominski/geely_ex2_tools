@@ -1,8 +1,8 @@
 package com.geely.ex2.tools.data.speed
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.os.Build
+import com.geely.ex2.tools.data.kv.AppKv
+import com.tencent.mmkv.MMKV
 
 object SpeedSettings {
     private const val PREFS = "geelytools_speed"
@@ -11,22 +11,21 @@ object SpeedSettings {
 
     const val ICON_SIZE_PERCENT = 130
 
-    fun isEnabled(context: Context): Boolean = prefs(context).getBoolean(KEY_ENABLED, false)
+    fun isEnabled(context: Context): Boolean =
+        kv(context).decodeBool(KEY_ENABLED, false)
 
     fun setEnabled(context: Context, enabled: Boolean) {
-        prefs(context).edit().putBoolean(KEY_ENABLED, enabled).apply()
+        kv(context).encode(KEY_ENABLED, enabled)
     }
 
     fun getStatusIconRank(context: Context): Int {
         return SpeedWidgetRank.clamp(
-            prefs(context).getInt(KEY_STATUS_ICON_RANK, SpeedWidgetRank.DEFAULT),
+            kv(context).decodeInt(KEY_STATUS_ICON_RANK, SpeedWidgetRank.DEFAULT),
         )
     }
 
     fun setStatusIconRank(context: Context, rank: Int) {
-        prefs(context).edit()
-            .putInt(KEY_STATUS_ICON_RANK, SpeedWidgetRank.clamp(rank))
-            .apply()
+        kv(context).encode(KEY_STATUS_ICON_RANK, SpeedWidgetRank.clamp(rank))
     }
 
     fun stepStatusIconRank(context: Context, delta: Int): Int {
@@ -35,13 +34,8 @@ object SpeedSettings {
         return newRank
     }
 
-    private fun prefs(context: Context): SharedPreferences {
-        val appContext = context.applicationContext
-        val storageContext = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            appContext.createDeviceProtectedStorageContext()
-        } else {
-            appContext
-        }
-        return storageContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+    private fun kv(context: Context): MMKV {
+        AppKv.init(context)
+        return AppKv.of(PREFS)
     }
 }

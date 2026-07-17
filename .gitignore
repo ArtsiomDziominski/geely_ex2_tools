@@ -56,3 +56,6 @@ Thumbs.db
 
 # Platform-signed install outputs
 install/out/
+
+# Local conversion tooling (not shipped)
+tools/ffmpeg/

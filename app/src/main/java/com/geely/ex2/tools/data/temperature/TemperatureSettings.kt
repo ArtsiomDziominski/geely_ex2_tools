@@ -1,8 +1,8 @@
 package com.geely.ex2.tools.data.temperature
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.os.Build
+import com.geely.ex2.tools.data.kv.AppKv
+import com.tencent.mmkv.MMKV
 
 object TemperatureSettings {
     private const val PREFS = "geelytools_temperature"
@@ -13,22 +13,23 @@ object TemperatureSettings {
 
     const val ICON_SIZE_PERCENT = 130
 
-    fun isEnabled(context: Context): Boolean = prefs(context).getBoolean(KEY_ENABLED, true)
+    fun isEnabled(context: Context): Boolean =
+        kv(context).decodeBool(KEY_ENABLED, true)
 
     fun setEnabled(context: Context, enabled: Boolean) {
-        prefs(context).edit().putBoolean(KEY_ENABLED, enabled).apply()
+        kv(context).encode(KEY_ENABLED, enabled)
     }
 
     fun getStatusIconRank(context: Context): Int {
-        val prefs = prefs(context)
-        if (prefs.contains(KEY_STATUS_ICON_RANK)) {
+        val prefs = kv(context)
+        if (prefs.containsKey(KEY_STATUS_ICON_RANK)) {
             return TemperatureWidgetRank.clamp(
-                prefs.getInt(KEY_STATUS_ICON_RANK, TemperatureWidgetRank.DEFAULT),
+                prefs.decodeInt(KEY_STATUS_ICON_RANK, TemperatureWidgetRank.DEFAULT),
             )
         }
 
-        val legacyPosition = prefs.getString(KEY_WIDGET_POSITION, null)
-            ?: prefs.getString(LEGACY_DEGREE_SYMBOL_POSITION, null)
+        val legacyPosition = prefs.decodeString(KEY_WIDGET_POSITION, null)
+            ?: prefs.decodeString(LEGACY_DEGREE_SYMBOL_POSITION, null)
         val legacyRank = when (legacyPosition) {
             "LEFT" -> 5
             "CENTER" -> 13
@@ -39,9 +40,7 @@ object TemperatureSettings {
     }
 
     fun setStatusIconRank(context: Context, rank: Int) {
-        prefs(context).edit()
-            .putInt(KEY_STATUS_ICON_RANK, TemperatureWidgetRank.clamp(rank))
-            .apply()
+        kv(context).encode(KEY_STATUS_ICON_RANK, TemperatureWidgetRank.clamp(rank))
     }
 
     fun stepStatusIconRank(context: Context, delta: Int): Int {
@@ -50,13 +49,8 @@ object TemperatureSettings {
         return newRank
     }
 
-    private fun prefs(context: Context): SharedPreferences {
-        val appContext = context.applicationContext
-        val storageContext = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            appContext.createDeviceProtectedStorageContext()
-        } else {
-            appContext
-        }
-        return storageContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+    private fun kv(context: Context): MMKV {
+        AppKv.init(context)
+        return AppKv.of(PREFS)
     }
 }

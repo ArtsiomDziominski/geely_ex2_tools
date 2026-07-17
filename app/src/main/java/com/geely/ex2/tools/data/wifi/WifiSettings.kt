@@ -1,8 +1,8 @@
 package com.geely.ex2.tools.data.wifi
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.os.Build
+import com.geely.ex2.tools.data.kv.AppKv
+import com.tencent.mmkv.MMKV
 
 object WifiSettings {
     private const val PREFS = "wifi_status_auto_enable_prefs"
@@ -10,14 +10,12 @@ object WifiSettings {
 
     fun getStatusIconRank(context: Context): Int {
         return WifiWidgetRank.clamp(
-            prefs(context).getInt(KEY_STATUS_ICON_RANK, WifiWidgetRank.DEFAULT),
+            kv(context).decodeInt(KEY_STATUS_ICON_RANK, WifiWidgetRank.DEFAULT),
         )
     }
 
     fun setStatusIconRank(context: Context, rank: Int) {
-        prefs(context).edit()
-            .putInt(KEY_STATUS_ICON_RANK, WifiWidgetRank.clamp(rank))
-            .apply()
+        kv(context).encode(KEY_STATUS_ICON_RANK, WifiWidgetRank.clamp(rank))
     }
 
     fun stepStatusIconRank(context: Context, delta: Int): Int {
@@ -26,13 +24,8 @@ object WifiSettings {
         return newRank
     }
 
-    private fun prefs(context: Context): SharedPreferences {
-        val appContext = context.applicationContext
-        val storageContext = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            appContext.createDeviceProtectedStorageContext()
-        } else {
-            appContext
-        }
-        return storageContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+    private fun kv(context: Context): MMKV {
+        AppKv.init(context)
+        return AppKv.of(PREFS)
     }
 }

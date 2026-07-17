@@ -22,6 +22,30 @@ Android-приложение на Kotlin с Jetpack Compose.
 ./gradlew installDebug
 ```
 
+## Релиз (system APK)
+
+System-сборка с platform-подписью (как для установки на ГУ):
+
+```powershell
+.\scripts\release-system-apk.ps1
+```
+
+Каждый запуск:
+
+1. повышает сборку (`VERSION_CODE += 1` в `app\version.properties`)
+2. собирает `systemRelease`
+3. кладёт APK в `install\out\`
+
+| Команда | Действие |
+|---------|----------|
+| `.\scripts\release-system-apk.ps1` | bump сборки + релиз |
+| `.\scripts\release-system-apk.ps1 -NoBump` | релиз без повышения сборки |
+| `.\scripts\release-system-apk.ps1 -VersionName 0.0.4` | новая версия + bump сборки |
+
+Версия и сборка хранятся в `app\version.properties`.
+
+Подробнее: [docs/system-install.md](docs/system-install.md)
+
 ## Структура проекта
 
 ```text

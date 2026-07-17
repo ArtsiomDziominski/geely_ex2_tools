@@ -20,7 +20,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.VolumeOff
-import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.filled.Thermostat
@@ -89,11 +88,6 @@ val FlymeNavDestinations = listOf(
         route = AppRoutes.AVAS,
         labelRes = R.string.tool_avas_title,
         icon = Icons.AutoMirrored.Filled.VolumeOff,
-    ),
-    FlymeNavDestination(
-        route = AppRoutes.SOUNDS,
-        labelRes = R.string.tool_sounds_title,
-        icon = Icons.AutoMirrored.Filled.VolumeUp,
     ),
     FlymeNavDestination(
         route = AppRoutes.SETTINGS,

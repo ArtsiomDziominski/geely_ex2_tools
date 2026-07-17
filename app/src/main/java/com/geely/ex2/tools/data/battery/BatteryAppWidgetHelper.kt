@@ -27,7 +27,7 @@ object BatteryAppWidgetHelper {
         }
 
         val batterySample = sample
-            ?: BatterySampleStore.sample.value
+            ?: BatterySampleStore.latest()
             ?: readBatterySoc(appContext)
         val views = buildRemoteViews(appContext, batterySample)
         manager.updateAppWidget(componentName, views)

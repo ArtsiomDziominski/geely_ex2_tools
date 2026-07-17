@@ -1,12 +1,13 @@
 package com.geely.ex2.tools.data.ambient
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.os.Build
+import com.geely.ex2.tools.data.kv.AppKv
+import com.tencent.mmkv.MMKV
 
 object AmbientLightSettings {
     private const val PREFS = "geelytools_ambient_light"
     private const val KEY_AUTO_ENABLED = "auto_enabled"
+    private const val KEY_SESSION_MODE = "session_mode"
     private const val KEY_START_HOUR = "start_hour"
     private const val KEY_START_MINUTE = "start_minute"
     private const val KEY_END_HOUR = "end_hour"
@@ -17,33 +18,31 @@ object AmbientLightSettings {
     private const val DEFAULT_END_HOUR = 7
     private const val DEFAULT_END_MINUTE = 0
 
-    @Volatile
-    private var sessionMode: AmbientLightControlMode? = null
-
     fun isAutoModeSaved(context: Context): Boolean {
         clearLegacyControlMode(context)
-        return prefs(context).getBoolean(KEY_AUTO_ENABLED, true)
+        return kv(context).decodeBool(KEY_AUTO_ENABLED, true)
     }
 
     fun getControlMode(context: Context): AmbientLightControlMode {
         if (isAutoModeSaved(context)) {
             return AmbientLightControlMode.AUTO
         }
-        return sessionMode ?: AmbientLightControlMode.OFF
+        return decodeSessionMode(kv(context))
     }
 
     fun setControlMode(context: Context, mode: AmbientLightControlMode) {
         clearLegacyControlMode(context)
+        val prefs = kv(context)
         when (mode) {
             AmbientLightControlMode.AUTO -> {
-                prefs(context).edit().putBoolean(KEY_AUTO_ENABLED, true).apply()
-                sessionMode = null
+                prefs.encode(KEY_AUTO_ENABLED, true)
+                prefs.removeValueForKey(KEY_SESSION_MODE)
             }
             AmbientLightControlMode.OFF,
             AmbientLightControlMode.ON,
             -> {
-                prefs(context).edit().putBoolean(KEY_AUTO_ENABLED, false).apply()
-                sessionMode = mode
+                prefs.encode(KEY_AUTO_ENABLED, false)
+                prefs.encode(KEY_SESSION_MODE, mode.name)
             }
         }
     }
@@ -52,7 +51,10 @@ object AmbientLightSettings {
         if (mode == AmbientLightControlMode.AUTO) {
             return
         }
-        sessionMode = mode
+        // Caller must have AppKv.init; use default context path via of(PREFS) needs Context.
+        // Persist via last-known storage from AppKv — sync is always after settings access.
+        // Keep signature; encode into named mmap if already initialized.
+        AppKv.of(PREFS).encode(KEY_SESSION_MODE, mode.name)
     }
 
     fun isScheduleEnabled(context: Context): Boolean =
@@ -61,50 +63,55 @@ object AmbientLightSettings {
     fun shouldRestoreOnWake(context: Context): Boolean = isScheduleEnabled(context)
 
     fun getStartHour(context: Context): Int =
-        prefs(context).getInt(KEY_START_HOUR, DEFAULT_START_HOUR)
+        kv(context).decodeInt(KEY_START_HOUR, DEFAULT_START_HOUR)
 
     fun getStartMinute(context: Context): Int =
-        prefs(context).getInt(KEY_START_MINUTE, DEFAULT_START_MINUTE)
+        kv(context).decodeInt(KEY_START_MINUTE, DEFAULT_START_MINUTE)
 
     fun getEndHour(context: Context): Int =
-        prefs(context).getInt(KEY_END_HOUR, DEFAULT_END_HOUR)
+        kv(context).decodeInt(KEY_END_HOUR, DEFAULT_END_HOUR)
 
     fun getEndMinute(context: Context): Int =
-        prefs(context).getInt(KEY_END_MINUTE, DEFAULT_END_MINUTE)
+        kv(context).decodeInt(KEY_END_MINUTE, DEFAULT_END_MINUTE)
 
     fun setStartTime(context: Context, hour: Int, minute: Int) {
-        prefs(context).edit()
-            .putInt(KEY_START_HOUR, hour.coerceIn(0, 23))
-            .putInt(KEY_START_MINUTE, minute.coerceIn(0, 59))
-            .apply()
+        val prefs = kv(context)
+        prefs.encode(KEY_START_HOUR, hour.coerceIn(0, 23))
+        prefs.encode(KEY_START_MINUTE, minute.coerceIn(0, 59))
     }
 
     fun setEndTime(context: Context, hour: Int, minute: Int) {
-        prefs(context).edit()
-            .putInt(KEY_END_HOUR, hour.coerceIn(0, 23))
-            .putInt(KEY_END_MINUTE, minute.coerceIn(0, 59))
-            .apply()
+        val prefs = kv(context)
+        prefs.encode(KEY_END_HOUR, hour.coerceIn(0, 23))
+        prefs.encode(KEY_END_MINUTE, minute.coerceIn(0, 59))
+    }
+
+    private fun decodeSessionMode(prefs: MMKV): AmbientLightControlMode {
+        val raw = prefs.decodeString(KEY_SESSION_MODE, null) ?: return AmbientLightControlMode.OFF
+        return runCatching { AmbientLightControlMode.valueOf(raw) }.getOrDefault(AmbientLightControlMode.OFF)
+            .takeUnless { it == AmbientLightControlMode.AUTO }
+            ?: AmbientLightControlMode.OFF
     }
 
     private fun clearLegacyControlMode(context: Context) {
-        val preferences = prefs(context)
-        if (!preferences.contains("control_mode")) {
+        val preferences = kv(context)
+        if (!preferences.containsKey("control_mode")) {
             return
         }
-        val legacyMode = preferences.getString("control_mode", null)
-        preferences.edit().remove("control_mode").apply()
+        val legacyMode = preferences.decodeString("control_mode", null)
+        preferences.removeValueForKey("control_mode")
         if (legacyMode != null && legacyMode != AmbientLightControlMode.AUTO.name) {
-            preferences.edit().putBoolean(KEY_AUTO_ENABLED, false).apply()
+            preferences.encode(KEY_AUTO_ENABLED, false)
+            if (legacyMode == AmbientLightControlMode.ON.name ||
+                legacyMode == AmbientLightControlMode.OFF.name
+            ) {
+                preferences.encode(KEY_SESSION_MODE, legacyMode)
+            }
         }
     }
 
-    private fun prefs(context: Context): SharedPreferences {
-        val appContext = context.applicationContext
-        val storageContext = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            appContext.createDeviceProtectedStorageContext()
-        } else {
-            appContext
-        }
-        return storageContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+    private fun kv(context: Context): MMKV {
+        AppKv.init(context)
+        return AppKv.of(PREFS)
     }
 }

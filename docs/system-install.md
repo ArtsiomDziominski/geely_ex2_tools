@@ -8,10 +8,17 @@
 ## Сборка system APK (как CentralEXAuto)
 
 ```powershell
-.\scripts\build-system-apk.ps1
+.\scripts\release-system-apk.ps1
 ```
 
-Результат: `install\out\geely-ex2-tools-system-platform-signed.apk`
+Каждый запуск: `VERSION_CODE += 1` в `app\version.properties`, затем сборка и platform-подпись.
+
+Результат:
+- `install\out\geely-ex2-tools-v{VERSION_NAME}({VERSION_CODE}).apk` — например `geely-ex2-tools-v0.0.3(2).apk`
+- `install\out\geely-ex2-tools-system-platform-signed.apk` — копия с стабильным именем
+
+Без повышения сборки: `.\scripts\release-system-apk.ps1 -NoBump`  
+Сменить marketing-версию: `.\scripts\release-system-apk.ps1 -VersionName 0.0.4`
 
 ## Установка на ГУ
 

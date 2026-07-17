@@ -2,7 +2,7 @@ package com.geely.ex2.tools.data.battery
 
 import android.content.Context
 import com.geely.ex2.tools.data.vhal.BatterySample
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.Flow
 
 class BatteryRepository(private val context: Context) {
     fun isEnabled(): Boolean = BatterySettings.isEnabled(context)
@@ -32,7 +32,7 @@ class BatteryRepository(private val context: Context) {
         BatterySampleStore.clear()
     }
 
-    fun observeLatestSample(): StateFlow<BatterySample?> = BatterySampleStore.sample
+    fun observeLatestSample(): Flow<BatterySample?> = BatterySampleStore.observe()
 
-    fun latestSample(): BatterySample? = BatterySampleStore.sample.value
+    fun latestSample(): BatterySample? = BatterySampleStore.latest()
 }

@@ -33,7 +33,7 @@ object BatteryAppStarter {
         CarPropertyIo.execute {
             // Rank-only: reuse store. Start/resume: always re-read so UI is not stale.
             val sample = if (rank != null) {
-                BatterySampleStore.sample.value ?: readAndPublish(appContext)
+                BatterySampleStore.latest() ?: readAndPublish(appContext)
             } else {
                 readAndPublish(appContext)
             }

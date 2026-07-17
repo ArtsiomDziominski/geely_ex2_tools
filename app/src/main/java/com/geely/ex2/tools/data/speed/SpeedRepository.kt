@@ -2,7 +2,7 @@ package com.geely.ex2.tools.data.speed
 
 import android.content.Context
 import com.geely.ex2.tools.data.vhal.SpeedSample
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.Flow
 
 class SpeedRepository(private val context: Context) {
     fun isEnabled(): Boolean = SpeedSettings.isEnabled(context)
@@ -32,7 +32,7 @@ class SpeedRepository(private val context: Context) {
         SpeedSampleStore.clear()
     }
 
-    fun observeLatestSample(): StateFlow<SpeedSample?> = SpeedSampleStore.sample
+    fun observeLatestSample(): Flow<SpeedSample?> = SpeedSampleStore.observe()
 
-    fun latestSample(): SpeedSample? = SpeedSampleStore.sample.value
+    fun latestSample(): SpeedSample? = SpeedSampleStore.latest()
 }

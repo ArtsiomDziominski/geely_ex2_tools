@@ -1,9 +1,9 @@
 package com.geely.ex2.tools.data.driving
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.os.Build
+import com.geely.ex2.tools.data.kv.AppKv
 import com.geely.ex2.tools.data.vhal.VhalConstants
+import com.tencent.mmkv.MMKV
 
 object DrivingSettings {
     private const val PREFS = "geelytools_driving"
@@ -13,31 +13,31 @@ object DrivingSettings {
     private const val KEY_SAVED_REGEN_VALUE = "saved_regen_value"
 
     fun isPersistEnabled(context: Context): Boolean =
-        prefs(context).getBoolean(KEY_PERSIST_ENABLED, true)
+        kv(context).decodeBool(KEY_PERSIST_ENABLED, true)
 
     fun setPersistEnabled(context: Context, enabled: Boolean) {
-        prefs(context).edit().putBoolean(KEY_PERSIST_ENABLED, enabled).apply()
+        kv(context).encode(KEY_PERSIST_ENABLED, enabled)
     }
 
     fun getSavedModeValue(context: Context): Int =
-        prefs(context).getInt(KEY_SAVED_MODE_VALUE, VhalConstants.DRIVE_MODE_COMFORT)
+        kv(context).decodeInt(KEY_SAVED_MODE_VALUE, VhalConstants.DRIVE_MODE_COMFORT)
 
     fun setSavedModeValue(context: Context, modeValue: Int) {
-        prefs(context).edit().putInt(KEY_SAVED_MODE_VALUE, modeValue).apply()
+        kv(context).encode(KEY_SAVED_MODE_VALUE, modeValue)
     }
 
     fun hasSavedMode(context: Context): Boolean =
-        prefs(context).contains(KEY_SAVED_MODE_VALUE)
+        kv(context).containsKey(KEY_SAVED_MODE_VALUE)
 
     fun isRegenPersistEnabled(context: Context): Boolean =
-        prefs(context).getBoolean(KEY_REGEN_PERSIST_ENABLED, false)
+        kv(context).decodeBool(KEY_REGEN_PERSIST_ENABLED, false)
 
     fun setRegenPersistEnabled(context: Context, enabled: Boolean) {
-        prefs(context).edit().putBoolean(KEY_REGEN_PERSIST_ENABLED, enabled).apply()
+        kv(context).encode(KEY_REGEN_PERSIST_ENABLED, enabled)
     }
 
     fun getSavedRegenValue(context: Context): Int {
-        val raw = prefs(context).getInt(
+        val raw = kv(context).decodeInt(
             KEY_SAVED_REGEN_VALUE,
             VhalConstants.ENERGY_REGENERATION_LEVEL_MID,
         )
@@ -49,21 +49,17 @@ object DrivingSettings {
     }
 
     fun setSavedRegenValue(context: Context, levelValue: Int) {
-        prefs(context).edit()
-            .putInt(KEY_SAVED_REGEN_VALUE, EnergyRegenerationValues.normalizeStoredValue(levelValue))
-            .apply()
+        kv(context).encode(
+            KEY_SAVED_REGEN_VALUE,
+            EnergyRegenerationValues.normalizeStoredValue(levelValue),
+        )
     }
 
     fun hasAnyPersistEnabled(context: Context): Boolean =
         isPersistEnabled(context) || isRegenPersistEnabled(context)
 
-    private fun prefs(context: Context): SharedPreferences {
-        val appContext = context.applicationContext
-        val storageContext = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            appContext.createDeviceProtectedStorageContext()
-        } else {
-            appContext
-        }
-        return storageContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+    private fun kv(context: Context): MMKV {
+        AppKv.init(context)
+        return AppKv.of(PREFS)
     }
 }

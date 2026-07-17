@@ -16,7 +16,6 @@
     <uses-permission android:name="android.car.permission.CAR_CONTROL_AUDIO_VOLUME" />
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="android.permission.SHUTDOWN" />
 
     <application
         android:name=".GeelyEx2ToolsApp"
@@ -188,50 +187,58 @@
         <service
             android:name=".data.wifi.WifiStatusService"
             android:enabled="true"
+            android:exported="false"
             android:foregroundServiceType="dataSync"
-            android:exported="false" />
+            android:process=":core" />
 
         <service
             android:name=".data.temperature.TemperatureStatusService"
             android:enabled="true"
+            android:exported="false"
             android:foregroundServiceType="dataSync"
-            android:exported="false" />
+            android:process=":core" />
 
         <service
             android:name=".data.speed.SpeedStatusService"
             android:enabled="true"
+            android:exported="false"
             android:foregroundServiceType="dataSync"
-            android:exported="false" />
+            android:process=":core" />
 
         <service
             android:name=".data.battery.BatteryStatusService"
             android:enabled="true"
+            android:exported="false"
             android:foregroundServiceType="dataSync"
-            android:exported="false" />
+            android:process=":core" />
 
         <service
             android:name=".data.driving.DrivingRestoreService"
             android:enabled="true"
+            android:exported="false"
             android:foregroundServiceType="dataSync"
-            android:exported="false" />
+            android:process=":core" />
 
         <service
             android:name=".data.ambient.AmbientLightScheduleService"
             android:enabled="true"
+            android:exported="false"
             android:foregroundServiceType="dataSync"
-            android:exported="false" />
+            android:process=":core" />
 
         <service
             android:name=".data.ambient.AmbientLightRestoreService"
             android:enabled="true"
+            android:exported="false"
             android:foregroundServiceType="dataSync"
-            android:exported="false" />
+            android:process=":core" />
 
         <service
             android:name=".data.avas.AvasRestoreService"
             android:enabled="true"
+            android:exported="false"
             android:foregroundServiceType="dataSync"
-            android:exported="false" />
+            android:process=":core" />
     </application>
 
 </manifest>

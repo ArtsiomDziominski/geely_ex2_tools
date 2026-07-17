@@ -1,8 +1,8 @@
 package com.geely.ex2.tools.data.avas
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.os.Build
+import com.geely.ex2.tools.data.kv.AppKv
+import com.tencent.mmkv.MMKV
 
 object AvasSettings {
     private const val PREFS = "geelytools_avas"
@@ -10,29 +10,24 @@ object AvasSettings {
     private const val KEY_LAST_ACTIVE_MODE = "avas_last_active_mode"
 
     fun isMutedSaved(context: Context): Boolean =
-        prefs(context).getBoolean(KEY_MUTED, false)
+        kv(context).decodeBool(KEY_MUTED, false)
 
     fun setMutedSaved(context: Context, muted: Boolean) {
-        prefs(context).edit().putBoolean(KEY_MUTED, muted).apply()
+        kv(context).encode(KEY_MUTED, muted)
     }
 
     fun getLastActiveMode(context: Context): Int {
-        val mode = prefs(context).getInt(KEY_LAST_ACTIVE_MODE, AvasConstants.MODE_DEFAULT_ACTIVE)
+        val mode = kv(context).decodeInt(KEY_LAST_ACTIVE_MODE, AvasConstants.MODE_DEFAULT_ACTIVE)
         return if (mode > AvasConstants.MODE_MUTED) mode else AvasConstants.MODE_DEFAULT_ACTIVE
     }
 
     fun setLastActiveMode(context: Context, mode: Int) {
         if (mode <= AvasConstants.MODE_MUTED) return
-        prefs(context).edit().putInt(KEY_LAST_ACTIVE_MODE, mode).apply()
+        kv(context).encode(KEY_LAST_ACTIVE_MODE, mode)
     }
 
-    private fun prefs(context: Context): SharedPreferences {
-        val appContext = context.applicationContext
-        val storageContext = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            appContext.createDeviceProtectedStorageContext()
-        } else {
-            appContext
-        }
-        return storageContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+    private fun kv(context: Context): MMKV {
+        AppKv.init(context)
+        return AppKv.of(PREFS)
     }
 }

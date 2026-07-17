@@ -33,7 +33,7 @@ object SpeedAppStarter {
         CarPropertyIo.execute {
             // Rank-only: reuse store. Start/resume: always re-read so UI is not stale.
             val sample = if (rank != null) {
-                SpeedSampleStore.sample.value ?: readAndPublish(appContext)
+                SpeedSampleStore.latest() ?: readAndPublish(appContext)
             } else {
                 readAndPublish(appContext)
             }

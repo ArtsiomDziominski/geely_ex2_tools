@@ -2,8 +2,9 @@ package com.geely.ex2.tools.data.wifi
 
 import android.content.Context
 import android.net.wifi.WifiManager
-import android.os.Build
 import android.util.Log
+import com.geely.ex2.tools.data.kv.AppKv
+import com.tencent.mmkv.MMKV
 
 object WifiAutoEnableController {
     const val TAG = "WifiStatusAutoEnable"
@@ -12,13 +13,12 @@ object WifiAutoEnableController {
     private const val KEY_AUTO_ENABLE_WIFI = "auto_enable_wifi"
 
     fun isAutoEnableEnabled(context: Context): Boolean {
-        return getPrefs(context).getBoolean(KEY_AUTO_ENABLE_WIFI, true)
+        return kv(context).decodeBool(KEY_AUTO_ENABLE_WIFI, true)
     }
 
     fun setAutoEnableEnabled(context: Context, enabled: Boolean) {
-        getPrefs(context).edit().putBoolean(KEY_AUTO_ENABLE_WIFI, enabled).apply()
+        kv(context).encode(KEY_AUTO_ENABLE_WIFI, enabled)
         Log.i(TAG, "auto_enable_wifi set to $enabled")
-
         if (enabled) {
             enableWifiIfNeeded(context, "auto-enable enabled from UI")
         }
@@ -87,15 +87,10 @@ object WifiAutoEnableController {
         Log.i(TAG, "setWifiEnabled(false) result: $result")
     }
 
-    private fun getPrefs(context: Context) =
-        context.applicationContext.let { appContext ->
-            val storageContext = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                appContext.createDeviceProtectedStorageContext()
-            } else {
-                appContext
-            }
-            storageContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-        }
+    private fun kv(context: Context): MMKV {
+        AppKv.init(context)
+        return AppKv.of(PREFS)
+    }
 
     private fun getWifiManager(context: Context): WifiManager? {
         return context.applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager
