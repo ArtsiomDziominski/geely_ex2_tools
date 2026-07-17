@@ -18,6 +18,7 @@
 | [centralexauto-apk.md](./centralexauto-apk.md) | Разбор APK `com.ex.auto` (CentralEXAuto): watchdog, AA/CarPlay, floaters, VHAL, GitHub updates |
 | [ca-fix-apk.md](./ca-fix-apk.md) | Разбор APK `com.njda.adapter` (`ca_fix.apk`): ConnAdaptor — Android Auto / CarPlay адаптер |
 | [android-storagemanager-apk.md](./android-storagemanager-apk.md) | Разбор APK `com.android.storagemanager` (Storage Manager v9): Deletion Helper, ASM job, notifications |
+| [carassistant-ets-apk.md](./carassistant-ets-apk.md) | Разбор APK `com.baidu.che.codriver` (CarAssistant-ETS): multi-display ГУ, DPI, model profiles, голос, Flyme/ECARX |
 
 ## Локальные артефакты
 
@@ -74,5 +75,12 @@
 | `.tmp/storagemanager/jadx/` | JADX-декомпилят Storage Manager |
 | `.tmp/storagemanager/badging.txt` | `aapt dump badging` |
 | `.tmp/storagemanager/manifest.txt` | `aapt dump xmltree` манифест |
+| `.tmp/carassistant-ets/CarAssistantETS.apk` | Оригинальный APK CarAssistant-ETS (опционально) |
+| `.tmp/carassistant-ets/apk/` | Распакованный `com.baidu.che.codriver` |
+| `.tmp/carassistant-ets/badging.txt` | `aapt dump badging` |
+| `.tmp/carassistant-ets/manifest.txt` | `aapt dump xmltree` манифест |
+| `.tmp/carassistant-ets/resources-ids.txt` | Отфильтрованный dump resource IDs |
+| `.tmp/carassistant-ets/configs-list.txt` | Список `assets/configs` + размеры |
+| `.tmp/carassistant-ets/ex2-header.hex` | Заголовок encrypted `ex2.json` |
 
 Папка `.tmp/` в `.gitignore`.
