@@ -19,7 +19,7 @@
     <string name="tool_temperature_description">Status da temperatura externa na barra do Flyme</string>
     <string name="tool_speed_title">Velocímetro</string>
     <string name="tool_speed_description">Velocidade na barra do Flyme</string>
-    <string name="tool_battery_title">Carga da bateria</string>
+    <string name="tool_battery_title">Bateria</string>
     <string name="tool_battery_description">SOC na barra do Flyme</string>
     <string name="tool_driving_title">Condução</string>
     <string name="tool_driving_description">Modo e regeneração, com memorização após despertar a central</string>
@@ -117,7 +117,7 @@
     <string name="speed_service_notification_title">Serviço do velocímetro</string>
     <string name="speed_service_notification_text">Manter o ícone de velocidade atualizado</string>
 
-    <string name="battery_screen_title">Carga da bateria</string>
+    <string name="battery_screen_title">Bateria</string>
     <string name="battery_section_control">Controle</string>
     <string name="battery_section_icon">Ícone</string>
     <string name="battery_section_status">Status</string>
@@ -161,8 +161,8 @@
     <string name="driving_mode_switch_summary">Eco, Conforto, Esporte</string>
     <string name="driving_regen_switch_title">Nível</string>
     <string name="driving_regen_switch_summary">Baixo, Médio, Alto</string>
-    <string name="driving_current_title">Atual</string>
-    <string name="driving_regen_current_title">Regeneração atual</string>
+    <string name="driving_current_title">Condução</string>
+    <string name="driving_regen_current_title">Regen.</string>
     <string name="driving_status_title">Estado do modo</string>
     <string name="driving_regen_status_title">Estado da regeneração</string>
     <string name="driving_raw_title">VHAL do modo</string>

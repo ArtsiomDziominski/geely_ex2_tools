@@ -19,7 +19,7 @@
     <string name="tool_temperature_description">Статус температуры за бортом в шторке Flyme</string>
     <string name="tool_speed_title">Спидометр</string>
     <string name="tool_speed_description">Скорость в шторке Flyme</string>
-    <string name="tool_battery_title">Заряд батареи</string>
+    <string name="tool_battery_title">Батарея</string>
     <string name="tool_battery_description">SOC в шторке Flyme</string>
     <string name="tool_driving_title">Вождение</string>
     <string name="tool_driving_description">Режим и рекуперация — с запоминанием после пробуждения ГУ</string>
@@ -117,7 +117,7 @@
     <string name="speed_service_notification_title">Сервис спидометра</string>
     <string name="speed_service_notification_text">Поддержание иконки скорости</string>
 
-    <string name="battery_screen_title">Заряд батареи</string>
+    <string name="battery_screen_title">Батарея</string>
     <string name="battery_section_control">Управление</string>
     <string name="battery_section_icon">Иконка</string>
     <string name="battery_section_status">Статус</string>
@@ -161,8 +161,8 @@
     <string name="driving_mode_switch_summary">Эко, Комфорт, Спорт</string>
     <string name="driving_regen_switch_title">Уровень</string>
     <string name="driving_regen_switch_summary">Низкий, Средний, Высокий</string>
-    <string name="driving_current_title">Сейчас</string>
-    <string name="driving_regen_current_title">Рекуперация сейчас</string>
+    <string name="driving_current_title">Вождение</string>
+    <string name="driving_regen_current_title">Рекуперация</string>
     <string name="driving_status_title">Состояние режима</string>
     <string name="driving_regen_status_title">Состояние рекуперации</string>
     <string name="driving_raw_title">VHAL режима</string>

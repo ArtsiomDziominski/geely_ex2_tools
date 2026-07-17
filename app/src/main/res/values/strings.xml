@@ -19,7 +19,7 @@
     <string name="tool_temperature_description">Outside temperature status in the Flyme shade</string>
     <string name="tool_speed_title">Speedometer</string>
     <string name="tool_speed_description">Speed in the Flyme shade</string>
-    <string name="tool_battery_title">Battery charge</string>
+    <string name="tool_battery_title">Battery</string>
     <string name="tool_battery_description">SOC in the Flyme shade</string>
     <string name="tool_driving_title">Driving</string>
     <string name="tool_driving_description">Mode and regeneration — remembered after the head unit wakes</string>
@@ -117,7 +117,7 @@
     <string name="speed_service_notification_title">Speedometer service</string>
     <string name="speed_service_notification_text">Keeping speed icon updated</string>
 
-    <string name="battery_screen_title">Battery charge</string>
+    <string name="battery_screen_title">Battery</string>
     <string name="battery_section_control">Control</string>
     <string name="battery_section_icon">Icon</string>
     <string name="battery_section_status">Status</string>
@@ -161,8 +161,8 @@
     <string name="driving_mode_switch_summary">Eco, Comfort, Sport</string>
     <string name="driving_regen_switch_title">Level</string>
     <string name="driving_regen_switch_summary">Low, Medium, High</string>
-    <string name="driving_current_title">Now</string>
-    <string name="driving_regen_current_title">Regeneration now</string>
+    <string name="driving_current_title">Driving</string>
+    <string name="driving_regen_current_title">Regen</string>
     <string name="driving_status_title">Mode state</string>
     <string name="driving_regen_status_title">Regeneration state</string>
     <string name="driving_raw_title">Mode VHAL</string>
