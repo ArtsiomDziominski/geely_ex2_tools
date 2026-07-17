@@ -25,6 +25,8 @@
     <string name="tool_driving_description">Modo e regeneração, com memorização após despertar a central</string>
     <string name="tool_ambient_light_title">Iluminação ambiente</string>
     <string name="tool_ambient_light_description">Agendamento para ligar e desligar a iluminação ambiente</string>
+    <string name="tool_system_title">Sistema</string>
+    <string name="tool_system_description">Uso de RAM e status do dispositivo</string>
     <string name="tool_settings_title">Configurações</string>
     <string name="tool_settings_description">Idioma do aplicativo e preferências</string>
 
@@ -282,6 +284,15 @@
     <string name="avas_restore_channel">AVAS</string>
     <string name="avas_restore_notification_title">AVAS</string>
     <string name="avas_restore_notification_text">Restaurando o mute após a inicialização</string>
+
+    <string name="system_screen_title">Sistema</string>
+    <string name="system_section_memory">Memória</string>
+    <string name="system_ram_title">RAM</string>
+    <string name="system_ram_percent">%1$d%%</string>
+    <string name="system_ram_used_of_total">Usado %1$s de %2$s</string>
+    <string name="system_ram_available">Disponível %1$s</string>
+    <string name="system_ram_unavailable">—</string>
+    <string name="system_ram_refresh">Atualizar</string>
 
     <string name="settings_screen_title">Configurações</string>
     <string name="settings_section_language">Idioma</string>
