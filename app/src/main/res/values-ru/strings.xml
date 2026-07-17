@@ -293,6 +293,14 @@
     <string name="system_ram_available">Свободно %1$s</string>
     <string name="system_ram_unavailable">—</string>
     <string name="system_ram_refresh">Обновить</string>
+    <string name="system_section_sounds">Звуки</string>
+    <string name="system_lock_sound_title">Звук запирания</string>
+    <string name="system_lock_sound_summary_on">Звук при блокировке автомобиля включён</string>
+    <string name="system_lock_sound_summary_off">Звук при блокировке автомобиля выключен</string>
+    <string name="system_lock_sound_status_ok">Источник: %1$s</string>
+    <string name="system_lock_sound_status_error">Недоступно: %1$s</string>
+    <string name="system_lock_sound_status_write_error">Ошибка записи: %1$s</string>
+    <string name="system_lock_sound_write_error_unknown">неизвестная ошибка</string>
 
     <string name="settings_screen_title">Настройки</string>
     <string name="settings_section_language">Язык</string>

@@ -48,6 +48,13 @@ object VhalConstants {
     const val ENERGY_REGENERATION_LEVEL_MID = 0x20020502
     const val ENERGY_REGENERATION_LEVEL_HIGH = 0x20020503
 
+    /** Flyme OEM / VHAL: IAudio.SETTING_FUNC_AUDIBLE_LOCKING_FEEDBACK (锁车提示音) */
+    const val PROP_SETTING_FUNC_AUDIBLE_LOCKING_FEEDBACK = 0x2140a114
+
+    /** Flyme Settings: val=3 ON, val=2 OFF */
+    const val LOCK_SOUND_VALUE_ON = 3
+    const val LOCK_SOUND_VALUE_OFF = 2
+
     /** Areas для VHAL regen (CentralEXAuto REGEN_AREAS / REGEN_PROP_AREAS). */
     val ENERGY_REGENERATION_AREAS: IntArray = intArrayOf(0, 1)
 
@@ -65,6 +72,9 @@ object VhalConstants {
 
     /** UI экрана атмосферной подсветки */
     const val AMBIENT_LIGHT_UI_POLL_INTERVAL_MS = 3_000L
+
+    /** UI экрана System — звук запирания */
+    const val LOCK_SOUND_UI_POLL_INTERVAL_MS = 3_000L
 
     /** Пробуждение ГУ — VHAL/Flyme API может подниматься с задержкой */
     const val AMBIENT_LIGHT_WAKE_VERIFY_BASE_MS = 1_000L

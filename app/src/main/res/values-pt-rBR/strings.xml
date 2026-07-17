@@ -293,6 +293,14 @@
     <string name="system_ram_available">Disponível %1$s</string>
     <string name="system_ram_unavailable">—</string>
     <string name="system_ram_refresh">Atualizar</string>
+    <string name="system_section_sounds">Sons</string>
+    <string name="system_lock_sound_title">Som ao travar</string>
+    <string name="system_lock_sound_summary_on">Som ao travar o carro ativado</string>
+    <string name="system_lock_sound_summary_off">Som ao travar o carro desativado</string>
+    <string name="system_lock_sound_status_ok">Fonte: %1$s</string>
+    <string name="system_lock_sound_status_error">Indisponível: %1$s</string>
+    <string name="system_lock_sound_status_write_error">Erro de gravação: %1$s</string>
+    <string name="system_lock_sound_write_error_unknown">erro desconhecido</string>
 
     <string name="settings_screen_title">Configurações</string>
     <string name="settings_section_language">Idioma</string>

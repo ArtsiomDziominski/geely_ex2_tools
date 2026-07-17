@@ -34,6 +34,7 @@ import com.geely.ex2.tools.feature.system.SystemUiState
 import com.geely.ex2.tools.feature.system.SystemViewModel
 import com.geely.ex2.tools.ui.components.FlymeSettingsGroup
 import com.geely.ex2.tools.ui.components.FlymeSettingsSection
+import com.geely.ex2.tools.ui.components.FlymeSettingsSwitchItem
 import com.geely.ex2.tools.ui.components.GeelyTopAppBar
 import com.geely.ex2.tools.ui.components.TabVisibilityEffect
 import com.geely.ex2.tools.ui.components.isFlymeRailCompact
@@ -75,6 +76,21 @@ fun SystemScreen(
                 RamUsageCard(
                     state = uiState,
                     onRefresh = viewModel::refreshNow,
+                )
+            }
+
+            FlymeSettingsSection(title = stringResource(R.string.system_section_sounds)) {
+                FlymeSettingsSwitchItem(
+                    title = stringResource(R.string.system_lock_sound_title),
+                    summary = when {
+                        uiState.lockSoundStatusText.isNotEmpty() -> uiState.lockSoundStatusText
+                        uiState.lockSoundEnabled -> stringResource(R.string.system_lock_sound_summary_on)
+                        else -> stringResource(R.string.system_lock_sound_summary_off)
+                    },
+                    checked = uiState.lockSoundEnabled,
+                    onCheckedChange = viewModel::onLockSoundCheckedChange,
+                    enabled = uiState.lockSoundWritable && uiState.lockSoundAvailable,
+                    showDivider = false,
                 )
             }
         }
