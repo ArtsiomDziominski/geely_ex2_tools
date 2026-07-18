@@ -12,6 +12,7 @@
     <string name="home_about_version">Versão %1$s</string>
     <string name="home_about_developer">Desenvolvedor</string>
     <string name="home_about_telegram">\@i_am_artsiom</string>
+    <string name="developer_about_summary">Dúvidas, sugestões e suporte — entre em contato pelo Telegram.</string>
     <string name="home_about_close">Fechar</string>
     <string name="tool_wifi_title">Wi‑Fi</string>
     <string name="tool_wifi_description">Ativação do Wi‑Fi e ícone na barra do Flyme</string>

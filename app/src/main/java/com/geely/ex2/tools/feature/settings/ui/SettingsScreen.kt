@@ -19,7 +19,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,8 +33,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.geely.ex2.tools.R
 import com.geely.ex2.tools.data.app.getAppVersionName
-import com.geely.ex2.tools.data.app.openDeveloperTelegram
 import com.geely.ex2.tools.data.settings.AppLocale
+import com.geely.ex2.tools.feature.home.ui.DeveloperAboutDialog
 import com.geely.ex2.tools.feature.settings.SettingsViewModel
 import com.geely.ex2.tools.ui.clickableWithSystemSound
 import com.geely.ex2.tools.ui.components.FlymeSettingsInfoItem
@@ -51,6 +53,11 @@ fun SettingsScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val versionName = remember { getAppVersionName(context) }
+    var showDeveloperDialog by remember { mutableStateOf(false) }
+
+    if (showDeveloperDialog) {
+        DeveloperAboutDialog(onDismiss = { showDeveloperDialog = false })
+    }
 
     Scaffold(
         modifier = modifier,
@@ -114,7 +121,7 @@ fun SettingsScreen(
                     color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f),
                 )
                 AboutDeveloperRow(
-                    onTelegramClick = { openDeveloperTelegram(context) },
+                    onClick = { showDeveloperDialog = true },
                 )
             }
         }
@@ -123,13 +130,13 @@ fun SettingsScreen(
 
 @Composable
 private fun AboutDeveloperRow(
-    onTelegramClick: () -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clickableWithSystemSound(onClick = onTelegramClick)
+            .clickableWithSystemSound(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 14.dp),
     ) {
         Text(

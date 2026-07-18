@@ -12,6 +12,7 @@
     <string name="home_about_version">Версия %1$s</string>
     <string name="home_about_developer">Разработчик</string>
     <string name="home_about_telegram">\@i_am_artsiom</string>
+    <string name="developer_about_summary">Вопросы, предложения и поддержка — напишите в Telegram.</string>
     <string name="home_about_close">Закрыть</string>
     <string name="tool_wifi_title">Wi-Fi</string>
     <string name="tool_wifi_description">Включение Wi-Fi и иконка в шторке Flyme</string>

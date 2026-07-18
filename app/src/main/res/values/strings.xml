@@ -12,6 +12,7 @@
     <string name="home_about_version">Version %1$s</string>
     <string name="home_about_developer">Developer</string>
     <string name="home_about_telegram">\@i_am_artsiom</string>
+    <string name="developer_about_summary">Questions, suggestions, and support — reach out on Telegram.</string>
     <string name="home_about_close">Close</string>
     <string name="tool_wifi_title">Wi-Fi</string>
     <string name="tool_wifi_description">Enable Wi-Fi and status icon in the Flyme shade</string>
