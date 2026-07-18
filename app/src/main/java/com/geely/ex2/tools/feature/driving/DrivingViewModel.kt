@@ -10,6 +10,7 @@ import com.geely.ex2.tools.data.vhal.DrivingModeSample
 import com.geely.ex2.tools.data.vhal.EnergyRegeneration
 import com.geely.ex2.tools.data.vhal.EnergyRegenerationSample
 import com.geely.ex2.tools.data.vhal.VhalConstants
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -123,24 +124,40 @@ class DrivingViewModel(application: Application) : AndroidViewModel(application)
 
         _uiState.update { it.copy(isChangingMode = true) }
         viewModelScope.launch {
-            val result = withContext(Dispatchers.IO) {
-                repository.setDrivingMode(option.vhalValue)
-            }
-            if (result.ok) {
-                repository.saveSelectedMode(option.vhalValue)
-                if (repository.isPersistEnabled()) {
-                    repository.restoreSavedModeIfNeeded("UI mode selected")
+            var writeError: String? = null
+            var wroteOk = false
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    repository.setDrivingMode(option.vhalValue)
+                }
+                if (result.ok) {
+                    repository.saveSelectedMode(option.vhalValue)
+                    wroteOk = true
+                } else {
+                    writeError = result.error
+                        ?: appContext.getString(R.string.driving_write_error_unknown)
+                }
+            } catch (t: Throwable) {
+                if (t is CancellationException) throw t
+                writeError = t.message
+                    ?: appContext.getString(R.string.driving_write_error_unknown)
+            } finally {
+                _uiState.update {
+                    it.copy(
+                        isChangingMode = false,
+                        selectedIndex = if (wroteOk) index else it.selectedIndex,
+                        currentModeText = if (wroteOk) {
+                            appContext.getString(option.labelRes)
+                        } else {
+                            it.currentModeText
+                        },
+                    )
                 }
             }
-            startRestoreService("UI mode selected")
-            refreshState(
-                writeError = if (result.ok) {
-                    null
-                } else {
-                    result.error ?: appContext.getString(R.string.driving_write_error_unknown)
-                },
-                clearChangingMode = true,
-            )
+            // Success: keep optimistic UI. Immediate read is often still stale on eCarX.
+            if (writeError != null) {
+                refreshState(writeError = writeError)
+            }
         }
     }
 
@@ -153,24 +170,39 @@ class DrivingViewModel(application: Application) : AndroidViewModel(application)
 
         _uiState.update { it.copy(isChangingRegen = true) }
         viewModelScope.launch {
-            val result = withContext(Dispatchers.IO) {
-                repository.setEnergyRegeneration(option.vhalValue)
-            }
-            if (result.ok) {
-                repository.saveSelectedRegen(option.vhalValue)
-                if (repository.isRegenPersistEnabled()) {
-                    repository.restoreSavedRegenIfNeeded("UI regen selected")
+            var regenWriteError: String? = null
+            var wroteOk = false
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    repository.setEnergyRegeneration(option.vhalValue)
+                }
+                if (result.ok) {
+                    repository.saveSelectedRegen(option.vhalValue)
+                    wroteOk = true
+                } else {
+                    regenWriteError = result.error
+                        ?: appContext.getString(R.string.driving_write_error_unknown)
+                }
+            } catch (t: Throwable) {
+                if (t is CancellationException) throw t
+                regenWriteError = t.message
+                    ?: appContext.getString(R.string.driving_write_error_unknown)
+            } finally {
+                _uiState.update {
+                    it.copy(
+                        isChangingRegen = false,
+                        regenSelectedIndex = if (wroteOk) index else it.regenSelectedIndex,
+                        currentRegenText = if (wroteOk) {
+                            appContext.getString(option.labelRes)
+                        } else {
+                            it.currentRegenText
+                        },
+                    )
                 }
             }
-            startRestoreService("UI regen selected")
-            refreshState(
-                regenWriteError = if (result.ok) {
-                    null
-                } else {
-                    result.error ?: appContext.getString(R.string.driving_write_error_unknown)
-                },
-                clearChangingRegen = true,
-            )
+            if (regenWriteError != null) {
+                refreshState(regenWriteError = regenWriteError)
+            }
         }
     }
 
@@ -206,8 +238,6 @@ class DrivingViewModel(application: Application) : AndroidViewModel(application)
     private fun refreshState(
         writeError: String? = null,
         regenWriteError: String? = null,
-        clearChangingMode: Boolean = false,
-        clearChangingRegen: Boolean = false,
     ) {
         refreshJob?.cancel()
         refreshJob = viewModelScope.launch {
@@ -220,8 +250,8 @@ class DrivingViewModel(application: Application) : AndroidViewModel(application)
                     regenSample = regenSample,
                     writeError = writeError,
                     regenWriteError = regenWriteError,
-                    isChangingMode = if (clearChangingMode) false else it.isChangingMode,
-                    isChangingRegen = if (clearChangingRegen) false else it.isChangingRegen,
+                    isChangingMode = it.isChangingMode,
+                    isChangingRegen = it.isChangingRegen,
                 )
             }
         }

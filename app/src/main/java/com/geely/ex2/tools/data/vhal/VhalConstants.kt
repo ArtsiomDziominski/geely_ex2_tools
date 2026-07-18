@@ -68,7 +68,7 @@ object VhalConstants {
     const val WIFI_UI_POLL_INTERVAL_MS = 5_000L
 
     /** UI экрана Driving — реже poll, ECU не успевает отвечать за 1 сек после write */
-    const val DRIVING_UI_POLL_INTERVAL_MS = 3_000L
+    const val DRIVING_UI_POLL_INTERVAL_MS = 6_000L
 
     /** UI экрана атмосферной подсветки */
     const val AMBIENT_LIGHT_UI_POLL_INTERVAL_MS = 3_000L
