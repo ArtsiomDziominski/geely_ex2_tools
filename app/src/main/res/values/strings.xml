@@ -234,8 +234,6 @@
 
     <string name="tool_avas_title">AVAS</string>
     <string name="tool_avas_description">Mute pedestrian alert sound (AVAS)</string>
-    <string name="tool_sound_title">Sound</string>
-    <string name="tool_sound_description">Lock sound and other car audio settings</string>
     <string name="avas_screen_title">AVAS</string>
     <string name="avas_section_control">Control</string>
     <string name="avas_section_status">Status</string>
@@ -282,15 +280,6 @@
     <string name="system_ram_unavailable">—</string>
     <string name="system_ram_refresh">Refresh</string>
 
-    <string name="sound_screen_title">Sound</string>
-    <string name="sound_section_lock">Locking</string>
-    <string name="sound_lock_title">Lock sound</string>
-    <string name="sound_lock_summary_on">Sound when locking the car is enabled</string>
-    <string name="sound_lock_summary_off">Sound when locking the car is disabled</string>
-    <string name="sound_lock_status_unavailable">Unavailable</string>
-    <string name="sound_lock_status_write_error">Write error: %1$s</string>
-    <string name="sound_lock_write_error_unknown">unknown error</string>
-
     <string name="settings_screen_title">Settings</string>
     <string name="settings_section_language">Language</string>
     <string name="settings_language_title">App language</string>
@@ -299,6 +288,8 @@
     <string name="settings_language_english">English</string>
     <string name="settings_language_russian">Русский</string>
     <string name="settings_language_portuguese">Português (Brasil)</string>
+    <string name="settings_section_about">About the app</string>
+    <string name="settings_about_version">Version</string>
 
     <string name="nav_back">Back</string>
 </resources>

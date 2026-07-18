@@ -18,7 +18,6 @@ import com.geely.ex2.tools.feature.battery.ui.BatteryScreen
 import com.geely.ex2.tools.feature.driving.ui.DrivingScreen
 import com.geely.ex2.tools.feature.home.ui.EmptyStartScreen
 import com.geely.ex2.tools.feature.settings.ui.SettingsScreen
-import com.geely.ex2.tools.feature.sound.ui.SoundScreen
 import com.geely.ex2.tools.feature.speed.ui.SpeedScreen
 import com.geely.ex2.tools.feature.system.ui.SystemScreen
 import com.geely.ex2.tools.feature.temperature.ui.TemperatureScreen
@@ -63,7 +62,6 @@ class MainActivity : AppCompatActivity() {
                                 AppRoutes.DRIVING -> DrivingScreen(onBack = clearSelection)
                                 AppRoutes.AMBIENT_LIGHT -> AmbientLightScreen(onBack = clearSelection)
                                 AppRoutes.AVAS -> AvasScreen(onBack = clearSelection)
-                                AppRoutes.SOUND -> SoundScreen(onBack = clearSelection)
                                 AppRoutes.SYSTEM -> SystemScreen(onBack = clearSelection)
                                 AppRoutes.SETTINGS -> SettingsScreen(onBack = clearSelection)
                                 else -> EmptyStartScreen()

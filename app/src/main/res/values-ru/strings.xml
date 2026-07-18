@@ -234,8 +234,6 @@
 
     <string name="tool_avas_title">AVAS</string>
     <string name="tool_avas_description">Отключение звука пешеходного оповещения (AVAS)</string>
-    <string name="tool_sound_title">Звук</string>
-    <string name="tool_sound_description">Звук запирания и другие настройки авто</string>
     <string name="avas_screen_title">AVAS</string>
     <string name="avas_section_control">Управление</string>
     <string name="avas_section_status">Статус</string>
@@ -282,15 +280,6 @@
     <string name="system_ram_unavailable">—</string>
     <string name="system_ram_refresh">Обновить</string>
 
-    <string name="sound_screen_title">Звук</string>
-    <string name="sound_section_lock">Запирание</string>
-    <string name="sound_lock_title">Звук запирания</string>
-    <string name="sound_lock_summary_on">Звук при блокировке автомобиля включён</string>
-    <string name="sound_lock_summary_off">Звук при блокировке автомобиля выключен</string>
-    <string name="sound_lock_status_unavailable">Недоступно</string>
-    <string name="sound_lock_status_write_error">Ошибка записи: %1$s</string>
-    <string name="sound_lock_write_error_unknown">неизвестная ошибка</string>
-
     <string name="settings_screen_title">Настройки</string>
     <string name="settings_section_language">Язык</string>
     <string name="settings_language_title">Язык приложения</string>
@@ -299,6 +288,8 @@
     <string name="settings_language_english">English</string>
     <string name="settings_language_russian">Русский</string>
     <string name="settings_language_portuguese">Português (Brasil)</string>
+    <string name="settings_section_about">О приложении</string>
+    <string name="settings_about_version">Версия</string>
 
     <string name="nav_back">Назад</string>
 </resources>

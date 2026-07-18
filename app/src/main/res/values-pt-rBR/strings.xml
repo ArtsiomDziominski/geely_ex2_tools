@@ -234,8 +234,6 @@
 
     <string name="tool_avas_title">AVAS</string>
     <string name="tool_avas_description">Desativar o som de alerta para pedestres (AVAS)</string>
-    <string name="tool_sound_title">Som</string>
-    <string name="tool_sound_description">Som ao travar e outras configurações de áudio do carro</string>
     <string name="avas_screen_title">AVAS</string>
     <string name="avas_section_control">Controle</string>
     <string name="avas_section_status">Status</string>
@@ -282,15 +280,6 @@
     <string name="system_ram_unavailable">—</string>
     <string name="system_ram_refresh">Atualizar</string>
 
-    <string name="sound_screen_title">Som</string>
-    <string name="sound_section_lock">Travamento</string>
-    <string name="sound_lock_title">Som ao travar</string>
-    <string name="sound_lock_summary_on">Som ao travar o carro ativado</string>
-    <string name="sound_lock_summary_off">Som ao travar o carro desativado</string>
-    <string name="sound_lock_status_unavailable">Indisponível</string>
-    <string name="sound_lock_status_write_error">Erro de gravação: %1$s</string>
-    <string name="sound_lock_write_error_unknown">erro desconhecido</string>
-
     <string name="settings_screen_title">Configurações</string>
     <string name="settings_section_language">Idioma</string>
     <string name="settings_language_title">Idioma do aplicativo</string>
@@ -299,6 +288,8 @@
     <string name="settings_language_english">English</string>
     <string name="settings_language_russian">Русский</string>
     <string name="settings_language_portuguese">Português (Brasil)</string>
+    <string name="settings_section_about">Sobre o aplicativo</string>
+    <string name="settings_about_version">Versão</string>
 
     <string name="nav_back">Voltar</string>
 </resources>

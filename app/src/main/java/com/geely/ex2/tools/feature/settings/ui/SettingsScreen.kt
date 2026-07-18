@@ -1,6 +1,5 @@
 package com.geely.ex2.tools.feature.settings.ui
 
-import com.geely.ex2.tools.ui.clickableWithSystemSound
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,17 +19,23 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.geely.ex2.tools.R
+import com.geely.ex2.tools.data.app.getAppVersionName
+import com.geely.ex2.tools.data.app.openDeveloperTelegram
 import com.geely.ex2.tools.data.settings.AppLocale
 import com.geely.ex2.tools.feature.settings.SettingsViewModel
+import com.geely.ex2.tools.ui.clickableWithSystemSound
+import com.geely.ex2.tools.ui.components.FlymeSettingsInfoItem
 import com.geely.ex2.tools.ui.components.FlymeSettingsSection
 import com.geely.ex2.tools.ui.components.GeelyTopAppBar
 import com.geely.ex2.tools.ui.components.isFlymeRailCompact
@@ -44,6 +49,8 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = viewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val versionName = remember { getAppVersionName(context) }
 
     Scaffold(
         modifier = modifier,
@@ -95,7 +102,47 @@ fun SettingsScreen(
                     )
                 }
             }
+
+            FlymeSettingsSection(title = stringResource(R.string.settings_section_about)) {
+                FlymeSettingsInfoItem(
+                    title = stringResource(R.string.settings_about_version),
+                    summary = versionName.ifEmpty { stringResource(R.string.system_ram_unavailable) },
+                )
+                HorizontalDivider(
+                    modifier = Modifier.padding(start = 16.dp),
+                    thickness = 0.5.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f),
+                )
+                AboutDeveloperRow(
+                    onTelegramClick = { openDeveloperTelegram(context) },
+                )
+            }
         }
+    }
+}
+
+@Composable
+private fun AboutDeveloperRow(
+    onTelegramClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickableWithSystemSound(onClick = onTelegramClick)
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+    ) {
+        Text(
+            text = stringResource(R.string.home_about_developer),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Text(
+            text = stringResource(R.string.home_about_telegram),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(top = 2.dp),
+        )
     }
 }
 

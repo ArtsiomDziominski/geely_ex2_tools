@@ -1,7 +1,5 @@
 package com.geely.ex2.tools.feature.home.ui
 
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,23 +22,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.geely.ex2.tools.R
+import com.geely.ex2.tools.data.app.getAppVersionName
+import com.geely.ex2.tools.data.app.openDeveloperTelegram
 import com.geely.ex2.tools.ui.clickableWithSystemSound
 import com.geely.ex2.tools.ui.rememberOnClickWithSystemSound
 import com.geely.ex2.tools.ui.theme.GeelyEx2ToolsTheme
-
-private const val DEVELOPER_TELEGRAM = "i_am_artsiom"
 
 @Composable
 fun AppAboutDialog(
     onDismiss: () -> Unit,
 ) {
     val context = LocalContext.current
-    val versionName = remember {
-        runCatching {
-            @Suppress("DEPRECATION")
-            context.packageManager.getPackageInfo(context.packageName, 0).versionName
-        }.getOrNull().orEmpty()
-    }
+    val versionName = remember { getAppVersionName(context) }
 
     val onDismissWithSound = rememberOnClickWithSystemSound(onDismiss)
 
@@ -98,21 +91,13 @@ fun AppAboutDialog(
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.clickableWithSystemSound {
-                            openTelegram(context, DEVELOPER_TELEGRAM)
+                            openDeveloperTelegram(context)
                         },
                     )
                 }
             }
         },
     )
-}
-
-private fun openTelegram(context: android.content.Context, username: String) {
-    val uri = Uri.parse("https://t.me/$username")
-    val intent = Intent(Intent.ACTION_VIEW, uri)
-    runCatching {
-        context.startActivity(intent)
-    }
 }
 
 @Preview(showBackground = true, name = "About Light")
