@@ -37,6 +37,7 @@ import com.geely.ex2.tools.ui.components.FlymeSettingsSection
 import com.geely.ex2.tools.ui.components.GeelyTopAppBar
 import com.geely.ex2.tools.ui.components.TabVisibilityEffect
 import com.geely.ex2.tools.ui.components.isFlymeRailCompact
+import com.geely.ex2.tools.ui.rememberOnClickWithSystemSound
 import com.geely.ex2.tools.ui.theme.GeelyEx2ToolsTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -87,6 +88,8 @@ private fun RamUsageCard(
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val onRefreshWithSound = rememberOnClickWithSystemSound(onRefresh)
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -143,7 +146,7 @@ private fun RamUsageCard(
         }
 
         TextButton(
-            onClick = onRefresh,
+            onClick = onRefreshWithSound,
             modifier = Modifier.align(Alignment.End),
         ) {
             Text(text = stringResource(R.string.system_ram_refresh))

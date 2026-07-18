@@ -128,7 +128,7 @@ private fun WifiStatusHeader(
     ) {
         Image(
             painter = painterResource(
-                if (isWifiOn) R.drawable.ic_wifi_4 else R.drawable.ic_wifi_off,
+                if (isWifiOn) R.drawable.ic_notification_wifi else R.drawable.ic_notification_wifi_off,
             ),
             contentDescription = null,
             modifier = Modifier.size(72.dp),
@@ -136,7 +136,7 @@ private fun WifiStatusHeader(
                 if (isWifiOn) {
                     MaterialTheme.colorScheme.primary
                 } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
+                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                 },
             ),
         )

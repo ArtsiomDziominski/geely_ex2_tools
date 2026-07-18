@@ -92,7 +92,7 @@ object WifiStatusIconHelper {
         }
 
         return builder
-            .setSmallIcon(R.drawable.ic_wifi_test)
+            .setSmallIcon(R.drawable.ic_notification_wifi)
             .setContentTitle(context.getString(R.string.wifi_service_notification_title))
             .setContentText(context.getString(R.string.wifi_service_notification_text))
             .setContentIntent(pendingIntent)
@@ -230,7 +230,7 @@ object WifiStatusIconHelper {
         }
 
         if (!isWifiConnectedToNetwork(context)) {
-            Log.i(WifiAutoEnableController.TAG, "Wi-Fi enabled but not connected, use no connection icon")
+            Log.i(WifiAutoEnableController.TAG, "Wi-Fi enabled but not connected, use dimmed icon")
             return R.drawable.ic_wifi_no_connection
         }
 
@@ -242,7 +242,7 @@ object WifiStatusIconHelper {
 
         val rssi = wifiInfo.rssi
         if (rssi <= -100 || rssi >= 0) {
-            Log.i(WifiAutoEnableController.TAG, "Wi-Fi RSSI invalid: $rssi, use no connection icon")
+            Log.i(WifiAutoEnableController.TAG, "Wi-Fi RSSI invalid: $rssi, use dimmed icon")
             return R.drawable.ic_wifi_no_connection
         }
 

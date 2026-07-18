@@ -30,6 +30,7 @@ import com.geely.ex2.tools.R
 import com.geely.ex2.tools.navigation.AppRoutes
 import com.geely.ex2.tools.ui.components.FlymeSettingsNavRow
 import com.geely.ex2.tools.ui.components.GeelyTopAppBar
+import com.geely.ex2.tools.ui.rememberOnClickWithSystemSound
 import com.geely.ex2.tools.ui.theme.GeelyEx2ToolsTheme
 
 data class ToolItem(
@@ -83,6 +84,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
 ) {
     var showAboutDialog by remember { mutableStateOf(false) }
+    val onAboutClickWithSound = rememberOnClickWithSystemSound { showAboutDialog = true }
 
     if (showAboutDialog) {
         AppAboutDialog(onDismiss = { showAboutDialog = false })
@@ -96,7 +98,7 @@ fun HomeScreen(
                 title = stringResource(R.string.home_tools_title),
                 actions = {
                     IconButton(
-                        onClick = { showAboutDialog = true },
+                        onClick = onAboutClickWithSound,
                         modifier = Modifier.size(40.dp),
                     ) {
                         Icon(

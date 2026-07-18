@@ -3,7 +3,6 @@ package com.geely.ex2.tools.feature.home.ui
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +24,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.geely.ex2.tools.R
+import com.geely.ex2.tools.ui.clickableWithSystemSound
+import com.geely.ex2.tools.ui.rememberOnClickWithSystemSound
 import com.geely.ex2.tools.ui.theme.GeelyEx2ToolsTheme
 
 private const val DEVELOPER_TELEGRAM = "i_am_artsiom"
@@ -41,6 +42,8 @@ fun AppAboutDialog(
         }.getOrNull().orEmpty()
     }
 
+    val onDismissWithSound = rememberOnClickWithSystemSound(onDismiss)
+
     AlertDialog(
         onDismissRequest = onDismiss,
         shape = RoundedCornerShape(16.dp),
@@ -48,7 +51,7 @@ fun AppAboutDialog(
         titleContentColor = MaterialTheme.colorScheme.onSurface,
         textContentColor = MaterialTheme.colorScheme.onSurface,
         confirmButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(onClick = onDismissWithSound) {
                 Text(
                     text = stringResource(R.string.home_about_close),
                     color = MaterialTheme.colorScheme.primary,
@@ -94,7 +97,7 @@ fun AppAboutDialog(
                         text = stringResource(R.string.home_about_telegram),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.clickable {
+                        modifier = Modifier.clickableWithSystemSound {
                             openTelegram(context, DEVELOPER_TELEGRAM)
                         },
                     )

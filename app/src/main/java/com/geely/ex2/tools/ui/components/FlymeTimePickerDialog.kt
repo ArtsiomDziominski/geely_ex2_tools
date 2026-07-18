@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.geely.ex2.tools.R
+import com.geely.ex2.tools.ui.rememberOnClickWithSystemSound
 import java.util.Locale
 
 @Composable
@@ -31,6 +32,8 @@ fun FlymeTimePickerDialog(
 ) {
     var hour by remember(initialHour, initialMinute) { mutableIntStateOf(initialHour) }
     var minute by remember(initialHour, initialMinute) { mutableIntStateOf(initialMinute) }
+    val onConfirmWithSound = rememberOnClickWithSystemSound { onConfirm(hour, minute) }
+    val onDismissWithSound = rememberOnClickWithSystemSound(onDismiss)
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -96,7 +99,7 @@ fun FlymeTimePickerDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = { onConfirm(hour, minute) }) {
+            TextButton(onClick = onConfirmWithSound) {
                 Text(
                     text = stringResource(R.string.ambient_light_time_picker_confirm),
                     color = MaterialTheme.colorScheme.primary,
@@ -104,7 +107,7 @@ fun FlymeTimePickerDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(onClick = onDismissWithSound) {
                 Text(
                     text = stringResource(R.string.ambient_light_time_picker_cancel),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,

@@ -1,6 +1,6 @@
 package com.geely.ex2.tools.feature.settings.ui
 
-import androidx.compose.foundation.clickable
+import com.geely.ex2.tools.ui.clickableWithSystemSound
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -110,7 +110,7 @@ private fun LanguageOptionRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(onClick = onClick)
+                .clickableWithSystemSound(onClick = onClick)
                 .padding(horizontal = 16.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {

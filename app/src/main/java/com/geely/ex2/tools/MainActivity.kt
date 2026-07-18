@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
 import com.geely.ex2.tools.feature.ambient.ui.AmbientLightScreen
 import com.geely.ex2.tools.feature.avas.ui.AvasScreen
 import com.geely.ex2.tools.feature.battery.ui.BatteryScreen
@@ -33,6 +35,11 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContent {
             GeelyEx2ToolsTheme {
+                val view = LocalView.current
+                SideEffect {
+                    view.isSoundEffectsEnabled = true
+                }
+
                 var selectedRoute by rememberSaveable { mutableStateOf(AppRoutes.NONE) }
                 val clearSelection = { selectedRoute = AppRoutes.NONE }
 

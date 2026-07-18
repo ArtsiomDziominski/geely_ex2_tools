@@ -42,6 +42,7 @@ import com.geely.ex2.tools.ui.components.FlymeTimePickerDialog
 import com.geely.ex2.tools.ui.components.GeelyTopAppBar
 import com.geely.ex2.tools.ui.components.TabVisibilityEffect
 import com.geely.ex2.tools.ui.components.isFlymeRailCompact
+import com.geely.ex2.tools.ui.rememberOnClickWithSystemSound
 import com.geely.ex2.tools.ui.theme.GeelyEx2ToolsTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,6 +54,7 @@ fun AmbientLightScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showInfoDialog by remember { mutableStateOf(false) }
+    val onInfoClickWithSound = rememberOnClickWithSystemSound { showInfoDialog = true }
 
     if (showInfoDialog) {
         AmbientLightInfoDialog(onDismiss = { showInfoDialog = false })
@@ -101,7 +103,7 @@ fun AmbientLightScreen(
                 onBack = onBack.takeIf { isFlymeRailCompact() },
                 actions = {
                     IconButton(
-                        onClick = { showInfoDialog = true },
+                        onClick = onInfoClickWithSound,
                         modifier = Modifier.size(40.dp),
                     ) {
                         Icon(
@@ -162,10 +164,6 @@ fun AmbientLightScreen(
                 FlymeSettingsInfoItem(
                     title = stringResource(R.string.ambient_light_status_title),
                     summary = uiState.statusText,
-                )
-                FlymeSettingsInfoItem(
-                    title = stringResource(R.string.ambient_light_source_title),
-                    summary = uiState.sourceText,
                 )
             }
         }

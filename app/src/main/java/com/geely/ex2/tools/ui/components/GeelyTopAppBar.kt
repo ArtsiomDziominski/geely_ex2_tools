@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.geely.ex2.tools.R
+import com.geely.ex2.tools.ui.rememberOnClickWithSystemSound
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,7 +39,7 @@ fun GeelyTopAppBar(
         navigationIcon = {
             if (onBack != null) {
                 IconButton(
-                    onClick = onBack,
+                    onClick = rememberOnClickWithSystemSound(onBack),
                     modifier = Modifier.size(48.dp),
                 ) {
                     Icon(

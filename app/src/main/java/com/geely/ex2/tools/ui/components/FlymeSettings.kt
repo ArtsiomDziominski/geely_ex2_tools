@@ -1,7 +1,9 @@
 package com.geely.ex2.tools.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.geely.ex2.tools.ui.clickableWithSystemSound
+import com.geely.ex2.tools.ui.rememberOnCheckedChangeWithSystemSound
+import com.geely.ex2.tools.ui.rememberOnClickWithSystemSound
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -75,6 +77,8 @@ fun FlymeSettingsSwitchItem(
     enabled: Boolean = true,
     showDivider: Boolean = true,
 ) {
+    val onCheckedChangeWithSound = rememberOnCheckedChangeWithSystemSound(onCheckedChange)
+
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
@@ -103,7 +107,7 @@ fun FlymeSettingsSwitchItem(
             }
             Switch(
                 checked = checked,
-                onCheckedChange = onCheckedChange,
+                onCheckedChange = onCheckedChangeWithSound,
                 enabled = enabled,
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = Color.White,
@@ -198,7 +202,7 @@ fun FlymeSegmentedRow(
                             Color.Transparent
                         },
                     )
-                    .clickable(enabled = enabled) { onSelectedIndexChange(index) }
+                    .clickableWithSystemSound(enabled = enabled) { onSelectedIndexChange(index) }
                     .padding(horizontal = 8.dp, vertical = 12.dp),
                 contentAlignment = Alignment.Center,
             ) {
@@ -232,6 +236,9 @@ fun FlymeSettingsStepperItem(
     enabled: Boolean = true,
     showDivider: Boolean = true,
 ) {
+    val onStepLeftWithSound = rememberOnClickWithSystemSound(onStepLeft)
+    val onStepRightWithSound = rememberOnClickWithSystemSound(onStepRight)
+
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
@@ -258,7 +265,7 @@ fun FlymeSettingsStepperItem(
             }
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 IconButton(
-                    onClick = onStepLeft,
+                    onClick = onStepLeftWithSound,
                     enabled = enabled && canStepLeft,
                     colors = IconButtonDefaults.iconButtonColors(
                         contentColor = MaterialTheme.colorScheme.onSurface,
@@ -271,7 +278,7 @@ fun FlymeSettingsStepperItem(
                     )
                 }
                 IconButton(
-                    onClick = onStepRight,
+                    onClick = onStepRightWithSound,
                     enabled = enabled && canStepRight,
                     colors = IconButtonDefaults.iconButtonColors(
                         contentColor = MaterialTheme.colorScheme.onSurface,
@@ -304,7 +311,7 @@ fun FlymeSettingsValueItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(enabled = enabled, onClick = onClick)
+                .clickableWithSystemSound(enabled = enabled, onClick = onClick)
                 .padding(horizontal = 16.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -369,7 +376,7 @@ fun FlymeSettingsNavRow(
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
             .background(MaterialTheme.colorScheme.surface)
-            .clickable(onClick = onClick)
+            .clickableWithSystemSound(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

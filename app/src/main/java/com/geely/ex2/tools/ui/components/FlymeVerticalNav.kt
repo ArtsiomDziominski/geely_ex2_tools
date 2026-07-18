@@ -1,7 +1,7 @@
 package com.geely.ex2.tools.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.geely.ex2.tools.ui.clickableWithSystemSound
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -152,7 +152,7 @@ fun FlymeVerticalNav(
                     .fillMaxWidth()
                     .padding(horizontal = if (compact) 16.dp else 36.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .clickable(onClick = onBack)
+                    .clickableWithSystemSound(onClick = onBack)
                     .padding(vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = if (compact) Arrangement.Center else Arrangement.Start,
@@ -209,7 +209,7 @@ private fun FlymeNavItem(
             .height(72.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(background)
-            .clickable(onClick = onClick)
+            .clickableWithSystemSound(onClick = onClick)
             .padding(horizontal = if (compact) 0.dp else 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = if (compact) Arrangement.Center else Arrangement.Start,

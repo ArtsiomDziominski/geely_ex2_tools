@@ -32,6 +32,7 @@ import com.geely.ex2.tools.ui.components.FlymeSettingsSegmentedItem
 import com.geely.ex2.tools.ui.components.GeelyTopAppBar
 import com.geely.ex2.tools.ui.components.TabVisibilityEffect
 import com.geely.ex2.tools.ui.components.isFlymeRailCompact
+import com.geely.ex2.tools.ui.rememberOnClickWithSystemSound
 import com.geely.ex2.tools.ui.theme.GeelyEx2ToolsTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,17 +54,20 @@ fun AvasScreen(
     )
 
     if (uiState.showMuteConfirm) {
+        val onMuteConfirmAcceptedWithSound = rememberOnClickWithSystemSound(viewModel::onMuteConfirmAccepted)
+        val onMuteConfirmDismissWithSound = rememberOnClickWithSystemSound(viewModel::onMuteConfirmDismiss)
+
         AlertDialog(
             onDismissRequest = viewModel::onMuteConfirmDismiss,
             title = { Text(stringResource(R.string.avas_mute_confirm_title)) },
             text = { Text(stringResource(R.string.avas_mute_confirm_message)) },
             confirmButton = {
-                TextButton(onClick = viewModel::onMuteConfirmAccepted) {
+                TextButton(onClick = onMuteConfirmAcceptedWithSound) {
                     Text(stringResource(R.string.avas_mute_confirm_yes))
                 }
             },
             dismissButton = {
-                TextButton(onClick = viewModel::onMuteConfirmDismiss) {
+                TextButton(onClick = onMuteConfirmDismissWithSound) {
                     Text(stringResource(R.string.avas_mute_confirm_no))
                 }
             },
@@ -126,10 +130,6 @@ fun AvasScreen(
                 FlymeSettingsInfoItem(
                     title = stringResource(R.string.avas_status_title),
                     summary = uiState.statusText,
-                )
-                FlymeSettingsInfoItem(
-                    title = stringResource(R.string.avas_source_title),
-                    summary = uiState.sourceText,
                 )
             }
         }

@@ -15,12 +15,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.geely.ex2.tools.R
+import com.geely.ex2.tools.ui.rememberOnClickWithSystemSound
 import com.geely.ex2.tools.ui.theme.GeelyEx2ToolsTheme
 
 @Composable
 fun AmbientLightInfoDialog(
     onDismiss: () -> Unit,
 ) {
+    val onDismissWithSound = rememberOnClickWithSystemSound(onDismiss)
+
     AlertDialog(
         onDismissRequest = onDismiss,
         shape = RoundedCornerShape(16.dp),
@@ -28,7 +31,7 @@ fun AmbientLightInfoDialog(
         titleContentColor = MaterialTheme.colorScheme.onSurface,
         textContentColor = MaterialTheme.colorScheme.onSurface,
         confirmButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(onClick = onDismissWithSound) {
                 Text(
                     text = stringResource(R.string.home_about_close),
                     color = MaterialTheme.colorScheme.primary,
