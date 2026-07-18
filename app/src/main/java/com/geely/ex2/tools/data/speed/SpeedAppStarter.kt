@@ -52,7 +52,7 @@ object SpeedAppStarter {
         val intent = Intent(appContext, SpeedStatusService::class.java).apply {
             putExtra(SpeedStatusService.EXTRA_REASON, reason)
         }
-        // Wake running service so onStartCommand stops polling immediately.
+        // Wake running service so onStartCommand unsubscribes and stops immediately.
         appContext.startService(intent)
         appContext.stopService(intent)
     }

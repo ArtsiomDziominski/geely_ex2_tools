@@ -10,5 +10,14 @@ data class SpeedSample(
 interface VhalSpeedReader {
     fun readSpeed(): SpeedSample
 
+    /** @return true if VHAL callback was registered */
+    fun subscribeSpeed(
+        updateRateHz: Float,
+        onSample: (SpeedSample) -> Unit,
+        onError: (String) -> Unit,
+    ): Boolean
+
+    fun unsubscribeSpeed()
+
     fun close()
 }

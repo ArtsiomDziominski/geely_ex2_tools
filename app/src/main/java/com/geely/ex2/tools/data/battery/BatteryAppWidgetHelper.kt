@@ -14,7 +14,6 @@ import com.geely.ex2.tools.R
 import com.geely.ex2.tools.data.vhal.BatterySample
 import com.geely.ex2.tools.data.vhal.VhalBatteryReaderFactory
 import com.geely.ex2.tools.navigation.AppRoutes
-import kotlin.math.roundToInt
 
 object BatteryAppWidgetHelper {
     fun updateAll(context: Context, reason: String, sample: BatterySample? = null) {
@@ -54,7 +53,7 @@ object BatteryAppWidgetHelper {
         val views = RemoteViews(context.packageName, R.layout.widget_battery)
         val percentText = formatPercent(context, sample)
         val progress = if (sample.isAvailable) {
-            sample.socPercent.roundToInt().coerceIn(0, 100)
+            sample.socPercent.toInt().coerceIn(0, 100)
         } else {
             0
         }
@@ -73,7 +72,7 @@ object BatteryAppWidgetHelper {
         if (!sample.isAvailable) {
             return context.getString(R.string.battery_app_widget_unavailable)
         }
-        return context.getString(R.string.battery_latest_value, sample.socPercent.roundToInt())
+        return context.getString(R.string.battery_latest_value, sample.socPercent.toInt())
     }
 
     private fun buildOpenBatteryPendingIntent(context: Context): PendingIntent {

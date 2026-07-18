@@ -100,7 +100,6 @@
     <string name="speed_widget_position_step_right">Move right</string>
     <string name="speed_status_title">State</string>
     <string name="speed_latest_title">Current speed</string>
-    <string name="speed_source_title">Data source</string>
     <string name="speed_header_off">Speedometer disabled</string>
     <string name="speed_status_disabled">Disabled by user</string>
     <string name="speed_status_waiting">Waiting for data</string>
@@ -109,8 +108,6 @@
     <string name="speed_latest_disabled">No data (feature disabled)</string>
     <string name="speed_latest_value">%1$d km/h</string>
     <string name="speed_latest_unavailable">Speed unavailable</string>
-    <string name="speed_source_unavailable">VHAL unavailable</string>
-    <string name="speed_source_empty">No debug information</string>
     <string name="speed_status_icon_channel">Speedometer icon</string>
     <string name="speed_service_channel">Speedometer service</string>
     <string name="speed_status_icon_title">Speed</string>
@@ -132,7 +129,6 @@
     <string name="battery_widget_position_step_right">Move right</string>
     <string name="battery_status_title">State</string>
     <string name="battery_latest_title">Current charge</string>
-    <string name="battery_source_title">Data source</string>
     <string name="battery_header_off">Charge disabled</string>
     <string name="battery_status_disabled">Disabled by user</string>
     <string name="battery_status_waiting">Waiting for data</string>
@@ -141,8 +137,6 @@
     <string name="battery_latest_disabled">No data (feature disabled)</string>
     <string name="battery_latest_value">%1$d%%</string>
     <string name="battery_latest_unavailable">Charge unavailable</string>
-    <string name="battery_source_unavailable">VHAL unavailable</string>
-    <string name="battery_source_empty">No debug information</string>
     <string name="battery_status_icon_channel">Charge icon</string>
     <string name="battery_service_channel">Charge service</string>
     <string name="battery_status_icon_title">Charge</string>
@@ -169,8 +163,6 @@
     <string name="driving_regen_status_title">Regeneration state</string>
     <string name="driving_raw_title">Mode VHAL</string>
     <string name="driving_regen_raw_title">Regeneration VHAL</string>
-    <string name="driving_source_title">Mode source</string>
-    <string name="driving_regen_source_title">Regeneration source</string>
     <string name="driving_current_unavailable">Mode unavailable</string>
     <string name="driving_regen_current_unavailable">Regeneration unavailable</string>
     <string name="driving_current_unknown">Unknown mode (%1$s)</string>
@@ -182,8 +174,6 @@
     <string name="driving_status_write_error">Write error: %1$s</string>
     <string name="driving_write_error_unknown">unknown error</string>
     <string name="driving_raw_unavailable">No data</string>
-    <string name="driving_source_unavailable">VHAL unavailable</string>
-    <string name="driving_source_empty">No debug information</string>
     <string name="driving_mode_comfort">Comfort</string>
     <string name="driving_mode_pure">Electric</string>
     <string name="driving_mode_adaptive">Smart</string>
@@ -217,12 +207,10 @@
     <string name="ambient_light_header_off">Off</string>
     <string name="ambient_light_current_unavailable">Unavailable</string>
     <string name="ambient_light_status_title">State</string>
-    <string name="ambient_light_source_title">Data source</string>
     <string name="ambient_light_status_ok">Read OK (%1$s)</string>
     <string name="ambient_light_status_error">Read error (%1$s)</string>
     <string name="ambient_light_status_write_error">Write error: %1$s</string>
     <string name="ambient_light_write_error_unknown">unknown error</string>
-    <string name="ambient_light_source_unavailable">VHAL unavailable</string>
     <string name="ambient_light_section_schedule">Schedule</string>
     <string name="ambient_light_mode_title">Mode</string>
     <string name="ambient_light_mode_auto">Auto</string>
@@ -269,7 +257,6 @@
     <string name="avas_supported_yes">Yes</string>
     <string name="avas_supported_no">No / unknown</string>
     <string name="avas_status_title">State</string>
-    <string name="avas_source_title">Data source</string>
     <string name="avas_mode_unavailable">Mode unavailable</string>
     <string name="avas_mode_off">Off</string>
     <string name="avas_mode_type_1">Type 1</string>
@@ -282,7 +269,6 @@
     <string name="avas_status_write_error">Write error: %1$s</string>
     <string name="avas_status_need_system">No AVAS permissions (needs a platform build like CentralEXAuto). Run scripts\\build-system-apk.ps1 and install the system APK.</string>
     <string name="avas_write_error_unknown">unknown error</string>
-    <string name="avas_source_empty">No debug information</string>
     <string name="avas_restore_channel">AVAS</string>
     <string name="avas_restore_notification_title">AVAS</string>
     <string name="avas_restore_notification_text">Restoring mute after boot</string>
@@ -301,8 +287,7 @@
     <string name="sound_lock_title">Lock sound</string>
     <string name="sound_lock_summary_on">Sound when locking the car is enabled</string>
     <string name="sound_lock_summary_off">Sound when locking the car is disabled</string>
-    <string name="sound_lock_status_ok">Source: %1$s</string>
-    <string name="sound_lock_status_error">Unavailable: %1$s</string>
+    <string name="sound_lock_status_unavailable">Unavailable</string>
     <string name="sound_lock_status_write_error">Write error: %1$s</string>
     <string name="sound_lock_write_error_unknown">unknown error</string>
 

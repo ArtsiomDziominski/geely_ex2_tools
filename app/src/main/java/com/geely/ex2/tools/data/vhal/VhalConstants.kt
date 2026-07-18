@@ -96,4 +96,7 @@ object VhalConstants {
 
     /** Спидометр в шторке Flyme — обновление раз в 3 секунды */
     const val SPEED_POLL_INTERVAL_MS = 3_000L
+
+    /** VHAL callback rate for PERF_VEHICLE_SPEED (~раз в 3 с). */
+    const val SPEED_CALLBACK_RATE_HZ = 1f / 3f
 }

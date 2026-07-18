@@ -117,10 +117,6 @@ fun BatteryScreen(
                     title = stringResource(R.string.battery_latest_title),
                     summary = uiState.latestSocText,
                 )
-                FlymeSettingsInfoItem(
-                    title = stringResource(R.string.battery_source_title),
-                    summary = uiState.sourceText,
-                )
             }
         }
     }

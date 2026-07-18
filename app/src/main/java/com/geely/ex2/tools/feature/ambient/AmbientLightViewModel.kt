@@ -33,7 +33,6 @@ data class AmbientLightUiState(
     val isAvailable: Boolean = false,
     val isWritable: Boolean = true,
     val statusText: String = "",
-    val sourceText: String = "",
     val isChanging: Boolean = false,
     val controlMode: AmbientLightControlMode = AmbientLightControlMode.AUTO,
     val controlModeIndex: Int = 0,
@@ -182,7 +181,6 @@ class AmbientLightViewModel(application: Application) : AndroidViewModel(applica
             isAvailable = sample.isAvailable,
             isWritable = sample.isAvailable && !_uiState.value.isChanging,
             statusText = buildStatusText(sample, writeError, controlMode, scheduleActiveNow),
-            sourceText = buildSourceText(sample),
             isChanging = _uiState.value.isChanging,
             controlMode = controlMode,
             controlModeIndex = AmbientLightControlMode.indexOf(controlMode),
@@ -241,15 +239,5 @@ class AmbientLightViewModel(application: Application) : AndroidViewModel(applica
             )
         }
         return appContext.getString(R.string.ambient_light_status_ok, sample.source)
-    }
-
-    private fun buildSourceText(sample: AmbientLightSample): String {
-        if (sample.details.isNotEmpty()) {
-            return sample.details
-        }
-        if (!sample.isAvailable) {
-            return appContext.getString(R.string.ambient_light_source_unavailable)
-        }
-        return sample.source
     }
 }

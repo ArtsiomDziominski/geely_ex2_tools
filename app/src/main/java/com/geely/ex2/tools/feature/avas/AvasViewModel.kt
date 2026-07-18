@@ -26,7 +26,6 @@ data class AvasUiState(
     val isSupported: Boolean = false,
     val currentModeText: String = "",
     val statusText: String = "",
-    val sourceText: String = "",
 )
 
 class AvasViewModel(application: Application) : AndroidViewModel(application) {
@@ -91,7 +90,6 @@ class AvasViewModel(application: Application) : AndroidViewModel(application) {
                                 write.error ?: appContext.getString(R.string.avas_write_error_unknown),
                             )
                         },
-                        sourceText = write.details.ifEmpty { it.sourceText },
                     )
                 }
                 if (!needSystem) {
@@ -153,9 +151,6 @@ class AvasViewModel(application: Application) : AndroidViewModel(application) {
             isSupported = sample.isSupported,
             currentModeText = buildModeText(sample),
             statusText = buildStatusText(sample, mutedSaved),
-            sourceText = sample.source.ifEmpty {
-                sample.details.ifEmpty { appContext.getString(R.string.avas_source_empty) }
-            },
         )
     }
 

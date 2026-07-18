@@ -280,11 +280,11 @@ object TemperatureStatusIconHelper {
     }
 
     private const val TAG = "GeelyToolsTemperature"
-    private const val BASE_ICON_HEIGHT_DP = 24
+    private const val BASE_ICON_HEIGHT_DP = 28
     private const val MIN_HORIZONTAL_PADDING_DP = 2
     private const val BASE_TEXT_SIZE_RATIO = 0.72f
-    private const val MAX_TEXT_HEIGHT_RATIO = 0.88f
-    private const val HORIZONTAL_PADDING_RATIO = 0.12f
+    private const val MAX_TEXT_HEIGHT_RATIO = 0.96f
+    private const val HORIZONTAL_PADDING_RATIO = 0.10f
     private const val DEGREE_SYMBOL = "°"
     private const val DEGREE_SYMBOL_SIZE_RATIO = 0.74f
     private const val DEGREE_SYMBOL_RISE_RATIO = 0.34f

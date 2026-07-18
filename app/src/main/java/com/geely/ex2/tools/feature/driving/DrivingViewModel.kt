@@ -31,7 +31,6 @@ data class DrivingUiState(
     val savedModeText: String = "",
     val statusText: String = "",
     val rawValueText: String = "",
-    val sourceText: String = "",
     val isChangingMode: Boolean = false,
     val currentRegenText: String = "",
     val regenSelectedIndex: Int = -1,
@@ -41,7 +40,6 @@ data class DrivingUiState(
     val savedRegenText: String = "",
     val regenStatusText: String = "",
     val regenRawValueText: String = "",
-    val regenSourceText: String = "",
     val isChangingRegen: Boolean = false,
 )
 
@@ -262,7 +260,6 @@ class DrivingViewModel(application: Application) : AndroidViewModel(application)
             savedModeText = buildSavedModeText(savedModeValue),
             statusText = buildStatusText(sample, writeError, persistEnabled),
             rawValueText = buildRawValueText(sample),
-            sourceText = buildSourceText(sample),
             isChangingMode = isChangingMode,
             currentRegenText = buildCurrentRegenText(regenSample),
             regenSelectedIndex = regenSelectedIndex,
@@ -272,7 +269,6 @@ class DrivingViewModel(application: Application) : AndroidViewModel(application)
             savedRegenText = buildSavedRegenText(savedRegenValue),
             regenStatusText = buildRegenStatusText(regenSample, regenWriteError, regenPersistEnabled),
             regenRawValueText = buildRegenRawValueText(regenSample),
-            regenSourceText = buildRegenSourceText(regenSample),
             isChangingRegen = isChangingRegen,
         )
     }
@@ -379,23 +375,5 @@ class DrivingViewModel(application: Application) : AndroidViewModel(application)
             return appContext.getString(R.string.driving_raw_unavailable)
         }
         return String.format(Locale.US, "0x%08X (%d)", sample.levelValue, sample.levelValue)
-    }
-
-    private fun buildSourceText(sample: DrivingModeSample): String {
-        if (!sample.isAvailable) {
-            return appContext.getString(R.string.driving_source_unavailable)
-        }
-        return sample.details.ifEmpty {
-            appContext.getString(R.string.driving_source_empty)
-        }
-    }
-
-    private fun buildRegenSourceText(sample: EnergyRegenerationSample): String {
-        if (!sample.isAvailable) {
-            return appContext.getString(R.string.driving_source_unavailable)
-        }
-        return sample.details.ifEmpty {
-            appContext.getString(R.string.driving_source_empty)
-        }
     }
 }

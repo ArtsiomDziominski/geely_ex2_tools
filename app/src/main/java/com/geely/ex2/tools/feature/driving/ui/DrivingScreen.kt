@@ -152,14 +152,6 @@ fun DrivingScreen(
                     title = stringResource(R.string.driving_regen_raw_title),
                     summary = uiState.regenRawValueText,
                 )
-                FlymeSettingsInfoItem(
-                    title = stringResource(R.string.driving_source_title),
-                    summary = uiState.sourceText,
-                )
-                FlymeSettingsInfoItem(
-                    title = stringResource(R.string.driving_regen_source_title),
-                    summary = uiState.regenSourceText,
-                )
             }
         }
     }

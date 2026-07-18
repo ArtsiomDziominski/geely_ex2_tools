@@ -23,7 +23,6 @@ data class SpeedUiState(
     val canStepWidgetRight: Boolean = true,
     val statusText: String = "",
     val latestSpeedText: String = "",
-    val sourceText: String = "",
 )
 
 class SpeedViewModel(application: Application) : AndroidViewModel(application) {
@@ -136,7 +135,6 @@ class SpeedViewModel(application: Application) : AndroidViewModel(application) {
                 canStepWidgetRight = SpeedWidgetRank.canStepRight(widgetRank),
                 statusText = buildStatusText(enabled, sample),
                 latestSpeedText = buildLatestSpeedText(enabled, sample),
-                sourceText = buildSourceText(enabled, sample),
             )
         }
     }
@@ -148,7 +146,6 @@ class SpeedViewModel(application: Application) : AndroidViewModel(application) {
                 isEnabled = enabled,
                 statusText = buildStatusText(enabled, sample.takeIf { enabled }),
                 latestSpeedText = buildLatestSpeedText(enabled, sample.takeIf { enabled }),
-                sourceText = buildSourceText(enabled, sample.takeIf { enabled }),
             )
         }
     }
@@ -175,14 +172,5 @@ class SpeedViewModel(application: Application) : AndroidViewModel(application) {
             return appContext.getString(R.string.speed_latest_value, sample.speedKmh.roundToInt())
         }
         return appContext.getString(R.string.speed_latest_unavailable)
-    }
-
-    private fun buildSourceText(enabled: Boolean, sample: SpeedSample?): String {
-        if (!enabled || sample == null) {
-            return appContext.getString(R.string.speed_source_unavailable)
-        }
-        return sample.details.ifEmpty {
-            appContext.getString(R.string.speed_source_empty)
-        }
     }
 }

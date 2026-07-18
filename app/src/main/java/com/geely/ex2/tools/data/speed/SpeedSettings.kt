@@ -9,7 +9,7 @@ object SpeedSettings {
     private const val KEY_ENABLED = "enabled"
     private const val KEY_STATUS_ICON_RANK = "status_icon_rank"
 
-    const val ICON_SIZE_PERCENT = 130
+    const val ICON_SIZE_PERCENT = 160
 
     fun isEnabled(context: Context): Boolean =
         kv(context).decodeBool(KEY_ENABLED, false)

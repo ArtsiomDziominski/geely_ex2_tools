@@ -100,7 +100,6 @@
     <string name="speed_widget_position_step_right">Mover para a direita</string>
     <string name="speed_status_title">Estado</string>
     <string name="speed_latest_title">Velocidade atual</string>
-    <string name="speed_source_title">Fonte de dados</string>
     <string name="speed_header_off">Velocímetro desativado</string>
     <string name="speed_status_disabled">Desativado pelo usuário</string>
     <string name="speed_status_waiting">Aguardando leitura dos dados</string>
@@ -109,8 +108,6 @@
     <string name="speed_latest_disabled">Sem dados (função desativada)</string>
     <string name="speed_latest_value">%1$d km/h</string>
     <string name="speed_latest_unavailable">Velocidade indisponível</string>
-    <string name="speed_source_unavailable">VHAL indisponível</string>
-    <string name="speed_source_empty">Sem informações de depuração</string>
     <string name="speed_status_icon_channel">Ícone do velocímetro</string>
     <string name="speed_service_channel">Serviço do velocímetro</string>
     <string name="speed_status_icon_title">Velocidade</string>
@@ -132,7 +129,6 @@
     <string name="battery_widget_position_step_right">Mover para a direita</string>
     <string name="battery_status_title">Estado</string>
     <string name="battery_latest_title">Carga atual</string>
-    <string name="battery_source_title">Fonte de dados</string>
     <string name="battery_header_off">Carga desativada</string>
     <string name="battery_status_disabled">Desativado pelo usuário</string>
     <string name="battery_status_waiting">Aguardando leitura dos dados</string>
@@ -141,8 +137,6 @@
     <string name="battery_latest_disabled">Sem dados (função desativada)</string>
     <string name="battery_latest_value">%1$d%%</string>
     <string name="battery_latest_unavailable">Carga indisponível</string>
-    <string name="battery_source_unavailable">VHAL indisponível</string>
-    <string name="battery_source_empty">Sem informações de depuração</string>
     <string name="battery_status_icon_channel">Ícone da bateria</string>
     <string name="battery_service_channel">Serviço da bateria</string>
     <string name="battery_status_icon_title">Carga</string>
@@ -169,8 +163,6 @@
     <string name="driving_regen_status_title">Estado da regeneração</string>
     <string name="driving_raw_title">VHAL do modo</string>
     <string name="driving_regen_raw_title">VHAL da regeneração</string>
-    <string name="driving_source_title">Fonte do modo</string>
-    <string name="driving_regen_source_title">Fonte da regeneração</string>
     <string name="driving_current_unavailable">Modo indisponível</string>
     <string name="driving_regen_current_unavailable">Regeneração indisponível</string>
     <string name="driving_current_unknown">Modo desconhecido (%1$s)</string>
@@ -182,8 +174,6 @@
     <string name="driving_status_write_error">Erro de gravação: %1$s</string>
     <string name="driving_write_error_unknown">erro desconhecido</string>
     <string name="driving_raw_unavailable">Sem dados</string>
-    <string name="driving_source_unavailable">VHAL indisponível</string>
-    <string name="driving_source_empty">Sem informações de depuração</string>
     <string name="driving_mode_comfort">Conforto</string>
     <string name="driving_mode_pure">Elétrico</string>
     <string name="driving_mode_adaptive">Inteligente</string>
@@ -217,12 +207,10 @@
     <string name="ambient_light_header_off">Desligada</string>
     <string name="ambient_light_current_unavailable">Indisponível</string>
     <string name="ambient_light_status_title">Estado</string>
-    <string name="ambient_light_source_title">Fonte de dados</string>
     <string name="ambient_light_status_ok">Leitura concluída (%1$s)</string>
     <string name="ambient_light_status_error">Erro de leitura (%1$s)</string>
     <string name="ambient_light_status_write_error">Erro de gravação: %1$s</string>
     <string name="ambient_light_write_error_unknown">erro desconhecido</string>
-    <string name="ambient_light_source_unavailable">VHAL indisponível</string>
     <string name="ambient_light_section_schedule">Agendamento</string>
     <string name="ambient_light_mode_title">Modo</string>
     <string name="ambient_light_mode_auto">Automático</string>
@@ -269,7 +257,6 @@
     <string name="avas_supported_yes">Sim</string>
     <string name="avas_supported_no">Não / desconhecido</string>
     <string name="avas_status_title">Estado</string>
-    <string name="avas_source_title">Fonte de dados</string>
     <string name="avas_mode_unavailable">Modo indisponível</string>
     <string name="avas_mode_off">Desligado</string>
     <string name="avas_mode_type_1">Tipo 1</string>
@@ -282,7 +269,6 @@
     <string name="avas_status_write_error">Erro de gravação: %1$s</string>
     <string name="avas_status_need_system">Sem permissões para AVAS (é necessária uma compilação platform, como a do CentralEXAuto). Execute scripts\\build-system-apk.ps1 e instale o APK de sistema.</string>
     <string name="avas_write_error_unknown">erro desconhecido</string>
-    <string name="avas_source_empty">Sem informações de depuração</string>
     <string name="avas_restore_channel">AVAS</string>
     <string name="avas_restore_notification_title">AVAS</string>
     <string name="avas_restore_notification_text">Restaurando o mute após a inicialização</string>
@@ -301,8 +287,7 @@
     <string name="sound_lock_title">Som ao travar</string>
     <string name="sound_lock_summary_on">Som ao travar o carro ativado</string>
     <string name="sound_lock_summary_off">Som ao travar o carro desativado</string>
-    <string name="sound_lock_status_ok">Fonte: %1$s</string>
-    <string name="sound_lock_status_error">Indisponível: %1$s</string>
+    <string name="sound_lock_status_unavailable">Indisponível</string>
     <string name="sound_lock_status_write_error">Erro de gravação: %1$s</string>
     <string name="sound_lock_write_error_unknown">erro desconhecido</string>
 

@@ -125,8 +125,8 @@ class SoundViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun buildLockSoundStatusText(sample: LockSoundSample): String {
         if (!sample.isAvailable) {
-            return appContext.getString(R.string.sound_lock_status_error, sample.source)
+            return appContext.getString(R.string.sound_lock_status_unavailable)
         }
-        return appContext.getString(R.string.sound_lock_status_ok, sample.source)
+        return ""
     }
 }

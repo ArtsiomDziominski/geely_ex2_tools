@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 data class BatteryUiState(
     val isEnabled: Boolean = false,
@@ -23,7 +22,6 @@ data class BatteryUiState(
     val canStepWidgetRight: Boolean = true,
     val statusText: String = "",
     val latestSocText: String = "",
-    val sourceText: String = "",
 )
 
 class BatteryViewModel(application: Application) : AndroidViewModel(application) {
@@ -136,7 +134,6 @@ class BatteryViewModel(application: Application) : AndroidViewModel(application)
                 canStepWidgetRight = BatteryWidgetRank.canStepRight(widgetRank),
                 statusText = buildStatusText(enabled, sample),
                 latestSocText = buildLatestSocText(enabled, sample),
-                sourceText = buildSourceText(enabled, sample),
             )
         }
     }
@@ -148,7 +145,6 @@ class BatteryViewModel(application: Application) : AndroidViewModel(application)
                 isEnabled = enabled,
                 statusText = buildStatusText(enabled, sample.takeIf { enabled }),
                 latestSocText = buildLatestSocText(enabled, sample.takeIf { enabled }),
-                sourceText = buildSourceText(enabled, sample.takeIf { enabled }),
             )
         }
     }
@@ -172,17 +168,8 @@ class BatteryViewModel(application: Application) : AndroidViewModel(application)
             return appContext.getString(R.string.battery_latest_disabled)
         }
         if (sample?.isAvailable == true) {
-            return appContext.getString(R.string.battery_latest_value, sample.socPercent.roundToInt())
+            return appContext.getString(R.string.battery_latest_value, sample.socPercent.toInt())
         }
         return appContext.getString(R.string.battery_latest_unavailable)
-    }
-
-    private fun buildSourceText(enabled: Boolean, sample: BatterySample?): String {
-        if (!enabled || sample == null) {
-            return appContext.getString(R.string.battery_source_empty)
-        }
-        return sample.details.ifEmpty {
-            appContext.getString(R.string.battery_source_empty)
-        }
     }
 }

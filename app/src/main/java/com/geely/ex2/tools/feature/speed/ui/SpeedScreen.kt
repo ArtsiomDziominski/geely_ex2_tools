@@ -117,10 +117,6 @@ fun SpeedScreen(
                     title = stringResource(R.string.speed_latest_title),
                     summary = uiState.latestSpeedText,
                 )
-                FlymeSettingsInfoItem(
-                    title = stringResource(R.string.speed_source_title),
-                    summary = uiState.sourceText,
-                )
             }
         }
     }

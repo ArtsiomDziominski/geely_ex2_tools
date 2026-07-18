@@ -20,7 +20,6 @@ import com.geely.ex2.tools.data.vhal.BatterySample
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.roundToInt
 
 object BatteryStatusIconHelper {
     const val STATUS_NOTIFICATION_ID = 15041
@@ -119,7 +118,7 @@ object BatteryStatusIconHelper {
         }
         val icon = iconAsset.icon
         val text = if (sample?.isAvailable == true) {
-            context.getString(R.string.battery_status_icon_text_available, sample.socPercent.roundToInt())
+            context.getString(R.string.battery_status_icon_text_available, sample.socPercent.toInt())
         } else {
             context.getString(R.string.battery_status_icon_text_unavailable)
         }
@@ -174,7 +173,7 @@ object BatteryStatusIconHelper {
 
     private fun displayKey(sample: BatterySample?): String {
         return if (sample?.isAvailable == true) {
-            "${sample.socPercent.roundToInt()}%"
+            "${sample.socPercent.toInt()}%"
         } else {
             "?%"
         }
@@ -182,7 +181,7 @@ object BatteryStatusIconHelper {
 
     private fun createBatteryIcon(context: Context, sample: BatterySample?): BatteryIconAsset {
         val numberText = if (sample?.isAvailable == true) {
-            "${sample.socPercent.roundToInt()}%"
+            "${sample.socPercent.toInt()}%"
         } else {
             "?%"
         }
@@ -257,9 +256,9 @@ object BatteryStatusIconHelper {
     }
 
     private const val TAG = "GeelyToolsBattery"
-    private const val BASE_ICON_HEIGHT_DP = 24
+    private const val BASE_ICON_HEIGHT_DP = 28
     private const val MIN_HORIZONTAL_PADDING_DP = 2
     private const val BASE_TEXT_SIZE_RATIO = 0.72f
-    private const val MAX_TEXT_HEIGHT_RATIO = 0.88f
-    private const val HORIZONTAL_PADDING_RATIO = 0.12f
+    private const val MAX_TEXT_HEIGHT_RATIO = 0.96f
+    private const val HORIZONTAL_PADDING_RATIO = 0.10f
 }

@@ -100,7 +100,6 @@
     <string name="speed_widget_position_step_right">Сдвинуть правее</string>
     <string name="speed_status_title">Состояние</string>
     <string name="speed_latest_title">Текущая скорость</string>
-    <string name="speed_source_title">Источник данных</string>
     <string name="speed_header_off">Спидометр отключён</string>
     <string name="speed_status_disabled">Отключено пользователем</string>
     <string name="speed_status_waiting">Ожидание чтения данных</string>
@@ -109,8 +108,6 @@
     <string name="speed_latest_disabled">Нет данных (функция отключена)</string>
     <string name="speed_latest_value">%1$d км/ч</string>
     <string name="speed_latest_unavailable">Скорость недоступна</string>
-    <string name="speed_source_unavailable">VHAL недоступен</string>
-    <string name="speed_source_empty">Нет отладочной информации</string>
     <string name="speed_status_icon_channel">Иконка спидометра</string>
     <string name="speed_service_channel">Сервис спидометра</string>
     <string name="speed_status_icon_title">Скорость</string>
@@ -132,7 +129,6 @@
     <string name="battery_widget_position_step_right">Сдвинуть правее</string>
     <string name="battery_status_title">Состояние</string>
     <string name="battery_latest_title">Текущий заряд</string>
-    <string name="battery_source_title">Источник данных</string>
     <string name="battery_header_off">Заряд отключён</string>
     <string name="battery_status_disabled">Отключено пользователем</string>
     <string name="battery_status_waiting">Ожидание чтения данных</string>
@@ -141,8 +137,6 @@
     <string name="battery_latest_disabled">Нет данных (функция отключена)</string>
     <string name="battery_latest_value">%1$d%%</string>
     <string name="battery_latest_unavailable">Заряд недоступен</string>
-    <string name="battery_source_unavailable">VHAL недоступен</string>
-    <string name="battery_source_empty">Нет отладочной информации</string>
     <string name="battery_status_icon_channel">Иконка заряда</string>
     <string name="battery_service_channel">Сервис заряда</string>
     <string name="battery_status_icon_title">Заряд</string>
@@ -169,8 +163,6 @@
     <string name="driving_regen_status_title">Состояние рекуперации</string>
     <string name="driving_raw_title">VHAL режима</string>
     <string name="driving_regen_raw_title">VHAL рекуперации</string>
-    <string name="driving_source_title">Источник режима</string>
-    <string name="driving_regen_source_title">Источник рекуперации</string>
     <string name="driving_current_unavailable">Режим недоступен</string>
     <string name="driving_regen_current_unavailable">Рекуперация недоступна</string>
     <string name="driving_current_unknown">Неизвестный режим (%1$s)</string>
@@ -182,8 +174,6 @@
     <string name="driving_status_write_error">Ошибка записи: %1$s</string>
     <string name="driving_write_error_unknown">неизвестная ошибка</string>
     <string name="driving_raw_unavailable">Нет данных</string>
-    <string name="driving_source_unavailable">VHAL недоступен</string>
-    <string name="driving_source_empty">Нет отладочной информации</string>
     <string name="driving_mode_comfort">Комфорт</string>
     <string name="driving_mode_pure">Электро</string>
     <string name="driving_mode_adaptive">Умный</string>
@@ -217,12 +207,10 @@
     <string name="ambient_light_header_off">Выключена</string>
     <string name="ambient_light_current_unavailable">Недоступно</string>
     <string name="ambient_light_status_title">Состояние</string>
-    <string name="ambient_light_source_title">Источник данных</string>
     <string name="ambient_light_status_ok">Чтение успешно (%1$s)</string>
     <string name="ambient_light_status_error">Ошибка чтения (%1$s)</string>
     <string name="ambient_light_status_write_error">Ошибка записи: %1$s</string>
     <string name="ambient_light_write_error_unknown">неизвестная ошибка</string>
-    <string name="ambient_light_source_unavailable">VHAL недоступен</string>
     <string name="ambient_light_section_schedule">Расписание</string>
     <string name="ambient_light_mode_title">Режим</string>
     <string name="ambient_light_mode_auto">Авто</string>
@@ -269,7 +257,6 @@
     <string name="avas_supported_yes">Да</string>
     <string name="avas_supported_no">Нет / неизвестно</string>
     <string name="avas_status_title">Состояние</string>
-    <string name="avas_source_title">Источник данных</string>
     <string name="avas_mode_unavailable">Режим недоступен</string>
     <string name="avas_mode_off">Выключен</string>
     <string name="avas_mode_type_1">Тип 1</string>
@@ -282,7 +269,6 @@
     <string name="avas_status_write_error">Ошибка записи: %1$s</string>
     <string name="avas_status_need_system">Нет прав на AVAS (нужна platform-сборка как у CentralEXAuto). Соберите scripts\\build-system-apk.ps1 и установите system APK.</string>
     <string name="avas_write_error_unknown">неизвестная ошибка</string>
-    <string name="avas_source_empty">Нет отладочной информации</string>
     <string name="avas_restore_channel">AVAS</string>
     <string name="avas_restore_notification_title">AVAS</string>
     <string name="avas_restore_notification_text">Восстановление mute после загрузки</string>
@@ -301,8 +287,7 @@
     <string name="sound_lock_title">Звук запирания</string>
     <string name="sound_lock_summary_on">Звук при блокировке автомобиля включён</string>
     <string name="sound_lock_summary_off">Звук при блокировке автомобиля выключен</string>
-    <string name="sound_lock_status_ok">Источник: %1$s</string>
-    <string name="sound_lock_status_error">Недоступно: %1$s</string>
+    <string name="sound_lock_status_unavailable">Недоступно</string>
     <string name="sound_lock_status_write_error">Ошибка записи: %1$s</string>
     <string name="sound_lock_write_error_unknown">неизвестная ошибка</string>
 

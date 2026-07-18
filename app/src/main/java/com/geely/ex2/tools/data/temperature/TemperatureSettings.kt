@@ -11,7 +11,7 @@ object TemperatureSettings {
     private const val KEY_WIDGET_POSITION = "widget_position"
     private const val LEGACY_DEGREE_SYMBOL_POSITION = "degree_symbol_position"
 
-    const val ICON_SIZE_PERCENT = 130
+    const val ICON_SIZE_PERCENT = 160
 
     fun isEnabled(context: Context): Boolean =
         kv(context).decodeBool(KEY_ENABLED, true)

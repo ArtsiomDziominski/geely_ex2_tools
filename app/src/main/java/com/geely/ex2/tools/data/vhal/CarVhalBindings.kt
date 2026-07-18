@@ -126,11 +126,14 @@ class CarVhalBindings(context: Context) {
                 Int::class.javaPrimitiveType,
                 Float::class.javaPrimitiveType,
             )
-            register.invoke(manager, callback, propertyId, updateRateHz)
+            val accepted = register.invoke(manager, callback, propertyId, updateRateHz) as? Boolean
+            if (accepted == false) {
+                Log.w(TAG, "registerCallback rejected for 0x${propertyId.toString(16)}")
+                return null
+            }
             callback
         } catch (t: Throwable) {
             Log.w(TAG, "Failed to register VHAL callback for 0x${propertyId.toString(16)}", t)
-            onError(shortError(t))
             null
         }
     }
@@ -171,11 +174,14 @@ class CarVhalBindings(context: Context) {
                 Int::class.javaPrimitiveType,
                 Float::class.javaPrimitiveType,
             )
-            register.invoke(manager, callback, propertyId, updateRateHz)
+            val accepted = register.invoke(manager, callback, propertyId, updateRateHz) as? Boolean
+            if (accepted == false) {
+                Log.w(TAG, "registerCallback rejected int for 0x${propertyId.toString(16)}")
+                return null
+            }
             callback
         } catch (t: Throwable) {
             Log.w(TAG, "Failed to register int VHAL callback for 0x${propertyId.toString(16)}", t)
-            onError(shortError(t))
             null
         }
     }
