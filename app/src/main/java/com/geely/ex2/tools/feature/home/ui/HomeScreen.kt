@@ -56,14 +56,14 @@ private val tools = listOf(
         descriptionRes = R.string.tool_speed_description,
     ),
     ToolItem(
-        route = AppRoutes.BATTERY,
-        titleRes = R.string.tool_battery_title,
-        descriptionRes = R.string.tool_battery_description,
-    ),
-    ToolItem(
         route = AppRoutes.DRIVING,
         titleRes = R.string.tool_driving_title,
         descriptionRes = R.string.tool_driving_description,
+    ),
+    ToolItem(
+        route = AppRoutes.BATTERY,
+        titleRes = R.string.tool_battery_title,
+        descriptionRes = R.string.tool_battery_description,
     ),
     ToolItem(
         route = AppRoutes.AMBIENT_LIGHT,

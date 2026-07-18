@@ -70,14 +70,14 @@ val FlymeNavDestinations = listOf(
         icon = Icons.Filled.Speed,
     ),
     FlymeNavDestination(
-        route = AppRoutes.BATTERY,
-        labelRes = R.string.tool_battery_title,
-        icon = Icons.Filled.BatteryChargingFull,
-    ),
-    FlymeNavDestination(
         route = AppRoutes.DRIVING,
         labelRes = R.string.tool_driving_title,
         icon = Icons.Filled.DirectionsCar,
+    ),
+    FlymeNavDestination(
+        route = AppRoutes.BATTERY,
+        labelRes = R.string.tool_battery_title,
+        icon = Icons.Filled.BatteryChargingFull,
     ),
     FlymeNavDestination(
         route = AppRoutes.AMBIENT_LIGHT,
