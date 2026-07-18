@@ -26,7 +26,6 @@ import androidx.compose.material.icons.filled.Thermostat
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.BatteryChargingFull
 import androidx.compose.material.icons.filled.Wifi
-import androidx.compose.material.icons.filled.Memory
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -89,11 +88,6 @@ val FlymeNavDestinations = listOf(
         route = AppRoutes.AVAS,
         labelRes = R.string.tool_avas_title,
         icon = Icons.AutoMirrored.Filled.VolumeOff,
-    ),
-    FlymeNavDestination(
-        route = AppRoutes.SYSTEM,
-        labelRes = R.string.tool_system_title,
-        icon = Icons.Filled.Memory,
     ),
     FlymeNavDestination(
         route = AppRoutes.SETTINGS,

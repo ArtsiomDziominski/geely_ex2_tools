@@ -106,7 +106,7 @@ fun SettingsScreen(
             FlymeSettingsSection(title = stringResource(R.string.settings_section_about)) {
                 FlymeSettingsInfoItem(
                     title = stringResource(R.string.settings_about_version),
-                    summary = versionName.ifEmpty { stringResource(R.string.system_ram_unavailable) },
+                    summary = versionName.ifEmpty { stringResource(R.string.battery_app_widget_unavailable) },
                 )
                 HorizontalDivider(
                     modifier = Modifier.padding(start = 16.dp),

@@ -70,11 +70,6 @@ private val tools = listOf(
         titleRes = R.string.tool_ambient_light_title,
         descriptionRes = R.string.tool_ambient_light_description,
     ),
-    ToolItem(
-        route = AppRoutes.SYSTEM,
-        titleRes = R.string.tool_system_title,
-        descriptionRes = R.string.tool_system_description,
-    ),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

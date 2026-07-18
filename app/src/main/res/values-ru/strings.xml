@@ -25,8 +25,6 @@
     <string name="tool_driving_description">Режим и рекуперация — с запоминанием после пробуждения ГУ</string>
     <string name="tool_ambient_light_title">Атмосферная подсветка</string>
     <string name="tool_ambient_light_description">Расписание включения и отключения ambient light</string>
-    <string name="tool_system_title">Система</string>
-    <string name="tool_system_description">Занятость ОЗУ и состояние устройства</string>
     <string name="tool_settings_title">Настройки</string>
     <string name="tool_settings_description">Язык приложения и параметры</string>
 
@@ -270,15 +268,6 @@
     <string name="avas_restore_channel">AVAS</string>
     <string name="avas_restore_notification_title">AVAS</string>
     <string name="avas_restore_notification_text">Восстановление mute после загрузки</string>
-
-    <string name="system_screen_title">Система</string>
-    <string name="system_section_memory">Память</string>
-    <string name="system_ram_title">ОЗУ</string>
-    <string name="system_ram_percent">%1$d%%</string>
-    <string name="system_ram_used_of_total">Занято %1$s из %2$s</string>
-    <string name="system_ram_available">Свободно %1$s</string>
-    <string name="system_ram_unavailable">—</string>
-    <string name="system_ram_refresh">Обновить</string>
 
     <string name="settings_screen_title">Настройки</string>
     <string name="settings_section_language">Язык</string>
