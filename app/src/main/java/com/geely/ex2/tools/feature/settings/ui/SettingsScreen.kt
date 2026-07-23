@@ -114,42 +114,12 @@ fun SettingsScreen(
                 FlymeSettingsInfoItem(
                     title = stringResource(R.string.settings_about_version),
                     summary = versionName.ifEmpty { stringResource(R.string.battery_app_widget_unavailable) },
-                )
-                HorizontalDivider(
-                    modifier = Modifier.padding(start = 16.dp),
-                    thickness = 0.5.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f),
-                )
-                AboutDeveloperRow(
-                    onClick = { showDeveloperDialog = true },
+                    modifier = Modifier.clickableWithSystemSound(
+                        onClick = { showDeveloperDialog = true },
+                    ),
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun AboutDeveloperRow(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickableWithSystemSound(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 14.dp),
-    ) {
-        Text(
-            text = stringResource(R.string.home_about_developer),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-        Text(
-            text = stringResource(R.string.home_about_telegram),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(top = 2.dp),
-        )
     }
 }
 
