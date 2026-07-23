@@ -1,27 +1,18 @@
 package com.geely.ex2.tools.feature.wifi.ui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -69,12 +60,6 @@ fun WifiScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
-            WifiStatusHeader(
-                isWifiOn = uiState.isWifiOn,
-                wifiStateLabel = uiState.wifiStateLabel,
-                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
-            )
-
             FlymeSettingsSection(title = stringResource(R.string.wifi_section_control)) {
                 FlymeSettingsSwitchItem(
                     title = stringResource(R.string.wifi_toggle_title),
@@ -112,44 +97,6 @@ fun WifiScreen(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun WifiStatusHeader(
-    isWifiOn: Boolean,
-    wifiStateLabel: String,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        Image(
-            painter = painterResource(
-                if (isWifiOn) R.drawable.ic_notification_wifi else R.drawable.ic_notification_wifi_off,
-            ),
-            contentDescription = null,
-            modifier = Modifier.size(72.dp),
-            colorFilter = ColorFilter.tint(
-                if (isWifiOn) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-                },
-            ),
-        )
-        Text(
-            text = if (isWifiOn) {
-                stringResource(R.string.wifi_header_on, wifiStateLabel)
-            } else {
-                stringResource(R.string.wifi_header_off)
-            },
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
     }
 }
 

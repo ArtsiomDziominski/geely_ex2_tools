@@ -3,7 +3,6 @@ package com.geely.ex2.tools.feature.ambient.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -13,19 +12,15 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,7 +29,6 @@ import com.geely.ex2.tools.R
 import com.geely.ex2.tools.data.ambient.AmbientLightControlMode
 import com.geely.ex2.tools.feature.ambient.AmbientLightTimePickerTarget
 import com.geely.ex2.tools.feature.ambient.AmbientLightViewModel
-import com.geely.ex2.tools.ui.components.FlymeSettingsInfoItem
 import com.geely.ex2.tools.ui.components.FlymeSettingsSection
 import com.geely.ex2.tools.ui.components.FlymeSettingsSegmentedItem
 import com.geely.ex2.tools.ui.components.FlymeSettingsValueItem
@@ -126,13 +120,6 @@ fun AmbientLightScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
-            AmbientLightStatusHeader(
-                isEnabled = uiState.isEnabled,
-                isAvailable = uiState.isAvailable,
-                scheduleSummary = uiState.scheduleSummary,
-                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
-            )
-
             FlymeSettingsSection(title = stringResource(R.string.ambient_light_section_schedule)) {
                 FlymeSettingsSegmentedItem(
                     title = stringResource(R.string.ambient_light_mode_title),
@@ -159,55 +146,6 @@ fun AmbientLightScreen(
                     )
                 }
             }
-
-            FlymeSettingsSection(title = stringResource(R.string.ambient_light_section_status)) {
-                FlymeSettingsInfoItem(
-                    title = stringResource(R.string.ambient_light_status_title),
-                    summary = uiState.statusText,
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun AmbientLightStatusHeader(
-    isEnabled: Boolean,
-    isAvailable: Boolean,
-    scheduleSummary: String,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Text(
-            text = stringResource(R.string.ambient_light_current_title),
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Text(
-            text = when {
-                !isAvailable -> stringResource(R.string.ambient_light_current_unavailable)
-                isEnabled -> stringResource(R.string.ambient_light_header_on)
-                else -> stringResource(R.string.ambient_light_header_off)
-            },
-            style = MaterialTheme.typography.headlineSmall,
-            textAlign = TextAlign.Center,
-            color = if (isEnabled && isAvailable) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.onSurface
-            },
-        )
-        if (isAvailable && scheduleSummary.isNotEmpty()) {
-            Text(
-                text = scheduleSummary,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
         }
     }
 }
