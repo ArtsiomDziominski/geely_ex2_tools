@@ -11,13 +11,28 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import com.geely.ex2.tools.R
+import com.geely.ex2.tools.data.vhal.CarPropertyIo
 import com.geely.ex2.tools.data.vhal.VhalConstants
+import com.geely.ex2.tools.data.vhal.VhalVehicleEvent
+import com.geely.ex2.tools.data.vhal.VhalVehicleEventHub
+import com.geely.ex2.tools.data.vhal.VhalVehicleEventListener
 import java.util.concurrent.atomic.AtomicInteger
 
 class DrivingRestoreService : Service() {
     private val mainHandler = Handler(Looper.getMainLooper())
     private val pendingRestores = AtomicInteger(0)
     private var tickReason = "service start"
+
+    @Volatile
+    private var eventHub: VhalVehicleEventHub? = null
+
+    private var lastHandledGearSelection: Int? = null
+
+    private val vehicleEventListener = VhalVehicleEventListener { event ->
+        when (event) {
+            is VhalVehicleEvent.GearChanged -> onGearChanged(event)
+        }
+    }
 
     private val syncRunnable = object : Runnable {
         override fun run() {
@@ -26,6 +41,7 @@ class DrivingRestoreService : Service() {
                 finishService()
                 return
             }
+            ensureEventHub()
             DrivingPersistSyncController.syncFromCarIfNeeded(this@DrivingRestoreService, tickReason)
             mainHandler.postDelayed(this, VhalConstants.DRIVING_PERSIST_SYNC_INTERVAL_MS)
         }
@@ -65,9 +81,65 @@ class DrivingRestoreService : Service() {
             }
         }
 
+        ensureEventHub()
+
         mainHandler.removeCallbacks(syncRunnable)
         mainHandler.postDelayed(syncRunnable, VhalConstants.DRIVING_PERSIST_SYNC_INTERVAL_MS)
         return START_STICKY
+    }
+
+    private fun onGearChanged(event: VhalVehicleEvent.GearChanged) {
+        if (!DrivingSettings.hasAnyPersistEnabled(this)) {
+            return
+        }
+
+        val selection = event.gearSelection
+        if (selection == lastHandledGearSelection) {
+            return
+        }
+        lastHandledGearSelection = selection
+
+        val reason = "gear changed selection=$selection"
+        Log.i(TAG, reason)
+
+        if (DrivingSettings.isPersistEnabled(this)) {
+            DrivingModeController.restoreDrivingModeIfNeeded(this, reason)
+        }
+        if (DrivingSettings.isRegenPersistEnabled(this)) {
+            EnergyRegenController.restoreEnergyRegenerationIfNeeded(this, reason)
+        }
+    }
+
+    private fun ensureEventHub() {
+        if (eventHub != null) return
+
+        val hub = VhalVehicleEventHub(this)
+        hub.addListener(vehicleEventListener)
+        eventHub = hub
+        CarPropertyIo.execute {
+            if (eventHub !== hub) {
+                hub.removeListener(vehicleEventListener)
+                hub.stop()
+                return@execute
+            }
+            if (!hub.start()) {
+                if (eventHub === hub) {
+                    eventHub = null
+                }
+                hub.removeListener(vehicleEventListener)
+                Log.w(TAG, "Gear VHAL subscription unavailable")
+            }
+        }
+    }
+
+    private fun tearDownEventHub() {
+        val hub = eventHub ?: return
+        eventHub = null
+        lastHandledGearSelection = null
+        hub.removeListener(vehicleEventListener)
+        CarPropertyIo.execute {
+            hub.stop()
+        }
     }
 
     private fun onRestoreFinished() {
@@ -76,6 +148,7 @@ class DrivingRestoreService : Service() {
 
     override fun onDestroy() {
         mainHandler.removeCallbacks(syncRunnable)
+        tearDownEventHub()
         Log.i(TAG, "Driving restore service destroyed")
         super.onDestroy()
     }
@@ -84,6 +157,7 @@ class DrivingRestoreService : Service() {
 
     private fun finishService() {
         mainHandler.removeCallbacks(syncRunnable)
+        tearDownEventHub()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             stopForeground(STOP_FOREGROUND_REMOVE)
         } else {

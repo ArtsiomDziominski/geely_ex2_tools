@@ -6,6 +6,12 @@ object VhalConstants {
     /** android.car.VehiclePropertyIds.PERF_VEHICLE_SPEED */
     const val PROP_PERF_VEHICLE_SPEED = 0x11600207
 
+    /** android.car.VehiclePropertyIds.GEAR_SELECTION */
+    const val PROP_GEAR_SELECTION = 0x11400400
+
+    /** android.car.VehiclePropertyIds.CURRENT_GEAR */
+    const val PROP_CURRENT_GEAR = 0x11400401
+
     /** Geely OEM SOC % (Flyme) — приоритет на IHU629G */
     const val PROP_ED_EV_BATTERY_PERCENTAGE = 0x2140a6ed
 
@@ -78,6 +84,9 @@ object VhalConstants {
     /** Фоновая синхронизация сохранённых режимов вождения/рекуперации с машиной */
     const val DRIVING_PERSIST_SYNC_INTERVAL_MS = 60_000L
 
+    /** Debounce смены GEAR_SELECTION (одна передача = один restore). */
+    const val GEAR_EVENT_DEBOUNCE_MS = 500L
+
     /** Интервал опроса виджетов в шторке (батарея, температура) */
     const val STATUS_WIDGET_POLL_INTERVAL_MS = 100_000L
 
@@ -89,4 +98,7 @@ object VhalConstants {
 
     /** VHAL callback rate for PERF_VEHICLE_SPEED (~раз в 3 с). */
     const val SPEED_CALLBACK_RATE_HZ = 1f / 3f
+
+    /** CarPropertyManager.SENSOR_RATE_ONCHANGE — событие только при смене значения. */
+    const val CALLBACK_RATE_ONCHANGE_HZ = 0f
 }
